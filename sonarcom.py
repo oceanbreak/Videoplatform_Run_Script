@@ -12,7 +12,9 @@ class ComPortData:
         self._keyword = keyword
         self._line = ''
         self._word = []
-        self._func_set = {'GPGGA' : self.parseGPGGA, 'SDDBT' : self.parseSDDBT}
+        self._func_set = {'GPGGA' : self.parseGPGGA,
+                          'SDDBT' : self.parseSDDBT,
+                          '--DBS' : self.parseDBS}
         self._input_data = []
         self._output_data = None
         try:
@@ -46,6 +48,7 @@ class ComPortData:
             self._input_data = []
 
     def checksumOk(self):
+        return True
         try:
             check_line = ','.join(self._word)[1:-3]
             checksum = '*%02X' % reduce(operator.xor, map(ord, check_line), 0)
@@ -68,22 +71,36 @@ class ComPortData:
     def parseGPGGA(self):
         self.pullData()
         try:
-            self._output_data = tuple(['Coordinates', self._input_data[2][:2], self._input_data[2][2:],
+            self._output_data = tuple([self._input_data[2][:2], self._input_data[2][2:9],
                                  self._input_data[3],
-                                 self._input_data[4][:3], self._input_data[4][3:],
+                                 self._input_data[4][:3], self._input_data[4][3:10],
                                  self._input_data[5]])
         except IndexError:
-            self._output_data = tuple(['Coordinates'] + [None for i in range(6)])
+            self._output_data = tuple([None for i in range(6)])
 
     def parseSDDBT(self):
         self.pullData()
         try:
-            self._output_data = tuple(['Echo', self._input_data[3], self._input_data[4]])
+            self._output_data = tuple([self._input_data[3], self._input_data[4]])
         except IndexError:
-            self._output_data = tuple(['Echo'] + [None for i in range(2)])
+            self._output_data = tuple([None for i in range(2)])
+
+    def parseDBS(self):
+        self.pullData()
+        try:
+            self._output_data = tuple([self._input_data[3], self._input_data[4]])
+        except IndexError:
+            self._output_data = tuple([None for i in range(2)])
+
+    def sendMessage(self, message):
+        self._port.write(message)
+
+    def closePort(self):
+        self._port.close()
+
 
 if __name__ == '__main__':
-    test_line1 = ComPortData('COM5', 4800, 10, 'GPGGA')
-    for i in range(10):
+    test_line1 = ComPortData('COM13', 9600, 10, 'GPGGA')
+    for i in range(100):
         print(test_line1.getOutputData())
 

@@ -44,12 +44,12 @@ class Application(Frame):
 
         #SET DEPTH ZERO BUTTON
         self.set_depth_buton = Button(self.buttons)
-        self.set_depth_buton["text"] = 'Set depth 10'
-        #self.set_d["command"] = self.set_depth
+        self.set_depth_buton["text"] = 'Set zero depth'
+        # self.set_d["command"] = self.set_depth
 
         #RESET DEPTH ZERO BUTTON
-        self.reset_depth_button = Button(self.buttons)
-        self.reset_depth_button["text"] = 'Reset depth 0'
+        self.reset_track_button = Button(self.buttons)
+        self.reset_track_button["text"] = 'Reset track'
         #self.reset_d["command"] = self.reset_depth
 
         #DATA LABEL
@@ -61,7 +61,7 @@ class Application(Frame):
         self.start_rec_button.pack({"side": "left", "expand": "YES", "fill": "both"})
         self.choose_dir_button.pack({"side": "left", "expand": "YES", "fill": "both"})
         self.set_depth_buton.pack({"side": "top", "expand": "YES", "fill": "both"})
-        self.reset_depth_button.pack({"side": "bottom", "expand": "YES", "fill": "both"})
+        self.reset_track_button.pack({"side": "bottom", "expand": "YES", "fill": "both"})
         self.data_label.pack({"side": "left", "expand":"YES", "fill":"both"})
 
     def __init__(self, master=None):

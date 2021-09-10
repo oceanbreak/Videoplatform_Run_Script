@@ -2,7 +2,7 @@
 
 import sys
 
-def Get_Init_Parameters(ini_file = 'init.cfg'):
+def Get_Init_Parameters(ini_file = 'resources/init.cfg'):
     # By default it takes file "init.cfg" and makes a dictionary of it
     # init.cfg exapmple:
     #

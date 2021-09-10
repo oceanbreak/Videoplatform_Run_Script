@@ -7,10 +7,11 @@ class SonarThread(threading.Thread):
     The class takes user defined function as an argument and creates thread that executes it repeatedly after .start()
     while stop() method is not applied.
     """
-    def __init__(self, custom_func):
+    def __init__(self, custom_func, parameters=[]):
         super(SonarThread, self).__init__()
         self._stop = threading.Event()
         self.customFunc = custom_func
+        self.parameters = parameters
 
     def stop(self):
         self._stop.set()
@@ -20,16 +21,16 @@ class SonarThread(threading.Thread):
 
     def run(self):
         while not self.stopped():
-            self.customFunc()
+            self.customFunc(*self.parameters)
 
 if __name__ == '__main__':
 
     import random, time
 
-    def userFunc():
-        print("I'm usrer func and generating %i number" % random.randint(1,10))
+    def userFunc(x):
+        print("I'm usrer func and generating %i number and word %s" % (random.randint(1,10), x))
 
-    proc1 = SonarThread(userFunc)
+    proc1 = SonarThread(userFunc, ['tesetword'])
     proc1.start()
     time.sleep(10)
     proc1.stop()

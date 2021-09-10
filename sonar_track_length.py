@@ -27,6 +27,10 @@ def convertCoord(degr_lat, min_lat, lat, degr_lon, min_lon, lon):
     Converts an array of values DD, MM.MMM, (S,N,E,W)
     :return: coordinates in format [DD.DDDD, DD.DDDD]
     """
+    degr_lat = int(degr_lat)
+    min_lat = float(min_lat)
+    degr_lon = int(degr_lon)
+    min_lon  =float(min_lon)
     return [coord_sign[lat] * (degr_lat + min_lat / 60), coord_sign[lon] * (degr_lon + min_lon / 60)]
 
 def calculateTrack(coord1, coord2, units='m'):
