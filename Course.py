@@ -13,8 +13,8 @@ def calculate_course(coords_lab, coords_bridge):
     Works in all hemispheres, but only when lab and bridge are in the
     same hemisphere.
     """
-    coords_lab = parse_input_coords(coords_lab)
-    coords_bridge = parse_input_coords(coords_bridge)
+    coords_lab = parse_coords_from_ddmm_to_dd(coords_lab)
+    coords_bridge = parse_coords_from_ddmm_to_dd(coords_bridge)
     lat_bridge = radians(coords_bridge[0])
     lon_bridge = radians(coords_bridge[2])
     # lat_hemisphere_bridge = coords_bridge[1]
@@ -46,36 +46,47 @@ def calculate_vm_coords(coords_lab: [float, str, float, str], course):
     :param course: degrees
     :return: coordinates of the Videomodule in format DD.DDDDDD, 'N',
     DDD.DDDDDDD, 'N'
-    TODO: work only in N E hemisphere
     """
     DISTANCE_FROM_LAB_TO_VM = 30  # meters
     CORRECTION_ANGLE = 0  # degrees
     R = 6371000
     course = radians(360 - course + CORRECTION_ANGLE)
-    coords_lab = parse_input_coords(coords_lab)
+    coords_lab = parse_coords_from_ddmm_to_dd(coords_lab)
     lat_lab = radians(coords_lab[0])
     lon_lab = radians(coords_lab[2])
-    lat_vm = lat_lab - DISTANCE_FROM_LAB_TO_VM / R * cos(course)
-    delta_fi = lat_vm - lat_lab
+    lat_hemisphere_lab = coords_lab[1]
+    lon_hemisphere_lab = coords_lab[3]
+    delta_fi = DISTANCE_FROM_LAB_TO_VM / R * cos(course)
+    if lat_hemisphere_lab == "S":
+        delta_fi = -delta_fi
+    lat_vm = lat_lab - delta_fi
     delta_psi = log(tan(pi/4 + lat_vm/2) / tan(pi/4 + lat_lab/2))
     if delta_psi > 10e-12:
         q = delta_fi/delta_psi
     else:
         q = cos(lat_lab)
-    lon_vm = lon_lab + DISTANCE_FROM_LAB_TO_VM/R*sin(course)/q
+    delta_lambda = DISTANCE_FROM_LAB_TO_VM/R*sin(course)/q
+    if lat_hemisphere_lab == "S" and lon_hemisphere_lab == "W":
+        delta_lambda = -delta_lambda
+    if lat_hemisphere_lab == "N" and lon_hemisphere_lab == "W":
+        delta_lambda = -delta_lambda
+    if lat_hemisphere_lab == "S":
+        delta_lambda = -delta_lambda
+    lon_vm = lon_lab + delta_lambda
     if abs(lat_vm) > pi/2:
         if lat_vm > 0:
             lat_vm = pi - lat_vm
         else:
             lat_vm = -pi - lat_vm
-    return [degrees(lat_vm), coords_lab[1], degrees(lon_vm), coords_lab[3]]
+    return parse_coords_from_dd_to_ddmm(
+        [degrees(lat_vm), coords_lab[1], degrees(lon_vm), coords_lab[3]])
 
 
-def parse_input_coords(input_coords: [float, str, float, str]):
+def parse_coords_from_ddmm_to_dd(input_coords: [float, str, float, str]):
     """
     :param input_coords: from gps, format DDMM.MMMMMM, 'N'
     :return: coords in format DD.DDDDDD, 'N'
-    where D is degree
+    where D is degree, M is minute.
     """
     latitude = input_coords[0]
     longitude = input_coords[2]
@@ -87,8 +98,22 @@ def parse_input_coords(input_coords: [float, str, float, str]):
             lon_degrees + lon_minutes/60, input_coords[3]]
 
 
+def parse_coords_from_dd_to_ddmm(input_coords: [float, str, float, str]):
+    """
+        :param input_coords: 'my' format DD.DDDDDD, 'N'
+        :return: coords in gps format DDMM.MMMMMM, 'N'
+        where D is degree, M is minute.
+        """
+    latitude = input_coords[0]
+    longitude = input_coords[2]
+
+    return [latitude//1 * 100 + latitude % 1 * 60, input_coords[1],
+            longitude//1 * 100 + longitude % 1 * 60, input_coords[3]]
+
+
 if __name__ == '__main__':
     print("Course is:",
           calculate_course([7300.00000, 'S', 05700.0000, 'E'],
                            [7400.000000, 'S', 05800.00000, 'E']), 'degrees')
-    print(calculate_vm_coords([7300.00000, 'N', 05700.0000, 'W'], 310))
+    # print(calculate_vm_coords([7300.00000, 'S', 05700.0000, 'W'], 45))
+    # print(parse_coords_from_dd_to_ddmm([73.5000000, 'S', 057.500000, 'E'],))
