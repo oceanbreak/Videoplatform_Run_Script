@@ -43,4 +43,4 @@ while True:
     if keldyshGps and sonarGps:
         print('K:', keldyshGps)
         print('S:', sonarGps)
-        print(Course.calculate_course(keldyshGps, sonarGps))
+        print(Course.calculate_course(sonarGps, keldyshGps))
