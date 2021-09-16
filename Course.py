@@ -14,7 +14,7 @@ def calculate_course(coords_lab, coords_bridge):
     Works in all hemispheres, but only when lab and bridge are in the
     same hemisphere.
     """
-    CORRECTION_ANGLE = 0  # degrees
+    CORRECTION_ANGLE = 17  # degrees
     coords_lab = parse_coords_from_ddmm_to_dd(coords_lab)
     coords_bridge = parse_coords_from_ddmm_to_dd(coords_bridge)
     lat_bridge = radians(coords_bridge[0])
@@ -34,7 +34,7 @@ def calculate_course(coords_lab, coords_bridge):
             delta_lambda = -(2*pi - delta_lambda)
         else:
             delta_lambda = 2*pi + delta_lambda
-    course = atan2(delta_lambda, delta_psi) * 180 / pi
+    course = atan2(delta_lambda, delta_psi) * 180 / pi - CORRECTION_ANGLE
     if course < 0:
         course = 360 + course
     return course if lon_hemisphere_lab == 'E' else 360 - course
@@ -52,9 +52,9 @@ def calculate_vm_coords(coords_lab: [float, str, float, str], course):
     DDD.DDDDDDD, 'N'
     """
     DISTANCE_FROM_LAB_TO_VM = 21.89  # meters
-    CORRECTION_ANGLE = 0  # degrees
+    CORRECTION_ANGLE = 7  # degrees
     R = 6371000
-    course = radians(360 - course + CORRECTION_ANGLE)
+    course = radians((course + 180) % 360 - CORRECTION_ANGLE)
     coords_lab = parse_coords_from_ddmm_to_dd(coords_lab)
     lat_lab = radians(coords_lab[0])
     lon_lab = radians(coords_lab[2])
