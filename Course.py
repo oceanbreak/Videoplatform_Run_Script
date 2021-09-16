@@ -63,18 +63,16 @@ def calculate_vm_coords(coords_lab: [float, str, float, str], course):
     delta_fi = DISTANCE_FROM_LAB_TO_VM / R * cos(course)
     if lat_hemisphere_lab == "S":
         delta_fi = -delta_fi
-    lat_vm = lat_lab - delta_fi
+    lat_vm = lat_lab + delta_fi
     delta_psi = log(tan(pi/4 + lat_vm/2) / tan(pi/4 + lat_lab/2))
-    if delta_psi > 10e-12:
+    if abs(delta_psi) > 10e-12:
         q = delta_fi/delta_psi
     else:
         q = cos(lat_lab)
-    delta_lambda = DISTANCE_FROM_LAB_TO_VM/R*sin(course)/q
+    delta_lambda = DISTANCE_FROM_LAB_TO_VM / R * sin(course) / q
     if lat_hemisphere_lab == "S" and lon_hemisphere_lab == "W":
         delta_lambda = -delta_lambda
     if lat_hemisphere_lab == "N" and lon_hemisphere_lab == "W":
-        delta_lambda = -delta_lambda
-    if lat_hemisphere_lab == "S":
         delta_lambda = -delta_lambda
     lon_vm = lon_lab + delta_lambda
     if abs(lat_vm) > pi/2:
