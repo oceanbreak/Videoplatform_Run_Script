@@ -19,11 +19,16 @@ class MainWindow(qtw.QMainWindow):
     This is main window of Ocean Record.
     The init function configures all GUI elements.
     """
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
 
-        # Set main widget
-        self.dataField = qtw.QTextBrowser(text='Hello')
+        # Status flags
+        self._cam_control = False
+
+        # Set central data field
+        self.dataField = qtw.QTextBrowser(text='Setup your input channels in Options - Settings\n' \
+                                        'and click "Connect" button to start')
         self.setCentralWidget(self.dataField)
 
         # Set menu bar
@@ -42,15 +47,26 @@ class MainWindow(qtw.QMainWindow):
         topToolbar.addAction('Start')
         topToolbar.addAction('Reset Track')
         topToolbar.addAction('Set Depth 0')
-        topToolbar.addAction('Cam control')
+        topToolbar.addSeparator()
+        topToolbar.addAction('Cam control', self.toggleCamControl)
 
         # Set Docked camera widget
-        camWidgetDock = qtw.QDockWidget("Cam control")
+        self.camWidgetDock = qtw.QDockWidget("Cam control")
         camWidget = CameraWidget()
-        camWidgetDock.setWidget(camWidget)
-        self.addDockWidget(qtc.Qt.RightDockWidgetArea, camWidgetDock)
+        self.camWidgetDock.setWidget(camWidget)
+        self.addDockWidget(qtc.Qt.RightDockWidgetArea, self.camWidgetDock)
+        self.camWidgetDock.hide()
+
 
         self.show()
+
+    def toggleCamControl(self):
+        if self._cam_control:
+            self.camWidgetDock.hide()
+            self._cam_control = False
+        else:
+            self.camWidgetDock.show()
+            self._cam_control = True
 
 class CameraWidget(qtw.QWidget):
     """
@@ -60,23 +76,52 @@ class CameraWidget(qtw.QWidget):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, *kwargs)
 
-        camConnectButton = qtw.QPushButton("Connect cam")
-        camRecFolderButton = qtw.QPushButton("Set rec folder")
-        camSyncTimeButton = qtw.QPushButton("Sync camera time")
-        camRecButton = qtw.QPushButton("Start SD rec")
-        camFormatButton = qtw.QPushButton("Format SD")
-        camDownloadsButton = qtw.QPushButton("Downloads")
+        # Status flags
+        self._cam_connected = False
+
+        # Setup buttons
+        self.camConnectButton = qtw.QPushButton("Connect cam")
+        self.camRecFolderButton = qtw.QPushButton("Set rec folder", Enabled=False)
+        self.camSyncTimeButton = qtw.QPushButton("Sync camera time", Enabled=False)
+        self.camRecButton = qtw.QPushButton("Start SD rec", Enabled=False)
+        self.camFormatButton = qtw.QPushButton("Format SD", Enabled=False)
+        self.camDownloadsButton = qtw.QPushButton("Downloads", Enabled=False)
+
+        self.camConnectButton.clicked.connect(self.connectCamera)
 
         # self.setLayout(qtw.QVBoxLayout)
         cam_wgt_layout = qtw.QVBoxLayout(self)
-        cam_wgt_layout.addWidget(camConnectButton)
-        cam_wgt_layout.addWidget(camRecFolderButton)
-        cam_wgt_layout.addWidget(camSyncTimeButton)
-        cam_wgt_layout.addWidget(camRecButton)
-        cam_wgt_layout.addWidget(camFormatButton)
-        cam_wgt_layout.addWidget(camDownloadsButton)
-
+        cam_wgt_layout.addWidget(self.camConnectButton)
+        cam_wgt_layout.addWidget(self.camRecFolderButton)
+        cam_wgt_layout.addWidget(self.camSyncTimeButton)
+        cam_wgt_layout.addWidget(self.camRecButton)
+        cam_wgt_layout.addWidget(self.camFormatButton)
+        cam_wgt_layout.addWidget(self.camDownloadsButton)
         self.setLayout(cam_wgt_layout)
+
+    def connectCamera(self):
+        if not self._cam_connected:
+            self.camConnectButton.setText('Disconnect')
+            self._cam_connected = True
+
+            # Enable all buttons
+            self.camRecFolderButton.setEnabled(True)
+            self.camSyncTimeButton.setEnabled(True)
+            self.camRecButton.setEnabled(True)
+            self.camFormatButton.setEnabled(True)
+            self.camDownloadsButton.setEnabled(True)
+
+        else:
+            self.camConnectButton.setText('Connect')
+            self._cam_connected = False
+
+            # Disable buttons
+            self.camRecFolderButton.setEnabled(False)
+            self.camSyncTimeButton.setEnabled(False)
+            self.camRecButton.setEnabled(False)
+            self.camFormatButton.setEnabled(False)
+            self.camDownloadsButton.setEnabled(False)
+
 
 
 if __name__ == '__main__':
