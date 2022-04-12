@@ -5,8 +5,8 @@
 ### Also provides specific elements for controlling 
 ### TUV "Videomodule" data recording and managing.
 ####
-#### Version 0.0
-#### Updated 11.04.2022
+#### Version 0.1
+#### Updated 12.04.2022
 ##############################################################
 
 import sys
@@ -27,7 +27,9 @@ class MainWindow(qtw.QMainWindow):
         self._cam_control = False
 
         # Set central data field
-        self.dataField = qtw.QTextBrowser(text='Setup your input channels in Options - Settings\n' \
+        self.dataField = qtw.QTextBrowser()
+        self.dataField.setFontPointSize(12.0)
+        self.dataField.setText('Setup your input channels in Options - Settings\n' \
                                         'and click "Connect" button to start')
         self.setCentralWidget(self.dataField)
 
@@ -38,19 +40,30 @@ class MainWindow(qtw.QMainWindow):
         options_menu.addSeparator()
         options_menu.addAction('Quit', self.close)
 
-        # Set status bar
+        # Set status bar #####################################################
         self.statusBar().showMessage('Launching Ocean Record v. 0.0', 5000)
 
-        # Set Toolbar
+        # Set Toolbar ########################################################
         topToolbar = self.addToolBar('Edit')
+        topToolbar.setMovable(False) # Hardly tie widget to main window
+
+        # Main action that starts the whole program
         topToolbar.addAction('Connect')
-        topToolbar.addAction('Start')
-        topToolbar.addAction('Reset Track')
-        topToolbar.addAction('Set Depth 0')
+
+        actStart = topToolbar.addAction('Start')
+        actStart.setEnabled(False)
+
+        actReset = topToolbar.addAction('Reset Track')
+        actReset.setEnabled(False)
+
+        actSetDepth0 = topToolbar.addAction('Set Depth 0')
+        actSetDepth0.setEnabled(False)
+
         topToolbar.addSeparator()
+
         topToolbar.addAction('Cam control', self.toggleCamControl)
 
-        # Set Docked camera widget
+        # Set Docked camera widget (hidden by default) ##########################
         self.camWidgetDock = qtw.QDockWidget("Cam control")
         camWidget = CameraWidget()
         self.camWidgetDock.setWidget(camWidget)
