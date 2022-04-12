@@ -5,7 +5,7 @@
 ### Also provides specific elements for controlling 
 ### TUV "Videomodule" data recording and managing.
 ####
-#### Version 0.1
+#### Version 4.9.0.1
 #### Updated 12.04.2022
 ##############################################################
 
@@ -28,7 +28,9 @@ class MainWindow(qtw.QMainWindow):
 
         # Set central data field
         self.dataField = qtw.QTextBrowser()
-        self.dataField.setFontPointSize(12.0)
+        # self.dataField.resize(200,200)
+        self.dataField.setFontPointSize(18.0)
+        # self.dataField.setGeometry(0, 0, 600, 600)
         self.dataField.setText('Setup your input channels in Options - Settings\n' \
                                         'and click "Connect" button to start')
         self.setCentralWidget(self.dataField)
@@ -140,4 +142,5 @@ class CameraWidget(qtw.QWidget):
 if __name__ == '__main__':
     app = qtw.QApplication(sys.argv)
     mainWindow = MainWindow(windowTitle = "Ocean Record")
+    mainWindow.resize(600,300)
     sys.exit(app.exec_())
