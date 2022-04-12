@@ -1,6 +1,7 @@
 """ Module that works with init.cfg files for sonar programs"""
 
 import sys
+import xml.etree.ElementTree as ET
 
 def Get_Init_Parameters(ini_file = 'resources/init.cfg'):
     # By default it takes file "init.cfg" and makes a dictionary of it
@@ -28,6 +29,18 @@ def Get_Init_Parameters(ini_file = 'resources/init.cfg'):
         print("ERROR SonarInit: can not load " + ini_file)
         return 0
 
+class Settings:
+
+    def __init__(self, name):
+        self.name = name
+
+    class Channel:
+        def __init__(self, ch_type):
+            self.ch_type = ch_type
+
+
+
+
 if __name__ == '__main__':
     try:
         print(Get_Init_Parameters())#(sys.argv[1])
@@ -35,3 +48,11 @@ if __name__ == '__main__':
         print("Usage: sonar_init.py <init.cfg>")
 
 
+    # Test XML settings view
+
+    tree = ET.parse('resources/settings.xml')
+    root = tree.getroot()
+    print(root.tag)
+
+    for child in root:
+        print(child.tag, child.attrib)

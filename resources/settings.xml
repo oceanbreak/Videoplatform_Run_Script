@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<settings>
+  <channels>
+    <channel id="1">
+      <name>Depth</name>
+      <type>COM</type>
+      <serial>COM3</serial>
+      <baud_rate>9600</baud_rate>
+      <message>GPGGA</message>
+    </channel>
+    <channel id="2">
+      <name>Navigation</name>
+      <type>TCP</type>
+      <address>192.168.0.125</address>
+      <port>5555</port>
+      <message>GPGGA</message>
+    </channel>
+  </channels>
+  <IP_cam>
+    <address>192.168.0.31</address>
+    <login>admin</login>
+    <password>admin</password>
+  </IP_cam>
+  <work_dir>D:/VIDEOPLATFORM_REC</work_dir>
+  <log_rate>1</log_rate>
+</settings>
