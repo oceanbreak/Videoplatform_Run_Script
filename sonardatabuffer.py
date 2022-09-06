@@ -1,17 +1,17 @@
-import sonarcom, time, sonar_threading
+import sonarcom2, time, sonar_threading
 print("__generate_buffer__\n")
 
 class GenerateBuffer:
-    def __init__(self, com_port, rate, message):
+    def __init__(self, com_port, rate, messages):
         self._com_port = com_port
         self._rate = rate
-        self._message = message
+        self._message = messages
         self._out_message = False
         self._cur_data = None
         try:
-            self._data_line = sonarcom.ComPortData(com_port, rate, 10, message) #CHANGE
+            self._data_line = sonarcom2.ComPortData(com_port, rate, 5, messages) #CHANGE
         except:
-            print("ERROR Sonardatabufer: Cannot generate buffer with %s message" % message)
+            print("ERROR Sonardatabufer: Cannot generate buffer with %s message" % messages)
 
     def write_buffer_entry(self):
         if self._out_message:
@@ -19,7 +19,9 @@ class GenerateBuffer:
             print('"%s" message sent to port %s' % (self._out_message, self._com_port))
             self._out_message = False
         try:
-           cur_string = self._data_line.getOutputData()
+            self._data_line.pullData()
+            cur_string = self._data_line.getOutputData()
+            # print(self._data_line.time_out_timer)
         except:
             cur_string = False
         if cur_string:
@@ -42,9 +44,10 @@ class GenerateBuffer:
         self._out_message = out_message
 
 if __name__ == '__main__':
-    proc1 = GenerateBuffer('COM5', 9600, '--DBS')
+    proc1 = GenerateBuffer('COM12', 9600, ['GGA', 'DBT'])
     proc1.repeat_writing_buffer()
     for  i in range(10):
-        print(proc1.getData())
+        # print(proc1.getData())
+        # print(proc1.getData() is None)
         time.sleep(1)
     proc1.stop_writing_buffer()

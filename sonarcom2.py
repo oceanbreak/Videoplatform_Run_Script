@@ -13,6 +13,7 @@ class ComPortData:
         self._line = ''
         self._input_data = [None] * len(self._keywords) # Initialize array for strings to parse
         self.prog = [] # Initialize compile message for regexp
+        self.time_out_timer = 0
 
         # Program regexp
         for index, keyword in enumerate(self._keywords):
@@ -23,9 +24,9 @@ class ComPortData:
             self._port = serial.Serial(self._port_name, self._port_speed, timeout = self._port_timeout)
             print('SonarCom: ' + self._port_name + ' opened successful')
             # Read all characters before new line
-            temp_char = None
-            while temp_char != b'\n':
-                temp_char = self._port.read()
+            # temp_char = None
+            # while temp_char != b'\n':
+            #     temp_char = self._port.read()
         except serial.SerialException:
             print('ERROR SonarCom: Cannot connect to port ' + self._port_name)
             exit(1)
@@ -36,6 +37,10 @@ class ComPortData:
         if self._port.is_open:
             self._line = self._port.readline().decode('utf-8')
             self._line = self._line.rstrip()
+            if self._line == '':
+                self.time_out_timer += 1
+            else:
+                self.time_out_timer = 0
 
 
     def pullData(self):
@@ -54,7 +59,6 @@ class ComPortData:
         except IndexError:
             return False
 
-
     def getOutputData(self):
         return self._input_data
 
@@ -66,9 +70,9 @@ class ComPortData:
 
 
 if __name__ == '__main__':
-    test_line1 = ComPortData('COM2', 9600, 10, ['GGA', 'MTW'])
+    test_line1 = ComPortData('COM12', 9600, 10, ['GGA', 'MTW'])
     output_data = [None, None]
-    for i in range(10000):
+    for i in range(1000):
         test_line1.pullData()
         data = test_line1.getOutputData()
         can_print = False
