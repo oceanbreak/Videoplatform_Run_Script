@@ -60,6 +60,17 @@ class SonarVideoProgram:
         for buffer in self.buffer_queue:
             buffer.repeat_writing_buffer()
 
+
+        # Data types
+        self.navigation_data = None
+        self.depth_data = None
+        self.altimeter_data = None
+        self.temperature_data = None
+        self.gyro_data = None
+
+        # Data dependencies
+        self.data_sources = {'NAVI' : None, 'DEPTH' : None, 'ALTIMETER' : None, 'TEMP' : None, 'GYRO' : None}
+
         self.scan_dir = None
         self.logging = None
         self._track_length = 0.0

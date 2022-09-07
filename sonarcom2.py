@@ -23,10 +23,7 @@ class ComPortData:
         try:
             self._port = serial.Serial(self._port_name, self._port_speed, timeout = self._port_timeout)
             print('SonarCom: ' + self._port_name + ' opened successful')
-            # Read all characters before new line
-            # temp_char = None
-            # while temp_char != b'\n':
-            #     temp_char = self._port.read()
+
         except serial.SerialException:
             print('ERROR SonarCom: Cannot connect to port ' + self._port_name)
             exit(1)
@@ -44,11 +41,12 @@ class ComPortData:
 
 
     def pullData(self):
-        # Pulls one line from port and stores to input_data if it matches one of keyword
+        # Pulls one line from port and stores to input_data[i] if it matches one of keywords
         self.readFromPort()
         for index, prog in enumerate(self.prog):
             if prog.match(self._line) and self.checksumOk():
-                self._input_data[index] = self._line
+                # Return nmea string without $ and checksum
+                self._input_data[index] = self._line[1:-3]
 
 
     def checksumOk(self):

@@ -31,6 +31,30 @@ def generateFileName(prefix = 'log', extension = 'txt'):
     return prefix + '_' + date_str + '_' + time_str + '.' + extension
 
 
+def parseNMEA(nmea_string):
+    """
+    The function parses nmea string without heading $ sign
+    """
+    if nmea_string is None:
+        return "NO DATA"
+    try:
+        nmea_string = nmea_string.split(',')
+        if nmea_string[0][-3:] == "GGA":
+            return tuple([nmea_string[2][:2], nmea_string[2][2:],
+                                        nmea_string[3],
+                                        nmea_string[4][:3], nmea_string[4][3:],
+                                        nmea_string[5]])
+        if nmea_string[0][-3:] == "DBT":
+            return tuple([nmea_string[3], nmea_string[4]])
+        if nmea_string[0][-3:] == "DBS":
+            return tuple([nmea_string[3], nmea_string[4]])
+        if nmea_string[0][-3:] == "MTW":
+            return tuple([nmea_string[1], nmea_string[2]])
+    except:
+        return "NO DATA"
+
+
+
 if __name__ == '__main__':
     for  i in range(10):
         data = 'This line number is %s \n' % i

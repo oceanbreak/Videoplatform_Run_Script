@@ -29,6 +29,9 @@ def Get_Init_Parameters(ini_file = 'resources/init.cfg'):
         print("ERROR SonarInit: can not load " + ini_file)
         return 0
 
+def getCOMlist():
+    pass
+
 class Settings:
 
     def __init__(self, name):
@@ -50,9 +53,9 @@ if __name__ == '__main__':
 
     # Test XML settings view
 
-    tree = ET.parse('resources/settings.xml')
-    root = tree.getroot()
-    print(root.tag)
+    # tree = ET.parse('resources/settings.xml')
+    # root = tree.getroot()
+    # print(root.tag)
 
-    for child in root:
-        print(child.tag, child.attrib)
+    # for child in root:
+    #     print(child.tag, child.attrib)

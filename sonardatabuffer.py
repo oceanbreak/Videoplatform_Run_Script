@@ -1,13 +1,14 @@
 import sonarcom2, time, sonar_threading
+from Utils import parseNMEA
 print("__generate_buffer__\n")
 
 class GenerateBuffer:
-    def __init__(self, com_port, rate, messages):
+    def __init__(self, com_port, rate, messages, markers=None):
         self._com_port = com_port
         self._rate = rate
-        self._message = messages
+        self.markers = maskers if markers is not None else [None] * len(messages)
         self._out_message = False
-        self._cur_data = None
+        self._cur_data = [None] * len(messages)
         try:
             self._data_line = sonarcom2.ComPortData(com_port, rate, 5, messages) #CHANGE
         except:
@@ -25,7 +26,7 @@ class GenerateBuffer:
         except:
             cur_string = False
         if cur_string:
-            print(time.asctime() + ':\t' + str(cur_string))
+            # print(time.asctime() + ':\t' + str(cur_string))
             self._cur_data = cur_string
 
 
@@ -38,16 +39,27 @@ class GenerateBuffer:
         self._data_line.closePort()
 
     def getData(self):
-        return self._cur_data
+        return  self._cur_data
+
+    def getLabeledData(self):
+        for marker, data in zip(self.markers, self._cur_data):
+            return (marker, data)
 
     def send_message(self, out_message):
         self._out_message = out_message
 
+
 if __name__ == '__main__':
-    proc1 = GenerateBuffer('COM12', 9600, ['GGA', 'DBT'])
+    proc1 = GenerateBuffer('COM2', 9600, ['DBT', 'GGA', 'MTW'])
     proc1.repeat_writing_buffer()
     for  i in range(10):
-        # print(proc1.getData())
+        data = proc1.getData()
+        print(data)
+        # if data is not None:
+        #     for nmea_string in data:
+        #         # print(nmea_string)
+        #         print(parseNMEA(nmea_string))
+        # print(proc1.getLabeledData())
         # print(proc1.getData() is None)
         time.sleep(1)
     proc1.stop_writing_buffer()
