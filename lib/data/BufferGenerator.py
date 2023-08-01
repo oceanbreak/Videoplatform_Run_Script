@@ -1,4 +1,4 @@
-import lib.ComPortData as ComPortData, time, sonar_threading
+import lib.data.ComPortData as ComPortData, time, lib.data.sonar_threading as sonar_threading
 print("__generate_buffer__\n")
 
 class BufferGenerator:

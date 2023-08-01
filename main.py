@@ -1,5 +1,5 @@
-from lib.ComPortData import ComPortData
-from lib.BufferGenerator import BufferGenerator
+from lib.data.ComPortData import ComPortData
+from lib.data.BufferGenerator import BufferGenerator
 import time
 
 if __name__ == '__main__':

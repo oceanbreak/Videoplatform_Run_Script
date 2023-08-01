@@ -1,5 +1,0 @@
-IP камера
-rtsp://admin:admin@192.168.0.31:554/h264
-
-Видеорегистратор, 1 канал (менять число после "channel" для отальных каналов)
-rtsp://192.168.0.36:554/user=admin&password=&channel=2&stream=0.sdp?.

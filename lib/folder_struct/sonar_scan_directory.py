@@ -1,5 +1,5 @@
-import os, subprocess, sys, sonar_img_caption, time
-from sonarlogname import generateFileName
+import os, subprocess, sys, lib.folder_struct.sonar_img_caption as sonar_img_caption, time
+from lib.folder_struct.sonarlogname import generateFileName
 
 def scanDir(file_path = './', snaphot_text = generateFileName('SNAP')):
     #Initialize list

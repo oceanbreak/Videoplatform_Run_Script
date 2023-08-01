@@ -5,11 +5,11 @@ update 4.3:
     - added reset zero depth function
 """
 
-import time, os, sonar_init, sonar_gui, lib.BufferGenerator as BufferGenerator, requests, sonar_img_caption
+import time, os, lib.folder_struct.sonar_init as sonar_init, lib.UI.sonar_gui as sonar_gui, lib.BufferGenerator as BufferGenerator, requests, lib.folder_struct.sonar_img_caption as sonar_img_caption
 from threading import Thread
 from tkinter import filedialog
-from Utils import *
-from sonar_track_length import *
+from lib.folder_struct.Utils import *
+from lib.calculations.sonar_track_length import *
 import sonarcom
 
 
