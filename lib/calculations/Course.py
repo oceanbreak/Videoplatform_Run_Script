@@ -113,6 +113,9 @@ def parse_coords_from_dd_to_ddmm(input_coords: [float, str, float, str]):
             longitude//1 * 100 + longitude % 1 * 60, input_coords[3]]
 
 
+
+
+
 if __name__ == '__main__':
     print("Course is:",
           calculate_course([7300.00000, 'N', 05700.0000, 'E'],

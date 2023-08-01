@@ -1,4 +1,6 @@
-import lib.data.ComPortData as ComPortData, time, lib.data.sonar_threading as sonar_threading
+import lib.data.ComPortData as ComPortData
+import time
+import lib.data.SonarThread as SonarThread
 print("__generate_buffer__\n")
 
 class BufferGenerator:
@@ -30,7 +32,7 @@ class BufferGenerator:
 
 
     def repeat_writing_buffer(self):
-        self.proc_buffer = sonar_threading.SonarThread(self.write_buffer_entry)
+        self.proc_buffer = SonarThread.SonarThread(self.write_buffer_entry)
         self.proc_buffer.start()
 
     def stop_writing_buffer(self):
