@@ -5,7 +5,7 @@ update 4.3:
     - added reset zero depth function
 """
 
-import time, os, sonar_init, sonar_gui, sonardatabuffer, requests, sonar_img_caption
+import time, os, sonar_init, sonar_gui, lib.BufferGenerator as BufferGenerator, requests, sonar_img_caption
 from threading import Thread
 from tkinter import filedialog
 from Utils import *
@@ -75,7 +75,7 @@ class SonarVideoProgram:
         port, rate, message = data_type + '_PORT', \
                               data_type + '_RATE', \
                               data_type + '_MESSAGE'
-        return sonardatabuffer.GenerateBuffer(self.init_parameters[port],
+        return BufferGenerator.BufferGenerator(self.init_parameters[port],
                                               self.init_parameters[rate],
                                               self.init_parameters[message])
 

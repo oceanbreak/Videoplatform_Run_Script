@@ -1,7 +1,7 @@
-import sonarcom2, time, sonar_threading
+import lib.ComPortData as ComPortData, time, sonar_threading
 print("__generate_buffer__\n")
 
-class GenerateBuffer:
+class BufferGenerator:
     def __init__(self, com_port, rate, messages):
         self._com_port = com_port
         self._rate = rate
@@ -9,7 +9,7 @@ class GenerateBuffer:
         self._out_message = False
         self._cur_data = None
         try:
-            self._data_line = sonarcom2.ComPortData(com_port, rate, 5, messages) #CHANGE
+            self._data_line = ComPortData.ComPortData(com_port, rate, 5, messages) #CHANGE
         except:
             print("ERROR Sonardatabufer: Cannot generate buffer with %s message" % messages)
 
@@ -44,7 +44,7 @@ class GenerateBuffer:
         self._out_message = out_message
 
 if __name__ == '__main__':
-    proc1 = GenerateBuffer('COM12', 9600, ['GGA', 'DBT'])
+    proc1 = BufferGenerator('COM4', 9600, ['GGA', 'DBS'])
     proc1.repeat_writing_buffer()
     for  i in range(10):
         # print(proc1.getData())
