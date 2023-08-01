@@ -43,11 +43,11 @@ class ComPortData:
                 self.time_out_timer = 0
 
 
-    def pullData(self, ignore_checksum=True):
+    def pullData(self):
         # Pulls one line from port and stores to input_data if it matches one of keyword
         self.readFromPort()
         for index, prog in enumerate(self.prog):
-            if prog.match(self._line) and (self.checksumOk() or ignore_checksum):
+            if prog.match(self._line) and self.checksumOk():
                 self._input_data[index] = self._line
 
 
@@ -70,7 +70,7 @@ class ComPortData:
 
 
 if __name__ == '__main__':
-    test_line1 = ComPortData('COM4', 9600, 10, ['DBS'])
+    test_line1 = ComPortData('COM12', 9600, 10, ['GGA', 'MTW'])
     output_data = [None, None]
     for i in range(1000):
         test_line1.pullData()
