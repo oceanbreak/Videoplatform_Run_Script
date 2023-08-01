@@ -43,11 +43,11 @@ class ComPortData:
                 self.time_out_timer = 0
 
 
-    def pullData(self):
+    def pullData(self, ignore_chksm=True):
         # Pulls one line from port and stores to input_data if it matches one of keyword
         self.readFromPort()
         for index, prog in enumerate(self.prog):
-            if prog.match(self._line) and self.checksumOk():
+            if prog.match(self._line) and (self.checksumOk() or ignore_chksm):
                 self._input_data[index] = self._line
 
 

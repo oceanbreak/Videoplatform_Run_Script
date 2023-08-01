@@ -47,6 +47,6 @@ class DepthData:
         self.depth = depth
 
     def __str__(self):
-        return f'{0>.2:self.depth} m'
+        return f'{self.depth:.2f} m'
 
 
