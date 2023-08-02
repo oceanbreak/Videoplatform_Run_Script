@@ -1,3 +1,7 @@
+"""
+Module to parse NMEA strings
+into values"""
+
 import numpy as np
 from lib.data.DataStructure import *
 from lib.calculations.CoordinateCalc import convertCoordtoDeg
@@ -18,10 +22,13 @@ class NmeaParser:
         return: <CoordinatesData> object
         """
         items = nmea_string.split(',')
-        latval = float(items[2])
-        lonval = float(items[4])
-        latsign = items[3]
-        lonsign = items[5]
+        try:
+            latval = float(items[2])
+            lonval = float(items[4])
+            latsign = items[3]
+            lonsign = items[5]
+        except ValueError:
+            return None
 
         lat_degrees = latval//100
         lon_degrees = lonval//100
@@ -31,13 +38,30 @@ class NmeaParser:
         lattitude = self.coord_sign[latsign] * (lat_degrees + lat_minutes/60)
         longtitude = self.coord_sign[lonsign] * (lon_degrees + lon_minutes/60)
 
-        coord = CoordinatesData(lattitude, longtitude)
+        return CoordinatesData(lattitude, longtitude)
 
-        return coord
     
     def parseDBS(self, nmea_string : str):
+
         items = nmea_string.split(',')
-        
+
+        try:
+            value = float(items[3])
+            return DepthData(value)
+        except ValueError:
+            return None
+    
+
+    def parseDBT(self, nmea_string : str):
+        items = nmea_string.split(',')
+        try:
+            value = float(items[3])
+            return DepthData(value)
+        except ValueError:
+            return None
+
+
+
 
 
     

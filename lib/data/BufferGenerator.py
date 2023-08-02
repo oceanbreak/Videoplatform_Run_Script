@@ -24,7 +24,7 @@ class BufferGenerator:
             self._data_line.pullData()
             cur_string = self._data_line.getOutputData()
             # print(self._data_line.time_out_timer)
-        except:
+        except IndexError:
             cur_string = False
         if cur_string:
             print(time.asctime() + ':\t' + str(cur_string))
