@@ -49,7 +49,6 @@ class SonarVideoProgram:
     init_parameters = sonar_init.Get_Init_Parameters()
     button_change_dir_text = init_parameters['DEFAULT_FOLDER']
 
-
     def __init__(self):
         self._is_running = False
         self._record_folder_path = self.init_parameters['DEFAULT_FOLDER']
@@ -61,7 +60,7 @@ class SonarVideoProgram:
         self.SonarGui.master.maxsize(600, 300)
 
         # self.buffer_type_list = ('NAVI', 'DEPTH', 'ALTIMETER' )
-        self.buffer_type_list = ['NAVI']
+        self.buffer_type_list = ('NAVI', 'DEPTH', 'ALTIMETER')
         self.buffer_queue = [self.spanBuffer(x) for x in self.buffer_type_list]
         for buffer in self.buffer_queue:
             buffer.repeat_writing_buffer()

@@ -2,8 +2,12 @@
 transforms it into format DD.DDDDDD (Lat/Lon) and generates comma separated .dat file for surfer
 Also calculates distance between coordinates"""
 
-import sys, os
+
 from math import radians, cos, sin, asin, sqrt
+
+#Gives output data proper sign
+coord_sign = {'N':1, 'S':-1, 'E':1, 'W':-1}
+
 
 def haversine(coord_a, coord_b):
     """
@@ -21,8 +25,7 @@ def haversine(coord_a, coord_b):
     r = 6371 # Radius of earth in kilometers. Use 3956 for miles
     return c * r * 1000 # in meters
 
-#Gives output data proper sign
-coord_sign = {'N':1, 'S':-1, 'E':1, 'W':-1}
+
 
 def convertCoordString(coord_string):
     """
@@ -38,7 +41,7 @@ def convertCoordString(coord_string):
     degr_lon, min_lon, sign_lon = int(lon[0:3]), float(lon[4:11]), int(coord_sign[lon[12]])
     return [sign_lat * (degr_lat + min_lat / 60), sign_lon * (degr_lon + min_lon / 60)]
 
-def convertCoord(degr_lat, min_lat, lat, degr_lon, min_lon, lon):
+def convertCoordtoDeg(degr_lat, min_lat, lat, degr_lon, min_lon, lon):
     """
     Converts an array of values DD, MM.MMM, (S,N,E,W)
     :return: coordinates in format [DD.DDDD, DD.DDDD]
@@ -49,6 +52,22 @@ def convertCoord(degr_lat, min_lat, lat, degr_lon, min_lon, lon):
     min_lon  =float(min_lon)
     return [coord_sign[lat] * (degr_lat + min_lat / 60), coord_sign[lon] * (degr_lon + min_lon / 60)]
 
+def convertCoordtoDM(lat, lon):
+    letter_lat = 'N' if lat > 0.0 else 'S'
+    letter_lon = 'E' if lon > 0.0 else 'W'
+
+    lat = abs(lat)
+    lon = abs(lon)
+
+    degr_lat = lat // 1
+    min_lat = lat % 1 * 60
+
+    degr_lon = lon // 1
+    min_lon = lon % 1 * 60
+
+    return (degr_lat, min_lat, letter_lat, degr_lon, min_lon, letter_lon)
+    
+
 def calculateTrack(coord1, coord2, units='m'):
     if units == 'm':
         return haversine(coord1, coord2)
@@ -56,7 +75,7 @@ def calculateTrack(coord1, coord2, units='m'):
         return haversine(coord1, coord2)/1800
 
 if __name__ == '__main__':
-    c_a = convertCoord("78 09.1843'N, 116 37.6358'E")
-    c_b = convertCoord("78 06.1843'N, 115 37.6358'E")
+    c_a = convertCoordtoDeg("78 09.1843'N, 116 37.6358'E")
+    c_b = convertCoordtoDeg("78 06.1843'N, 115 37.6358'E")
     print(c_a, c_b)
     print(calculateTrack(c_a, c_b))
