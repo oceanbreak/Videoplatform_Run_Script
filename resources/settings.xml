@@ -1,26 +1,56 @@
-<?xml version="1.0"?>
 <settings>
+
+  <common>
+    <folder>D:/VIDEOPLATFORM_REC</folder>
+  </common>
+
   <channels>
-    <channel id="1">
+    <channel id="NAVI">
+      <enabled>1</enabled>
       <name>Depth</name>
-      <type>COM</type>
-      <serial>COM3</serial>
+      <serial>COM13</serial>
       <baud_rate>9600</baud_rate>
-      <message>GPGGA</message>
+      <message>GGA</message>
     </channel>
-    <channel id="2">
-      <name>Navigation</name>
-      <type>TCP</type>
-      <address>192.168.0.125</address>
-      <port>5555</port>
-      <message>GPGGA</message>
+
+    <channel id="DEPTH">
+      <enabled>1</enabled>
+      <name>Depth</name>
+      <serial>COM4</serial>
+      <baud_rate>9600</baud_rate>
+      <message>DBS</message>
     </channel>
+
+    <channel id="ALT">
+      <enabled>1</enabled>
+      <name>Altimeter</name>
+      <serial>COM4</serial>
+      <baud_rate>57600</baud_rate>
+      <message>DBT</message>
+    </channel>
+
+    <channel id="TEMP">
+      <enabled>0</enabled>
+      <name>Temperature</name>
+      <serial>COM2</serial>
+      <baud_rate>9600</baud_rate>
+      <message>MTW</message>
+    </channel>
+    
+    <channel id="INCLIN">
+      <enabled>0</enabled>
+      <name>Inclinometer</name>
+      <serial>COM4</serial>
+      <baud_rate>9600</baud_rate>
+      <message />
+    </channel>
+
   </channels>
-  <IP_cam>
-    <address>192.168.0.31</address>
+
+  <IP_camera>
+    <URL>http://192.168.0.31</URL>
     <login>admin</login>
     <password>admin</password>
-  </IP_cam>
-  <work_dir>D:/VIDEOPLATFORM_REC</work_dir>
-  <log_rate>1</log_rate>
+  </IP_camera>
+
 </settings>
