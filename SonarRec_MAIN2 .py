@@ -46,7 +46,7 @@ def bufferCoordFormat(input_list):
 
 class SonarVideoProgram:
 
-    init_parameters = sonar_init.Get_Init_Parameters()
+    init_parameters = sonar_init.getInitParameters()
     button_change_dir_text = init_parameters['DEFAULT_FOLDER']
 
     def __init__(self):
