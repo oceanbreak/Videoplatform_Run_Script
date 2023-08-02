@@ -27,7 +27,7 @@ class BufferGenerator:
         except IndexError:
             cur_string = False
         if cur_string:
-            print(time.asctime() + ':\t' + str(cur_string))
+            # print(time.asctime() + ':\t' + str(cur_string))
             self._cur_data = cur_string
 
 
