@@ -3,7 +3,7 @@ from lib.data.BufferGenerator import BufferGenerator
 import time
 from lib.data.DataStructure import CoordinatesData, DepthData
 from lib.data.NmeaParser import NmeaParser
-from lib.folder_struct.sonar_init import Settings
+from lib.folder_struct.Settings import Settings
 
 
 global_settings = Settings()

@@ -7,7 +7,6 @@
   <channels>
     <channel id="NAVI">
       <enabled>1</enabled>
-      <name>Depth</name>
       <serial>COM13</serial>
       <baud_rate>9600</baud_rate>
       <message>GGA</message>
@@ -15,7 +14,6 @@
 
     <channel id="DEPTH">
       <enabled>1</enabled>
-      <name>Depth</name>
       <serial>COM4</serial>
       <baud_rate>9600</baud_rate>
       <message>DBS</message>
@@ -23,26 +21,23 @@
 
     <channel id="ALT">
       <enabled>1</enabled>
-      <name>Altimeter</name>
-      <serial>COM4</serial>
+      <serial>COM3</serial>
       <baud_rate>57600</baud_rate>
       <message>DBT</message>
     </channel>
 
     <channel id="TEMP">
       <enabled>0</enabled>
-      <name>Temperature</name>
-      <serial>COM2</serial>
+      <serial>COM3</serial>
       <baud_rate>9600</baud_rate>
       <message>MTW</message>
     </channel>
     
     <channel id="INCLIN">
-      <enabled>0</enabled>
-      <name>Inclinometer</name>
-      <serial>COM4</serial>
+      <enabled>1</enabled>
+      <serial>COM6</serial>
       <baud_rate>9600</baud_rate>
-      <message />
+      <message></message>
     </channel>
 
   </channels>

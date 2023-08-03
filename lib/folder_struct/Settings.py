@@ -14,19 +14,19 @@ class ComPortSettings:
     """
 
     def __init__(self):
-        self.__enable = False
+        self.enable = False
         self.port = None
         self.rate = None
         self.message = None
 
     def enable(self):
-        self.__enable = True
+        self.enable = True
 
     def disable(self):
-        self.__enable = False
+        self.enable = False
 
     def is_enabled(self):
-        return self.__enable
+        return self.enable
 
     def set_port(self, index : int):
         self.port = f'COM{index}'
@@ -38,14 +38,13 @@ class ComPortSettings:
         self.message = message
 
 
-
-
 class CameraSettings:
 
     def __init__(self):
         self.URL = None
         self.login = None
         self.password = None
+
 
 class Settings:
     """
@@ -59,8 +58,14 @@ class Settings:
         self.temp_port = ComPortSettings()
         self.camera_settings = None
         self.default_folder = None
+        self.config_file = 'resources/settings.xml'
 
-        self.config_file = 'resources/init.cfg'
+    def ports_as_array(self):
+        return (self.navi_port,
+                self.depth_port,
+                self.altimeter_port,
+                self.inclin_port,
+                self.temp_port)
 
     def readInitParamsDictionary(self):
         # By default it takes file "init.cfg" and makes a dictionary of it
@@ -81,6 +86,21 @@ class Settings:
         except IOError:
             print("ERROR SonarInit: can not load " + ini_file)
             return 0
+
+
+    def readSettings(self):
+        # Read settings from XML file
+        tree = ET.parse(self.config_file)
+        root = tree.getroot()
+        for chan in root.iter('channel'):
+            # Read all
+            for keyword, port_obj in zip(data_keywords.as_array, self.ports_as_array()):
+                if chan.attrib['id'] == keyword:
+                    port_obj.enable = int(chan[0].text)
+                    port_obj.port = str(chan[1].text)
+                    port_obj.rate = int(chan[2].text)
+                    port_obj.message = str(chan[3].text)
+
 
 
 

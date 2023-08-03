@@ -8,11 +8,14 @@ from lib.calculations.CoordinateCalc import convertCoordtoDM
 class data_keywords:
 
     #Enums
-    NAVI = "NANI"
+    NAVI = "NAVI"
     DEPTH = "DEPTH"
-    ALTIMETER = "ALTIMETER"
+    ALTIMETER = "ALT"
     INCLIN = "INCLIN"
     TEMP = "TEMP"
+    
+    # As array:
+    as_array = (NAVI, DEPTH, ALTIMETER, INCLIN, TEMP)
     
 
 

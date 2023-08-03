@@ -7,7 +7,7 @@ update 4.3:
 
 import time
 import os
-import lib.folder_struct.sonar_init as sonar_init
+import lib.folder_struct.Settings as Settings
 import lib.UI.sonar_gui as sonar_gui
 from lib.data.BufferGenerator import BufferGenerator
 import requests
@@ -46,7 +46,7 @@ def bufferCoordFormat(input_list):
 
 class SonarVideoProgram:
 
-    init_parameters = sonar_init.getInitParameters()
+    init_parameters = Settings.getInitParameters()
     button_change_dir_text = init_parameters['DEFAULT_FOLDER']
 
 
