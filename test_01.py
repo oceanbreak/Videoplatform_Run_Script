@@ -22,9 +22,16 @@ for chan in root.iter('channel'):
         chan[2].text = 'COM10'
         # print(chan.items)
 
-for chan in root.iter('channel'):
-    if chan.attrib['id'] == 'TEMP':
-        for item in chan:
-            print(item.text)
 
-tree.write('resources/settings.xml')
+for l in root.iter('common'):
+    print(l[0].tag, l[0].text)
+
+
+for l in root.iter('IP_camera'):
+    for a in l:
+        print(a.tag, a.text)
+# a = root.findall('IP_camera')
+# for item in a:
+#     print(item.attrib, item.text)
+# # print(a[0].text)
+

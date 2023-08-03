@@ -2,6 +2,8 @@ from lib.folder_struct.Settings import Settings
 
 settings = Settings()
 settings.readSettings()
+print(settings)
+settings.writeSettings()
 
 
 ports = {'NAVI' : 'COM1', "DEPTH" : "COM2", "ALT" : "COM3", "TEMP" : "COM3"}
