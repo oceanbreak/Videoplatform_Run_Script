@@ -68,19 +68,24 @@ class InclinParser:
 
     def parse(self, word):
 
-        pitch_sign = self.sign[word[8]]
-        pitch_val = float(word[9:12] + '.' + word[12:14])
-        pitch = pitch_sign * pitch_val
+        try:
 
-        roll_sign = self.sign[word[14]]
-        roll_val = float(word[15:18] + '.' +  word[18:20])
-        roll = roll_sign * roll_val      
+            pitch_sign = self.sign[word[8]]
+            pitch_val = float(word[9:12] + '.' + word[12:14])
+            pitch = pitch_sign * pitch_val
 
-        head_sign = self.sign[word[20]]
-        head_val = float(word[21:24] + '.' +  word[24:26])
-        head = head_sign * head_val
+            roll_sign = self.sign[word[14]]
+            roll_val = float(word[15:18] + '.' +  word[18:20])
+            roll = roll_sign * roll_val      
 
-        return InclinometerData(pitch, roll, head)
+            head_sign = self.sign[word[20]]
+            head_val = float(word[21:24] + '.' +  word[24:26])
+            head = head_sign * head_val
+
+            return InclinometerData(pitch, roll, head)
+        
+        except (IndexError, ValueError):
+            return None
 
 
 
