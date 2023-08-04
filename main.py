@@ -68,6 +68,6 @@ try:
     #     time.sleep(1)
 finally:
     proc1.stop_writing_buffer()
-    # proc2.stop_writing_buffer()
-    # proc3.stop_writing_buffer()
+    proc2.stop_writing_buffer()
+    proc3.stop_writing_buffer()
 
