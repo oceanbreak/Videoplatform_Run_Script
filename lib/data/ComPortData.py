@@ -3,9 +3,11 @@ Module provides access to COM port with NMEA data and parses string with needed 
 """
 import serial, re, operator
 from functools import reduce
-from lib.data.DataStructure import NMEAstring
+from lib.data.DataStructure import ComPortString
+import time
 
 class ComPortData:
+
     def __init__(self, port_name, port_speed, port_timeout, messages, keywords):
         self._port_name = port_name
         self._port_speed = port_speed
@@ -14,8 +16,11 @@ class ComPortData:
         self.__keywords = keywords
         self._line = ''
         self._input_data = [None] * len(self.__messages) # Initialize array for strings to parse
+        self._prev_data = [None] * len(self.__messages)
         self.prog = [] # Initialize compile message for regexp
         self.time_out_timer = 0
+        self.same_data_timestamp = [time.time()] * len(self.__messages) # Timestamp for tracking unchanged data
+
 
         # Program regexp
         for index, message in enumerate(self.__messages):
@@ -25,10 +30,7 @@ class ComPortData:
         try:
             self._port = serial.Serial(self._port_name, self._port_speed, timeout = self._port_timeout)
             print('SonarCom: ' + self._port_name + ' opened successful')
-            # Read all characters before new line
-            # temp_char = None
-            # while temp_char != b'\n':
-            #     temp_char = self._port.read()
+
         except serial.SerialException:
             print('ERROR SonarCom: Cannot connect to port ' + self._port_name)
             exit(1)
@@ -38,11 +40,13 @@ class ComPortData:
         # Function reads one line from port and stores it into self_line var
         if self._port.is_open:
             self._line = self._port.readline().decode('utf-8')
-            self._line = self._line.rstrip()
-            if self._line == '':
-                self.time_out_timer += 1
+            # If tmeout, set timer
+            if not self._line:
+                self.time_out_timer = 1
             else:
                 self.time_out_timer = 0
+
+            self._line = self._line.rstrip()
 
 
     def pullData(self, ignore_chksm=True):
@@ -51,6 +55,10 @@ class ComPortData:
         for index, prog in enumerate(self.prog):
             if prog.match(self._line) and (self.checksumOk() or ignore_chksm):
                 self._input_data[index] = self._line
+                self.same_data_timestamp[index] = time.time()
+
+            if self.time_out_timer > 0:
+                self._input_data[index] = None
 
 
     def checksumOk(self):
@@ -61,11 +69,19 @@ class ComPortData:
         except IndexError:
             return False
 
+
     def getOutputData(self):
         # Return as NMEAString objects
         ret = []
+
+        # Check if data has changed
+        for index in range(len(self._input_data)):
+            if time.time() - self.same_data_timestamp[index] > self._port_timeout:
+                self._input_data[index] = None
+            # print(f'Data [{index} timer difference: {time.time() - self.same_data_timestamp[index]}]')
+
         for kw, string in zip(self.__keywords, self._input_data):
-            ret.append(NMEAstring(kw, string))
+            ret.append(ComPortString(kw, string))
         return ret
 
     def sendMessage(self, message):

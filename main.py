@@ -29,7 +29,7 @@ try:
     proc2.repeat_writing_buffer()
     proc3.repeat_writing_buffer()
 
-    for i in range(30):
+    while(True):
         b1 = proc1.getData()
         b2 = proc2.getData()
         b3 = proc3.getData()
@@ -60,7 +60,7 @@ try:
         #         print(c.keyword, altimeter)
 
 
-        time.sleep(1)
+        time.sleep(0.1)
 
     # for  i in range(10):
     #     # print(proc1.getData())

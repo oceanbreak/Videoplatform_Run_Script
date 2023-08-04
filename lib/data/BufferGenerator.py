@@ -1,5 +1,6 @@
 from lib.data.SonarThread import SonarThread
 from lib.data.ComPortData import ComPortData
+from lib.data.DataStructure import ComPortString
 import time
 print("__generate_buffer__\n")
 

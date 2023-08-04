@@ -77,8 +77,8 @@ class InclinometerData:
         self.roll = roll
         self.heading = heading
 
-class NMEAstring:
-    # NMEA String with keyword
+class ComPortString:
+    # NMEA String or Inclinometer string with keyword
 
     def __init__(self, keyword, string):
         self.keyword = keyword
