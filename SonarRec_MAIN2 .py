@@ -7,7 +7,7 @@ update 4.3:
 
 import time
 import os
-import lib.folder_struct.Settings as Settings
+from lib.folder_struct.Settings import Settings
 import lib.UI.sonar_gui as sonar_gui
 from lib.data.BufferGenerator import BufferGenerator
 import requests
@@ -46,17 +46,15 @@ def bufferCoordFormat(input_list):
 
 class SonarVideoProgram:
 
-    init_parameters = Settings.getInitParameters()
-    button_change_dir_text = init_parameters['DEFAULT_FOLDER']
 
     def __init__(self):
         self._is_running = False
-        self._record_folder_path = self.init_parameters['DEFAULT_FOLDER']
-        self._camera_IP = self.init_parameters['CAM_URL']
-        self._login_pass =  (self.init_parameters['CAM_LOGIN'], self.init_parameters['CAM_PASSWORD'])
+        self.__global_settings = Settings()
+        self.__global_settings.readSettings()
+
         self.root = sonar_gui.Tk()
         self.SonarGui = sonar_gui.Application(master=self.root)
-        self.SonarGui.master.title("OCEAN RECORD v. 4.3.1")
+        self.SonarGui.master.title("OCEAN RECORD v. 4.9.9")
         self.SonarGui.master.maxsize(600, 300)
 
         # self.buffer_type_list = ('NAVI', 'DEPTH', 'ALTIMETER' )

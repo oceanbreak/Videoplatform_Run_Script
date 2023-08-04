@@ -32,7 +32,7 @@ class CoordinatesData:
         """
         self.lat = lat
         self.lon = lon
-        self.keyword = data_keywords.NAVI
+        # self.keyword = data_keywords.NAVI
 
     def __str__(self):
         return f'{self.lat}, {self.lon}'
@@ -42,32 +42,42 @@ class CoordinatesData:
 
     def deg_min(self):
         return convertCoordtoDM(self.lat, self.lon)
+    
+    def toDisplayText(self):
+        degr_lat, min_lat, letter_lat, degr_lon, min_lon, letter_lon = self.deg_min()
+        return f"{degr_lat} {min_lat:.3f}'{letter_lat}, {degr_lon} {min_lat:.3f}'{letter_lon}"
 
 
 class DepthData:
 
     def __init__(self, depth : float):
         self.depth = depth
-        self.keyword = data_keywords.DEPTH
+        # self.keyword = data_keywords.DEPTH
 
     def value(self):
         return self.depth
 
     def __str__(self):
         return f'Depth range: {self.depth:.1f} m'
+    
+    def toDisplayText(self):
+        return f'{self.depth:.1f} m'
 
     
-class TemeratureData:
+class TemperatureData:
 
     def __init__(self, temp):
         self.temp = temp
-        self.keyword = data_keywords.DEPTH
+        # self.keyword = data_keywords.DEPTH
 
     def value(self):
         return self.temp
     
     def __str__(self):
         return f'Temp: {self.temp:.1f}'
+    
+    def toDisplayText(self):
+        return f'{self.temp:.1f} C'
     
 
 class InclinometerData:
@@ -79,6 +89,9 @@ class InclinometerData:
 
     def __str__(self):
         return f'Pitch: {self.pitch}, Roll: {self.roll}, Heading: {self.heading}'
+    
+    def toDisplayText(self):
+        return self.__str__()
 
 class ComPortString:
     # NMEA String or Inclinometer string with keyword
