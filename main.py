@@ -1,5 +1,5 @@
 from lib.data.ComPortData import ComPortData
-from lib.data.BufferGenerator import BufferGenerator
+from lib.data.BufferGenerator import BufferGenerator, BufferConcatinator
 import time
 from lib.data.DataStructure import CoordinatesData, DepthData
 from lib.data.NmeaParser import NmeaParser
@@ -20,43 +20,46 @@ try:
     a = DepthData(17.642)
     print(a)
 
-    proc1 = BufferGenerator('COM13', 9600, ['DBS', 'GGA', "DBT"])
-    # proc2 = BufferGenerator('COM13', 9600, ['GGA'])
-    # proc3 = BufferGenerator('COM13', 9600, ['DBT'])
+    proc1 = BufferGenerator('COM13', 9600, ['GGA'], ['NAVI'])
+    proc2 = BufferGenerator('COM4', 9600, ['DBS'], ['DEPTH'])
+    proc3 = BufferGenerator('COM10', 57600, ['DBT'], ['ALT'])
     parser = NmeaParser()
 
     proc1.repeat_writing_buffer()
-    # proc2.repeat_writing_buffer()
-    # proc3.repeat_writing_buffer()
+    proc2.repeat_writing_buffer()
+    proc3.repeat_writing_buffer()
 
     for i in range(30):
-        ret = proc1.getData()
+        b1 = proc1.getData()
+        b2 = proc2.getData()
+        b3 = proc3.getData()
+
+
+        bc = BufferConcatinator(b1, b2, b3)
+        buffer_list = bc.concatinate()
+        print(buffer_list)
         
         # b= proc2.getData()
         # c= proc3.getData()
 
-        if ret is not None:
+        # if ret is not None:
             
-            a, b, c = proc1.getData()
+        #     a, b, c = proc1.getData()
 
-            if a is not None:
-                depth = parser.parseDBS(a)
-                print(depth)
+        #     if a is not None:
+        #         depth = parser.parseDBS(a.string)
+        #         print(a.keyword, depth)
 
-            if b is not None:
-                coord = parser.parseGGA(b)
-                print(coord)
-                print(coord.deg_min())
+        #     if b is not None:
+        #         coord = parser.parseGGA(b.string)
+        #         print(b.keyword, coord)
+        #         print(coord.deg_min())
 
-            if c is not None:
-                altimeter = parser.parseDBT(c)
-                print(altimeter)
+        #     if c is not None:
+        #         altimeter = parser.parseDBT(c.string)
+        #         print(c.keyword, altimeter)
 
-        # try:
-        #     coord = NmeaParser.parseGGA(a[0])
-        #     print(coord)
-        # except (TypeError, AttributeError):
-        #     pass
+
         time.sleep(1)
 
     # for  i in range(10):

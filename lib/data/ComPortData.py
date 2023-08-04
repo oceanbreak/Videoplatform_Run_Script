@@ -3,21 +3,23 @@ Module provides access to COM port with NMEA data and parses string with needed 
 """
 import serial, re, operator
 from functools import reduce
+from lib.data.DataStructure import NMEAstring
 
 class ComPortData:
-    def __init__(self, port_name, port_speed, port_timeout, keywords):
+    def __init__(self, port_name, port_speed, port_timeout, messages, keywords):
         self._port_name = port_name
         self._port_speed = port_speed
         self._port_timeout = port_timeout
-        self._keywords = keywords
+        self.__messages = messages
+        self.__keywords = keywords
         self._line = ''
-        self._input_data = [None] * len(self._keywords) # Initialize array for strings to parse
+        self._input_data = [None] * len(self.__messages) # Initialize array for strings to parse
         self.prog = [] # Initialize compile message for regexp
         self.time_out_timer = 0
 
         # Program regexp
-        for index, keyword in enumerate(self._keywords):
-            self.prog.append(re.compile('\D*' + keyword))
+        for index, message in enumerate(self.__messages):
+            self.prog.append(re.compile('\D*' + message))
 
         # Open port for read
         try:
@@ -60,7 +62,11 @@ class ComPortData:
             return False
 
     def getOutputData(self):
-        return self._input_data
+        # Return as NMEAString objects
+        ret = []
+        for kw, string in zip(self.__keywords, self._input_data):
+            ret.append(NMEAstring(kw, string))
+        return ret
 
     def sendMessage(self, message):
         self._port.write(message)
@@ -70,7 +76,7 @@ class ComPortData:
 
 
 if __name__ == '__main__':
-    test_line1 = ComPortData('COM12', 9600, 10, ['GGA', 'MTW'])
+    test_line1 = ComPortData('COM13', 9600, 10, ['GGA', 'MTW'], ['NAVI', 'TEMP'])
     output_data = [None, None]
     for i in range(1000):
         test_line1.pullData()

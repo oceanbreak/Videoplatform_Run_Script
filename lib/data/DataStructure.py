@@ -76,3 +76,13 @@ class InclinometerData:
         self.pitch = pitch
         self.roll = roll
         self.heading = heading
+
+class NMEAstring:
+    # NMEA String with keyword
+
+    def __init__(self, keyword, string):
+        self.keyword = keyword
+        self.string = string
+
+    def __str__(self):
+        return str(self.keyword) + ": " + str(self.string)

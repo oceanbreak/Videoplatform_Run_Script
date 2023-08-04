@@ -3,15 +3,18 @@ from lib.data.ComPortData import ComPortData
 import time
 print("__generate_buffer__\n")
 
+
 class BufferGenerator:
-    def __init__(self, com_port, rate, messages):
+    def __init__(self, com_port, rate, messages, data_keywords, printout=False):
+        self.__printout = printout
+        self.data_keyword = data_keywords
         self._com_port = com_port
         self._rate = rate
-        self._message = messages
+        self._messages = messages
         self._out_message = False
         self._cur_data = None
         try:
-            self._data_line = ComPortData(com_port, rate, 5, messages) #CHANGE
+            self._data_line = ComPortData(com_port, rate, 5, messages, data_keywords) #CHANGE
         except:
             print("ERROR Sonardatabufer: Cannot generate buffer with %s message" % messages)
 
@@ -27,7 +30,8 @@ class BufferGenerator:
         except IndexError:
             cur_string = False
         if cur_string:
-            # print(time.asctime() + ':\t' + str(cur_string))
+            if self.__printout:
+                print(time.asctime() + ':\t' + str([str(cs) for cs in cur_string]))
             self._cur_data = cur_string
 
 
@@ -44,6 +48,24 @@ class BufferGenerator:
 
     def send_message(self, out_message):
         self._out_message = out_message
+
+
+class BufferConcatinator:
+
+    def __init__(self, *args, **kwargs):
+        self.__buffer_objects = []
+        for bobj_list in args:
+            # Test here if buffer returns None
+            if bobj_list is  not None:
+                for bobj in bobj_list:
+                    self.__buffer_objects.append(bobj)
+
+    def concatinate(self):
+        ret = {}
+        for bobj in self.__buffer_objects:
+            ret[bobj.keyword] = bobj.string
+        return ret
+
 
 if __name__ == '__main__':
     proc1 = BufferGenerator('COM12', 9600, ['GGA', 'DBT'])
