@@ -8,18 +8,18 @@ import time
 
 class ComPortData:
 
-    def __init__(self, port_name, port_speed, port_timeout, messages, keywords):
+    def __init__(self, port_name, port_speed, port_timeout, messages=[], keywords=[]):
         self._port_name = port_name
         self._port_speed = port_speed
         self._port_timeout = port_timeout
         self.__messages = messages
         self.__keywords = keywords
         self._line = ''
-        self._input_data = [None] * len(self.__messages) # Initialize array for strings to parse
-        self._prev_data = [None] * len(self.__messages)
+        self._input_data = [None] * len(self.__keywords) # Initialize array for strings to parse
+        self._prev_data = [None] * len(self.__keywords)
         self.prog = [] # Initialize compile message for regexp
         self.time_out_timer = 0
-        self.same_data_timestamp = [time.time()] * len(self.__messages) # Timestamp for tracking unchanged data
+        self.same_data_timestamp = [time.time()] * len(self.__keywords) # Timestamp for tracking unchanged data
 
 
         # Program regexp
@@ -34,6 +34,14 @@ class ComPortData:
         except serial.SerialException:
             print('ERROR SonarCom: Cannot connect to port ' + self._port_name)
             exit(1)
+
+
+    def readHex(self, length):
+        # Function that reads hex and puts directly into _input_data
+        self.same_data_timestamp[0] = time.time()
+        ret = self._port.read(length).hex()
+        self._input_data[0] = ret
+        return ret
 
 
     def readFromPort(self):
@@ -84,11 +92,15 @@ class ComPortData:
             ret.append(ComPortString(kw, string))
         return ret
 
+
     def sendMessage(self, message):
         self._port.write(message)
 
+
     def closePort(self):
         self._port.close()
+
+
 
 
 if __name__ == '__main__':

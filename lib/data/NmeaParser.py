@@ -61,6 +61,26 @@ class NmeaParser:
             return None
 
 
+class InclinParser:
+
+    def __init__(self):
+        self.sign = {'0':1, '1':-1}
+
+    def parse(self, word):
+
+        pitch_sign = self.sign[word[8]]
+        pitch_val = float(word[9:12] + '.' + word[12:14])
+        pitch = pitch_sign * pitch_val
+
+        roll_sign = self.sign[word[14]]
+        roll_val = float(word[15:18] + '.' +  word[18:20])
+        roll = roll_sign * roll_val      
+
+        head_sign = self.sign[word[20]]
+        head_val = float(word[21:24] + '.' +  word[24:26])
+        head = head_sign * head_val
+
+        return InclinometerData(pitch, roll, head)
 
 
 

@@ -37,7 +37,7 @@
       <enabled>1</enabled>
       <serial>COM6</serial>
       <baud_rate>9600</baud_rate>
-      <message></message>
+      <message>\x68\x04\x00\x04\x08</message>
     </channel>
 
   </channels>

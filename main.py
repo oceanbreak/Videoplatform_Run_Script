@@ -22,45 +22,28 @@ try:
 
     proc1 = BufferGenerator('COM13', 9600, ['GGA'], ['NAVI'])
     proc2 = BufferGenerator('COM4', 9600, ['DBS'], ['DEPTH'])
-    proc3 = BufferGenerator('COM10', 57600, ['DBT'], ['ALT'])
+    proc3 = BufferGenerator('COM10', 57600, ['DBT', 'MTW'], ['ALT', 'TEMP'])
+    proc4 = BufferGenerator('COM3', 9600, ['\x68\x04\x00\x04\x08'], ['INCLIN'])
     parser = NmeaParser()
 
     proc1.repeat_writing_buffer()
     proc2.repeat_writing_buffer()
     proc3.repeat_writing_buffer()
+    proc4.repeat_writing_buffer(IO_mode=True)
 
     while(True):
         b1 = proc1.getData()
         b2 = proc2.getData()
         b3 = proc3.getData()
+        b4 = proc4.getData()
 
 
-        bc = BufferConcatinator(b1, b2, b3)
+        bc = BufferConcatinator(b1, b2, b3, b4)
         buffer_list = bc.concatinate()
         print(buffer_list)
         
-        # b= proc2.getData()
-        # c= proc3.getData()
 
-        # if ret is not None:
-            
-        #     a, b, c = proc1.getData()
-
-        #     if a is not None:
-        #         depth = parser.parseDBS(a.string)
-        #         print(a.keyword, depth)
-
-        #     if b is not None:
-        #         coord = parser.parseGGA(b.string)
-        #         print(b.keyword, coord)
-        #         print(coord.deg_min())
-
-        #     if c is not None:
-        #         altimeter = parser.parseDBT(c.string)
-        #         print(c.keyword, altimeter)
-
-
-        time.sleep(0.1)
+        time.sleep(1.0)
 
     # for  i in range(10):
     #     # print(proc1.getData())
@@ -70,4 +53,5 @@ finally:
     proc1.stop_writing_buffer()
     proc2.stop_writing_buffer()
     proc3.stop_writing_buffer()
+    proc4.stop_writing_buffer()
 

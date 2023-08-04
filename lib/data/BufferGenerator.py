@@ -19,6 +19,7 @@ class BufferGenerator:
         except:
             print("ERROR Sonardatabufer: Cannot generate buffer with %s message" % messages)
 
+
     def write_buffer_entry(self):
         if self._out_message:
             self._data_line.sendMessage(self._out_message)
@@ -35,17 +36,34 @@ class BufferGenerator:
                 print(time.asctime() + ':\t' + str([str(cs) for cs in cur_string]))
             self._cur_data = cur_string
 
+    
+    def write_buffer_IO_byte_mode(self, read_num=14):
+        # Function to write and read from buffer in hex mode
+        for message in self._messages:
+            self._data_line.sendMessage(bytes(message, 'utf-8'))
+            self._data_line.readHex(read_num)
+            cur_string = self._data_line.getOutputData()
+        if cur_string:
+            self._cur_data = cur_string
 
-    def repeat_writing_buffer(self):
-        self.proc_buffer = SonarThread(self.write_buffer_entry)
+
+    def repeat_writing_buffer(self, IO_mode=False):
+        if not IO_mode:
+            self.proc_buffer = SonarThread(self.write_buffer_entry)
+        else:
+            self.proc_buffer = SonarThread(self.write_buffer_IO_byte_mode)
         self.proc_buffer.start()
+        
+
 
     def stop_writing_buffer(self):
         self.proc_buffer.stop()
         self._data_line.closePort()
 
+
     def getData(self):
         return self._cur_data
+
 
     def send_message(self, out_message):
         self._out_message = out_message
@@ -66,6 +84,7 @@ class BufferConcatinator:
         for bobj in self.__buffer_objects:
             ret[bobj.keyword] = bobj.string
         return ret
+
 
 
 if __name__ == '__main__':
