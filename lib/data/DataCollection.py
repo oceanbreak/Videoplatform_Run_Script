@@ -1,6 +1,32 @@
 # Data collection according to Settings
+# It stores datain memeory for access of defferent parts of the program
 
 from lib.data.DataStructure import *
+from lib.folder_struct.Settings import ComPortSettings
+
+class ChannelDataPacket:
+    """
+    Data pachet for COM Port channels
+    that stores info about COM port settings and data
+    """
+
+    def __init__(self, source : ComPortSettings, data):
+
+        # Flags that show if data availible
+        self.__corrupt = False
+
+        # Info about source of data and data intself
+        self.source = source
+        self.data = data
+
+    def set_corrupt(self):
+        self.__corrupt = True
+
+    def set_OK(self):
+        self.__corrupt = False
+
+    def is_corrupted(self):
+        return self.__corrupt
 
 class DataCollection:
 
@@ -25,12 +51,16 @@ class DataCollection:
                         self.track_time_length)
 
     def toDisplayText(self):
+        # Form textd that will be shown on display of program
         out_string = ''
-        types = (CoordinatesData, DepthData, DepthData, TemperatureData, InclinometerData)
-        for var, cur_type in zip(self.var_list, types):
-            if type(var) == cur_type:
-                text = self.navi_data.toDisplayText()
-            else:
-                text = 'No data'
-            out_string += f'{text}\n'
-           
+        for var in self.var_list:
+            if var is not None:
+                if var.is_corrupted:
+                    text = 'Data missing'
+                else:
+                    text = var.data.toDisplayText()
+        out_string += text + '\n'
+
+
+    def toLogFileLine(self):
+        pass

@@ -32,7 +32,7 @@ class CoordinatesData:
         """
         self.lat = lat
         self.lon = lon
-        # self.keyword = data_keywords.NAVI
+        self.keyword = None
 
     def __str__(self):
         return f'{self.lat}, {self.lon}'
@@ -52,7 +52,7 @@ class DepthData:
 
     def __init__(self, depth : float):
         self.depth = depth
-        # self.keyword = data_keywords.DEPTH
+        self.keyword = None
 
     def value(self):
         return self.depth
@@ -86,6 +86,7 @@ class InclinometerData:
         self.pitch = pitch
         self.roll = roll
         self.heading = heading
+        self.kewword = None
 
     def __str__(self):
         return f'Pitch: {self.pitch}, Roll: {self.roll}, Heading: {self.heading}'
