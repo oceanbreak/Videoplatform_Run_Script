@@ -21,21 +21,21 @@
 
     <channel id="ALT">
       <enabled>1</enabled>
-      <serial>COM3</serial>
+      <serial>COM10</serial>
       <baud_rate>57600</baud_rate>
       <message>DBT</message>
     </channel>
 
     <channel id="TEMP">
       <enabled>1</enabled>
-      <serial>COM3</serial>
-      <baud_rate>9600</baud_rate>
+      <serial>COM10</serial>
+      <baud_rate>57600</baud_rate>
       <message>MTW</message>
     </channel>
     
     <channel id="INCLIN">
       <enabled>1</enabled>
-      <serial>COM6</serial>
+      <serial>COM3</serial>
       <baud_rate>9600</baud_rate>
       <message>\x68\x04\x00\x04\x08</message>
     </channel>
