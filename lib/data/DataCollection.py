@@ -5,9 +5,9 @@ from lib.data.DataStructure import *
 from lib.folder_struct.Settings import ComPortSettings
 from lib.data.NmeaParser import NmeaParser, InclinParser
 
-class ChannelDataPacket:
+class DataPacket:
     """
-    Data packet for COM Port channels
+    Data packet for chanels that has a flag that data is corrupted
     """
 
     def __init__(self,  data):
@@ -55,23 +55,23 @@ class DataCollection:
             if keyword == data_keywords.INCLIN:
                 parser_in = InclinParser()
                 data = parser_in.parse(bufferRawData[keyword])
-                self.inclinometer_data = ChannelDataPacket(data)
+                self.inclinometer_data = DataPacket(data)
 
             if keyword == data_keywords.NAVI:
                 data = parser.parseByMessage(bufferRawData[keyword])
-                self.navi_data = ChannelDataPacket(data)
+                self.navi_data = DataPacket(data)
 
             if keyword == data_keywords.DEPTH:
                 data = parser.parseByMessage(bufferRawData[keyword])
-                self.depth_data = ChannelDataPacket(data)
+                self.depth_data = DataPacket(data)
 
             if keyword == data_keywords.ALTIMETER:
                 data = parser.parseByMessage(bufferRawData[keyword])
-                self.altimeter_data = ChannelDataPacket(data)
+                self.altimeter_data = DataPacket(data)
 
             if keyword == data_keywords.TEMP:
                 data = parser.parseByMessage(bufferRawData[keyword])
-                self.temperature_data = ChannelDataPacket(data)
+                self.temperature_data = DataPacket(data)
 
 
     def toDisplayText(self):
