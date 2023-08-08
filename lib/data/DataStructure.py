@@ -45,7 +45,7 @@ class CoordinatesData:
     
     def toDisplayText(self):
         degr_lat, min_lat, letter_lat, degr_lon, min_lon, letter_lon = self.deg_min()
-        return f"{degr_lat} {min_lat:.3f}'{letter_lat}, {degr_lon} {min_lat:.3f}'{letter_lon}"
+        return f"{degr_lat:.0f} {min_lat:.3f}'{letter_lat}, {degr_lon:.0f} {min_lat:.3f}'{letter_lon}"
 
 
 class DepthData:
