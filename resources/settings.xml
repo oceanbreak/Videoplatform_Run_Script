@@ -20,7 +20,7 @@
     </channel>
 
     <channel id="ALT">
-      <enabled>1</enabled>
+      <enabled>0</enabled>
       <serial>COM10</serial>
       <baud_rate>57600</baud_rate>
       <message>DBT</message>
