@@ -3,6 +3,7 @@ This module defines data structures
 for Videomodule sensors data"""
 
 from lib.calculations.CoordinateCalc import convertCoordtoDM
+import time
 
 
 class data_keywords:
@@ -103,3 +104,45 @@ class ComPortString:
 
     def __str__(self):
         return str(self.keyword) + ": " + str(self.string)
+    
+
+# Common datatype
+
+class DateTime:
+
+    def __init__(self, gmtime : time.struct_time):
+        self.year = gmtime.tm_year
+        self.mon = gmtime.tm_mon
+        self.day = gmtime.tm_mday
+        self.hour = gmtime.tm_hour
+        self.min = gmtime.tm_min
+        self.sec = gmtime.tm_sec
+
+    def toDisplayText(self):
+        return f'{self.year}/{self.mon:0>2}/{self.day:0>2}  {self.hour:0>2}:{self.min:0>2}:{self.sec:0>2} UTC'
+    
+
+class LengthUnit:
+    # Length of track in meters
+
+    def __init__(self, length):
+        self.length = length
+
+    def toDisplayText(self):
+        return f'{self.length:.1f} m'
+    
+
+class TimeUnit:
+     # Duration of track in sec
+
+    def __init__(self, secs):
+        self.secs = secs
+
+    def convertToHMS(self):
+        self.hh = self.secs // 3600
+        self.mm = self.secs // 60
+        self.ss = self.secs % 60
+
+    def toDisplayText(self):
+        self.convertToHMS()
+        return f'{self.hh:0>2.0f}:{self.mm:0>2.0f}:{self.ss:0>2.0f}'   

@@ -20,7 +20,7 @@ class NmeaParser:
         try:
             message = string.split(',')[0]
         except (TypeError, IndexError, AttributeError):
-            print(f"Current string can nor be parsed:\n{string}")
+            # print(f"Current string can nor be parsed:\n{string}")
             return None
         # Handle diffrenct parsers with different messages
         if 'GGA' in message:
@@ -109,7 +109,7 @@ class InclinParser:
 
             return InclinometerData(pitch, roll, head)
         
-        except (IndexError, ValueError):
+        except (TypeError):
             return None
 
 

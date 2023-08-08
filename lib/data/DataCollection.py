@@ -43,13 +43,17 @@ class DataCollection:
         self.temperature_data = None
         self.inclinometer_data = None
         self.datetime = None
-        self.track_length = None
-        self.track_time_length = None
+        self.track_length = DataPacket(LengthUnit(0.0))
+        self.track_time_length = DataPacket(TimeUnit(0.0))
 
 
 
     def readDataFromBuffer(self, bufferRawData : dict):
+
         parser = NmeaParser()
+        # BOOM! - time stamp
+        self.datetime = DataPacket(DateTime(time.gmtime()))
+
         for keyword in bufferRawData:
 
             if keyword == data_keywords.INCLIN:
@@ -74,6 +78,7 @@ class DataCollection:
                 self.temperature_data = DataPacket(data)
 
 
+
     def toDisplayText(self):
         # Form textd that will be shown on display of program
         out_string = ''
@@ -87,17 +92,19 @@ class DataCollection:
                         self.track_length,
                         self.track_time_length]
         
-        for var in var_list:
+        name_list = ['', 'Depth: ', 'Alt: ', 'Temp: ', 'Inclin: ', '', 'Track lentgh: ', 'Time elapsed: ']
+        
+        for var, name in zip(var_list, name_list):
             
-            text = ''
+            text = name
             if var is not None:
                 
                 if var.is_corrupted():
                     # print('Corrupted')
-                    text = 'Data missing'
+                    text +=  'Data missing'
                 else:
                     # print(var.data.toDisplayText())
-                    text = var.data.toDisplayText()
+                    text += var.data.toDisplayText()
                 out_string += text + '\n'
         return out_string
 
