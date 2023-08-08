@@ -71,8 +71,9 @@ def convertCoordtoDM(lat, lon):
 def calculateTrack(coord1, coord2, units='m'):
     if units == 'm':
         return haversine(coord1, coord2)
-    elif units == 'mm':
+    elif units == 'miles':
         return haversine(coord1, coord2)/1800
+
 
 if __name__ == '__main__':
     c_a = convertCoordtoDeg("78 09.1843'N, 116 37.6358'E")
