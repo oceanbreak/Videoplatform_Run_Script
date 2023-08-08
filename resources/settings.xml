@@ -27,7 +27,7 @@
     </channel>
 
     <channel id="TEMP">
-      <enabled>0</enabled>
+      <enabled>1</enabled>
       <serial>COM3</serial>
       <baud_rate>9600</baud_rate>
       <message>MTW</message>
