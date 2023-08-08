@@ -30,6 +30,12 @@ class Application(Frame):
         #self.QUIT["command"] =  self.quit_it
         self.QUIT_button.config(font=buttonfont)
 
+        # Connect button
+        self.connect_button = Button(self.buttons)
+        self.connect_button["text"] = "Connect"
+        # self.connect_button["fg"]   = "red"
+        self.connect_button.config(font=buttonfont)
+
         #START/STOP BUTTON
         self.start_rec_button = Button(self.buttons)
         self.start_rec_button["text"] = "Start"
@@ -39,8 +45,7 @@ class Application(Frame):
 
         #DIRECTORY CHOICE BUTTON
         self.choose_dir_button = Button(self.buttons)
-        #self.choose_dir["text"] = self.MasterProgram.button_change_dir_text
-        #self.choose_dir["command"] = self.MasterProgram.buttonChangeDirCommand(self.choose_dir)
+
 
         #SET DEPTH ZERO BUTTON
         self.set_depth_buton = Button(self.buttons)
@@ -57,6 +62,7 @@ class Application(Frame):
         self.data_label["text"] = self.data_text
         self.data_label.config(font=labelfont, bg = label_bg, fg = label_fg)
 
+        self.connect_button.pack({"side": "left", "expand": "YES", "fill": "both"})
         self.QUIT_button.pack({"side": "left", "expand": "YES", "fill": "both"})
         self.start_rec_button.pack({"side": "left", "expand": "YES", "fill": "both"})
         self.choose_dir_button.pack({"side": "left", "expand": "YES", "fill": "both"})

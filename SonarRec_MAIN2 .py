@@ -55,43 +55,15 @@ class SonarVideoProgram:
         self.root = sonar_gui.Tk()
         self.SonarGui = sonar_gui.Application(master=self.root)
         self.SonarGui.master.title("OCEAN RECORD v. 4.9.9")
-        self.SonarGui.master.maxsize(600, 300)
+        self.SonarGui.master.maxsize(600, 400)
 
-        # self.buffer_type_list = ('NAVI', 'DEPTH', 'ALTIMETER' )
-        self.buffer_type_list = ('NAVI', 'DEPTH', 'ALTIMETER')
-        self.buffer_queue = [self.spanBuffer(x) for x in self.buffer_type_list]
-        for buffer in self.buffer_queue:
-            buffer.repeat_writing_buffer()
+        self.button_change_dir_text = self.__global_settings.default_folder
 
-
-        # Data types
-        self.navigation_data = None
-        self.depth_data = None
-        self.altimeter_data = None
-        self.temperature_data = None
-        self.gyro_data = None
-
-        # Data dependencies
-        self.data_sources = {'NAVI' : None, 'DEPTH' : None, 'ALTIMETER' : None, 'TEMP' : None, 'GYRO' : None}
-
-        self.scan_dir = None
-        self.logging = None
-        self._track_length = 0.0
-        self._snaps_count = 0
-
+       
         self.updateDataText()
         self.setButtonsParameters()
-        # self.change_cam_dir()
         self.SonarGui.mainloop()
 
-
-    def spanBuffer(self, data_type):
-        port, rate, message = data_type + '_PORT', \
-                              data_type + '_RATE', \
-                              data_type + '_MESSAGE'
-        return BufferGenerator(self.init_parameters[port],
-                                              self.init_parameters[rate],
-                                              self.init_parameters[message])
 
 
     def change_cam_dir(self):
@@ -199,18 +171,11 @@ class SonarVideoProgram:
 
 
     def updateDataText(self):
+        #TODO Exploit DataCollection to put it on screen
         string_print = ''
-        for data_name, data_value in zip(self.buffer_type_list, self.buffer_queue):
-            if data_value.getData():
-                string_print += data_name[:3] + ': ' + ' '.join(data_value.getData()) + '\n'
-        string_print += 'Distance: ' + '{0:.1f}'.format(self._track_length) + ' m\n'
-        string_print += time.asctime(time.gmtime()) + " GMT"
 
-        # self.SonarGui.data_label['text'] = '\n'.join([' '.join(x.getData())
-        #                                     for x in self.buffer_queue if x.getData()]) +  \
-        #                                    '\n' + time.asctime(time.gmtime()) + " GMT"
         self.SonarGui.data_label['text'] = string_print
-        self.SonarGui.after(100, self.updateDataText)
+        self.SonarGui.after(10, self.updateDataText)
 
 
     def buttonStartCommand(self):
