@@ -19,7 +19,7 @@ class NmeaParser:
     def parseByMessage(self, string : str):
         try:
             message = string.split(',')[0]
-        except (TypeError, IndexError):
+        except (TypeError, IndexError, AttributeError):
             print(f"Current string can nor be parsed:\n{string}")
             return None
         # Handle diffrenct parsers with different messages
