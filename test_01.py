@@ -1,4 +1,4 @@
-from lib.folder_struct.Settings import Settings
+from lib.UI.Settings import Settings
 import xml.etree.ElementTree as ET
 from lib.data.DataStructure import data_keywords
 

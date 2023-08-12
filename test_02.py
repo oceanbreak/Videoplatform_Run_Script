@@ -1,4 +1,4 @@
-from lib.folder_struct.Settings import Settings
+from lib.UI.Settings import Settings
 
 settings = Settings()
 settings.readSettings()

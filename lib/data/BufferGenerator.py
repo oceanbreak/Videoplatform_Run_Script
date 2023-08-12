@@ -1,7 +1,7 @@
 from lib.data.SonarThread import SonarThread
 from lib.data.ComPortData import ComPortData
 from lib.data.DataStructure import ComPortString, data_keywords
-from lib.folder_struct.Settings import ComPortSettings
+from lib.UI.Settings import ComPortSettings
 import time
 print("__generate_buffer__\n")
 

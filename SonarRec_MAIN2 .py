@@ -7,8 +7,8 @@ update 4.3:
 
 import time
 import os
-from lib.folder_struct.Settings import Settings
-import lib.UI.sonar_gui as sonar_gui
+from lib.UI.Settings import Settings
+import lib.UI.UI_interface as UI_interface
 from lib.data.BufferGenerator import BufferGenerator
 import requests
 import lib.folder_struct.sonar_img_caption as sonar_img_caption
@@ -52,8 +52,8 @@ class SonarVideoProgram:
         self.__global_settings = Settings()
         self.__global_settings.readSettings()
 
-        self.root = sonar_gui.Tk()
-        self.SonarGui = sonar_gui.Application(master=self.root)
+        self.root = UI_interface.Tk()
+        self.SonarGui = UI_interface.Application(master=self.root)
         self.SonarGui.master.title("OCEAN RECORD v. 4.9.9")
         self.SonarGui.master.maxsize(600, 400)
 
@@ -165,6 +165,7 @@ class SonarVideoProgram:
         self.SonarGui.QUIT_button['command'] = self.buttonQuitCommand
 
         self.SonarGui.start_rec_button['command'] = self.buttonStartCommand
+        self.SonarGui.start_rec_button['state'] = 'disabled'
 
         self.SonarGui.set_depth_buton['command'] = self.buttonSetDepthCommand
         self.SonarGui.reset_track_button['command'] = self.buttonResetTrackCommand

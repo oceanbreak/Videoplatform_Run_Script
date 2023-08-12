@@ -2,7 +2,7 @@
 # It stores datain memeory for access of defferent parts of the program
 
 from lib.data.DataStructure import *
-from lib.folder_struct.Settings import ComPortSettings
+from lib.UI.Settings import ComPortSettings
 from lib.data.NmeaParser import NmeaParser, InclinParser
 
 class DataPacket:

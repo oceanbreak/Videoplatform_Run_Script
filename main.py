@@ -3,7 +3,7 @@ from lib.data.BufferGenerator import BufferGenerator, BufferConcatinator, Buffer
 import time
 from lib.data.DataStructure import CoordinatesData, DepthData, data_keywords
 from lib.data.NmeaParser import NmeaParser
-from lib.folder_struct.Settings import Settings
+from lib.UI.Settings import Settings
 from lib.data.DataCollection import DataCollection
 
 
