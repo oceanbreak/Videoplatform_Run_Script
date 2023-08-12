@@ -20,6 +20,7 @@ class BufferGenerator:
             self._data_line = ComPortData(com_port, rate, 5, messages, data_keywords) #CHANGE
         except:
             print("ERROR Sonardatabufer: Cannot generate buffer with %s message" % messages)
+            self.__data_line = None
 
 
     def write_buffer_entry(self):
@@ -31,7 +32,7 @@ class BufferGenerator:
             self._data_line.pullData()
             cur_string = self._data_line.getOutputData()
             # print(self._data_line.time_out_timer)
-        except IndexError:
+        except AttributeError:
             cur_string = False
         if cur_string:
             if self.__printout:
@@ -41,12 +42,15 @@ class BufferGenerator:
     
     def write_buffer_IO_byte_mode(self, read_num=14):
         # Function to write and read from buffer in hex mode
-        for message in self._messages:
-            self._data_line.sendMessage(bytes(message, 'utf-8'))
-            self._data_line.readHex(read_num)
-            cur_string = self._data_line.getOutputData()
-        if cur_string:
-            self._cur_data = cur_string
+        try:
+            for message in self._messages:
+                self._data_line.sendMessage(bytes(message, 'utf-8'))
+                self._data_line.readHex(read_num)
+                cur_string = self._data_line.getOutputData()
+            if cur_string:
+                self._cur_data = cur_string
+        except AttributeError:
+            print('Error sending message with IO mode')
 
 
     def repeat_writing_buffer(self):
