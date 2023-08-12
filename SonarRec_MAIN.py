@@ -7,8 +7,8 @@ update 4.3:
 
 import time
 import os
-import lib.folder_struct.Settings as Settings
-import lib.UI.sonar_gui as sonar_gui
+import lib.UI.Settings as Settings
+import lib.UI.UI_interface as UI_interface
 from lib.data.BufferGenerator import BufferGenerator
 import requests
 import lib.folder_struct.sonar_img_caption as sonar_img_caption
@@ -55,8 +55,8 @@ class SonarVideoProgram:
         self._record_folder_path = self.init_parameters['DEFAULT_FOLDER']
         self._camera_IP = self.init_parameters['CAM_URL']
         self._login_pass =  (self.init_parameters['CAM_LOGIN'], self.init_parameters['CAM_PASSWORD'])
-        self.root = sonar_gui.Tk()
-        self.SonarGui = sonar_gui.Application(master=self.root)
+        self.root = UI_interface.Tk()
+        self.SonarGui = UI_interface.Application(master=self.root)
         self.SonarGui.master.title("OCEAN RECORD v. 4.3.1")
         self.SonarGui.master.maxsize(600, 300)
 
