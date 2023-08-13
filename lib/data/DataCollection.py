@@ -47,6 +47,10 @@ class DataCollection:
         self.track_time_length = DataPacket(TimeUnit(0.0))
 
 
+    def clear(self):
+        self.__init__()
+
+
 
     def readDataFromBuffer(self, bufferRawData : dict):
 

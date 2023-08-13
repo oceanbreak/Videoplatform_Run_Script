@@ -163,6 +163,7 @@ class MainApplication:
         self.global_settings.inclin_port.enable = self.settings_window.chan5_active.get()
 
         self.global_settings.writeSettings()
+        self.data_collection.clear()
         print("New settings written to file")
 
     
