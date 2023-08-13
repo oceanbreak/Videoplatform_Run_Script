@@ -14,12 +14,12 @@ class ComPortSettings:
     ####_MESSAGE = #####
     """
 
-    def __init__(self):
-        self.enable = False
-        self.port = None
-        self.rate = None
-        self.message = None
-        self.keyword = None
+    def __init__(self, keyword=''):
+        self.enable = 0
+        self.port = ''
+        self.rate = 0
+        self.message = ''
+        self.keyword = keyword
 
     def is_enabled(self):
         return self.enable
@@ -56,13 +56,13 @@ class Settings:
     Class that works with init.cfg file
     """
     def __init__(self):
-        self.navi_port = ComPortSettings()
-        self.depth_port = ComPortSettings()
-        self.altimeter_port = ComPortSettings()
-        self.inclin_port = ComPortSettings()
-        self.temp_port = ComPortSettings()
+        self.navi_port = ComPortSettings(data_keywords.NAVI)
+        self.depth_port = ComPortSettings(data_keywords.DEPTH)
+        self.altimeter_port = ComPortSettings(data_keywords.ALTIMETER)
+        self.inclin_port = ComPortSettings(data_keywords.INCLIN)
+        self.temp_port = ComPortSettings(data_keywords.TEMP)
         self.camera_settings = CameraSettings()
-        self.default_folder = None
+        self.default_folder = ''
         self.config_file = 'resources/settings.xml'
 
     def __str__(self):
@@ -150,22 +150,6 @@ class Settings:
 
         with open('resources/settings.xml', 'w') as f_write:
             f_write.write(b_xml)
-
-    
-    def readSettingsFromUI(self, settings_window : SettingsWindow):
-        navi_port = settings_window.chan1_port.get()
-        print('READING FROM UI: ', navi_port)
-        # print(navi_port)
-
-
-    def putSettingsToUI(self, setting_window : SettingsWindow):
-        setting_window.chan1_port.insert(0, self.navi_port.port)
-        setting_window.chan1_rate.insert(0, str(self.navi_port.rate))
-        setting_window.chan1_message.insert(0, self.navi_port.message)
-        setting_window.chan1_atctivator.deselect() if not self.navi_port.enable \
-                                                    else setting_window.chan1_atctivator.select()
-
-
 
 
 
