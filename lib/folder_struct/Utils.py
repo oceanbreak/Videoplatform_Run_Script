@@ -1,5 +1,17 @@
 import time
 
+def textShorten(input_text):
+    """
+    Shorts text to be short inside a button
+    :param input_text:
+    :return: text in 20 characters
+    """
+    if input_text is  None:
+        return ''
+    if len(input_text) > 20:
+        return "%s...%s" % (input_text[:6], input_text[-12:])
+    else:
+       return input_text
 
 def string_generation(srt_timer):
     # converts number into srt time format
