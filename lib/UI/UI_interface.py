@@ -6,6 +6,7 @@ provides vlc recording of the file """
 # from tkinter import filedialog
 import tkinter as Tk
 from tkinter.messagebox import showerror, showinfo, showwarning
+import time
 
 #init_parameters = sonar_init.Get_Init_Parameters()
 
@@ -115,10 +116,10 @@ class MainWindow(Tk.Frame):
     
 
     def setButtonsActive(self):
-        self.start_rec_button['state'] = 'active'
+        self.start_rec_button['state'] = 'normal'
         self.start_rec_button["fg"]   = "dark green"
-        self.reset_track_button['state'] = 'active'
-        self.set_depth_buton['state'] = 'active'
+        self.reset_track_button['state'] = 'normal'
+        self.set_depth_buton['state'] = 'normal'
 
 
     def setButtonsInactive(self):
@@ -144,16 +145,16 @@ class SettingsWindow(Tk.Toplevel):
         header_font = ('arial', 12, 'bold')
 
         # self.settings_window = Tk.Toplevel(self.win)
-        self.geometry('520x400')
+        self.geometry('520x450')
         self.title('Settings')
 
         # Inputs
 
-        # Channel 1
+        # Channels
         self.channels = Tk.Frame(self)
         self.channels.pack(side=Tk.TOP, expand=Tk.NO, fill=Tk.BOTH)
         self.channels_header = Tk.Label(self.channels, text = 'COM-ports settings', font = header_font)
-        self.channels_header.grid(row=0, columnspan=5, pady=20)
+        self.channels_header.grid(row=0, columnspan=5, pady=20, sticky=Tk.W)
 
         # Header
         self.chan_nm = Tk.Label(self.channels, text='Port')
@@ -178,7 +179,8 @@ class SettingsWindow(Tk.Toplevel):
         self.chan1_message.grid(row=2, column=4)
 
         # Channel-02
-        self.chan2_atctivator = Tk.Checkbutton(self.channels)
+        self.chan2_active = Tk.IntVar()
+        self.chan2_atctivator = Tk.Checkbutton(self.channels, variable=self.chan2_active)
         self.chan2_name = Tk.Label(self.channels, text='Depth')
         self.chan2_port = Tk.Entry(self.channels)
         self.chan2_rate = Tk.Entry(self.channels)
@@ -191,7 +193,8 @@ class SettingsWindow(Tk.Toplevel):
         self.chan2_message.grid(row=3, column=4)
 
         # Channel-03
-        self.chan3_atctivator = Tk.Checkbutton(self.channels)
+        self.chan3_active = Tk.IntVar()
+        self.chan3_atctivator = Tk.Checkbutton(self.channels, variable=self.chan3_active)
         self.chan3_name = Tk.Label(self.channels, text='Altimeter')
         self.chan3_port = Tk.Entry(self.channels)
         self.chan3_rate = Tk.Entry(self.channels)
@@ -204,7 +207,8 @@ class SettingsWindow(Tk.Toplevel):
         self.chan3_message.grid(row=4, column=4)
 
         # Channel-04
-        self.chan4_atctivator = Tk.Checkbutton(self.channels)
+        self.chan4_active = Tk.IntVar()
+        self.chan4_atctivator = Tk.Checkbutton(self.channels, variable=self.chan4_active)
         self.chan4_name = Tk.Label(self.channels, text='Temperature')
         self.chan4_port = Tk.Entry(self.channels)
         self.chan4_rate = Tk.Entry(self.channels)
@@ -217,7 +221,8 @@ class SettingsWindow(Tk.Toplevel):
         self.chan4_message.grid(row=5, column=4)
 
         # Channel-05
-        self.chan5_atctivator = Tk.Checkbutton(self.channels)
+        self.chan5_active = Tk.IntVar()
+        self.chan5_atctivator = Tk.Checkbutton(self.channels, variable=self.chan5_active)
         self.chan5_name = Tk.Label(self.channels, text='Inclinometer')
         self.chan5_port = Tk.Entry(self.channels)
         self.chan5_rate = Tk.Entry(self.channels)
@@ -230,9 +235,36 @@ class SettingsWindow(Tk.Toplevel):
         # self.chan5_message.grid(row=6, column=4)
 
 
+        # Camera Settings
+        self.cam_settings = Tk.Frame(self)
+        self.cam_settings.pack(side=Tk.TOP, expand=Tk.NO, fill=Tk.BOTH)
+        self.cam_header = Tk.Label(self.cam_settings, text = 'IP-camera settings', font = header_font)
+        self.cam_header.grid(row=0, columnspan=2, pady=20, sticky=Tk.W)
+
+        self.cam_IP_label = Tk.Label(self.cam_settings, text='URL')
+        self.cam_IP_entry = Tk.Entry(self.cam_settings)
+        self.cam_IP_label.grid(row=1, column=0, sticky=Tk.W)
+        self.cam_IP_entry.grid(row=1, column=1)
+
+        self.cam_login_label = Tk.Label(self.cam_settings, text='Login')
+        self.cam_login_entry = Tk.Entry(self.cam_settings)
+        self.cam_login_label.grid(row=2, column=0, sticky=Tk.W)
+        self.cam_login_entry.grid(row=2, column=1)
+
+        self.cam_password_label = Tk.Label(self.cam_settings, text='Password')
+        self.cam_password_entry = Tk.Entry(self.cam_settings)
+        self.cam_password_label.grid(row=3, column=0, sticky=Tk.W)
+        self.cam_password_entry.grid(row=3, column=1)
+
+        self.default_folder_label = Tk.Label(self.cam_settings, text='Recording folder', font = header_font)
+        self.default_folder_label.grid(row=4, column=0, columnspan=2)
+        self.default_folder_button = Tk.Button(self.cam_settings)
+        self.default_folder_button.grid(row=5, columnspan=2, sticky=Tk.W)
+
+
         # Bottom buttons
         self.bottom_buttons = Tk.Frame(self)
-        self.bottom_buttons.pack(side=Tk.BOTTOM, expand=Tk.YES, fill=Tk.BOTH, pady=10, padx=10)
+        self.bottom_buttons.pack(side=Tk.TOP, expand=Tk.YES, fill=Tk.BOTH, pady=10, padx=10)
 
         self.close_button = Tk.Button(self.bottom_buttons)
         self.close_button['text'] = 'Close'
