@@ -190,8 +190,8 @@ class SonarVideoProgram:
 
     def setButtonsParameters(self):
 
-        self.SonarGui.choose_dir_button['text'] = self.button_change_dir_text
-        self.SonarGui.choose_dir_button['command'] = self.buttonChangeDirCommand
+        self.SonarGui.cam_dialog_button['text'] = self.button_change_dir_text
+        self.SonarGui.cam_dialog_button['command'] = self.buttonChangeDirCommand
 
         self.SonarGui.QUIT_button['command'] = self.buttonQuitCommand
 
@@ -245,7 +245,7 @@ class SonarVideoProgram:
         if new_file_path != "":
             self._record_folder_path = new_file_path
             button_change_dir_text = textShorten(new_file_path)
-            self.SonarGui.choose_dir_button['text'] = button_change_dir_text
+            self.SonarGui.cam_dialog_button['text'] = button_change_dir_text
             self.change_cam_dir()
 
 

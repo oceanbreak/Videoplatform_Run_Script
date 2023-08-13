@@ -53,7 +53,10 @@ class MainWindow(Tk.Frame):
         self.start_rec_button.config(font=buttonfont)
 
         #DIRECTORY CHOICE BUTTON
-        self.choose_dir_button = Tk.Button(self.buttons_field)
+        self.cam_dialog_button = Tk.Button(self.buttons_field)
+        self.cam_dialog_button['text'] = 'CAM'
+        self.cam_dialog_button["fg"]   = "dark blue"
+        self.cam_dialog_button['font'] = buttonfont
 
 
         #SET DEPTH ZERO BUTTON
@@ -81,7 +84,7 @@ class MainWindow(Tk.Frame):
         self.connect_button.pack({"side": "left", "expand": "YES", "fill": "both"})
         self.QUIT_button.pack({"side": "left", "expand": "YES", "fill": "both"})
         self.start_rec_button.pack({"side": "left", "expand": "YES", "fill": "both"})
-        self.choose_dir_button.pack({"side": "left", "expand": "YES", "fill": "both"})
+        self.cam_dialog_button.pack({"side": "left", "expand": "YES", "fill": "both"})
 
 
         self.set_depth_buton.pack({"side": "top", "expand": "YES", "fill": "both"})
