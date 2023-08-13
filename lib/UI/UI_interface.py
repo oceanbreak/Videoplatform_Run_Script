@@ -8,7 +8,7 @@ import tkinter as Tk
 
 #init_parameters = sonar_init.Get_Init_Parameters()
 
-class Application(Tk.Frame):
+class MainWindow(Tk.Frame):
 
     def createWidgets(self):
 
@@ -28,13 +28,14 @@ class Application(Tk.Frame):
         self.QUIT_button = Tk.Button(self.buttons_field)
         self.QUIT_button["text"] = "QUIT"
         self.QUIT_button["fg"]   = "red"
+        self.QUIT_button['state'] = 'disable'
         #self.QUIT["command"] =  self.quit_it
         self.QUIT_button.config(font=buttonfont)
 
         # Connect button
         self.connect_button = Tk.Button(self.buttons_field)
         self.connect_button["text"] = "Connect"
-        self.connect_button['command'] = self.settingsWindow
+        # self.connect_button['command'] = self.settingsWindow
         # self.connect_button["fg"]   = "red"
         self.connect_button.config(font=buttonfont)
 
@@ -42,6 +43,7 @@ class Application(Tk.Frame):
         self.start_rec_button = Tk.Button(self.buttons_field)
         self.start_rec_button["text"] = "Start"
         self.start_rec_button["fg"]   = "dark green"
+        self.start_rec_button['state'] = 'disable'
         #self.hi_there["command"] = self.start_stop
         self.start_rec_button.config(font=buttonfont)
 
@@ -52,30 +54,52 @@ class Application(Tk.Frame):
         #SET DEPTH ZERO BUTTON
         self.set_depth_buton = Tk.Button(self.buttons_field)
         self.set_depth_buton["text"] = 'Set zero depth'
+        self.set_depth_buton['state'] = 'disable'
         # self.set_d["command"] = self.set_depth
 
         #RESET DEPTH ZERO BUTTON
         self.reset_track_button = Tk.Button(self.buttons_field)
         self.reset_track_button["text"] = 'Reset track'
+        self.reset_track_button['state'] = 'disable'
         #self.reset_d["command"] = self.reset_depth
+
+        # Settings
+        self.settings_button = Tk.Button(self.buttons_field)
+        self.settings_button['text'] = 'Settings'
 
         #DATA LABEL
         self.data_label = Tk.Label(self.win)
         self.data_label["text"] = self.data_text
         self.data_label.config(font=labelfont, bg = label_bg, fg = label_fg)
 
+        self.settings_button.pack(side=Tk.LEFT, expand=Tk.YES, fill=Tk.BOTH)
         self.connect_button.pack({"side": "left", "expand": "YES", "fill": "both"})
         self.QUIT_button.pack({"side": "left", "expand": "YES", "fill": "both"})
         self.start_rec_button.pack({"side": "left", "expand": "YES", "fill": "both"})
         self.choose_dir_button.pack({"side": "left", "expand": "YES", "fill": "both"})
+
+
         self.set_depth_buton.pack({"side": "top", "expand": "YES", "fill": "both"})
         self.reset_track_button.pack({"side": "bottom", "expand": "YES", "fill": "both"})
+
+        
+
+        # self.connect_button.grid(row=0, column=0, sticky=Tk.N)
+        # self.settings_button.grid(row=1, column=0, sticky=Tk.S)
+        # self.QUIT_button.grid(row=0, column=1, rowspan=2)
+        # self.start_rec_button.grid(row=0, column=2, rowspan=2)
+        # self.choose_dir_button.grid(row=0, column=3, rowspan=2)
+        # self.set_depth_buton.grid(row=0, column=4)
+        # self.reset_track_button.grid(row=1, column=4)
+
+        
+
         self.data_label.pack({"side": "left", "expand":"YES", "fill":"both"})
 
 
     def __init__(self, master=None):
         Tk.Frame.__init__(self, master)
-        self.data_text = "INITIALIZE"
+        self.data_text = "Welcome to Sonarlab"
         self.pack()
         self.createWidgets()
 
@@ -84,6 +108,7 @@ class Application(Tk.Frame):
     def settingsWindow(self):
 
         self.settings_window = SettingsWindow(self.win)
+        return self.settings_window
 
 
 
@@ -97,14 +122,14 @@ class SettingsWindow(Tk.Toplevel):
         header_font = ('arial', 12, 'bold')
 
         # self.settings_window = Tk.Toplevel(self.win)
-        self.geometry('600x260')
+        self.geometry('520x400')
         self.title('Settings')
 
         # Inputs
 
         # Channel 1
         self.channels = Tk.Frame(self)
-        self.channels.pack(side=Tk.TOP, expand=Tk.YES, fill=Tk.BOTH)
+        self.channels.pack(side=Tk.TOP, expand=Tk.NO, fill=Tk.BOTH)
         self.channels_header = Tk.Label(self.channels, text = 'COM-ports settings', font = header_font)
         self.channels_header.grid(row=0, columnspan=5, pady=20)
 
@@ -155,9 +180,52 @@ class SettingsWindow(Tk.Toplevel):
         self.chan3_rate.grid(row=4, column=3)
         self.chan3_message.grid(row=4, column=4)
 
+        # Channel-04
+        self.chan4_atctivator = Tk.Checkbutton(self.channels)
+        self.chan4_name = Tk.Label(self.channels, text='Temperature')
+        self.chan4_port = Tk.Entry(self.channels)
+        self.chan4_rate = Tk.Entry(self.channels)
+        self.chan4_message = Tk.Entry(self.channels)
+
+        self.chan4_atctivator.grid(row=5, column=0)
+        self.chan4_name.grid(row=5, column=1, sticky=Tk.W)
+        self.chan4_port.grid(row=5, column=2)
+        self.chan4_rate.grid(row=5, column=3)
+        self.chan4_message.grid(row=5, column=4)
+
+        # Channel-05
+        self.chan5_atctivator = Tk.Checkbutton(self.channels)
+        self.chan5_name = Tk.Label(self.channels, text='Inclinometer')
+        self.chan5_port = Tk.Entry(self.channels)
+        self.chan5_rate = Tk.Entry(self.channels)
+        # self.chan5_message = Tk.Entry(self.channels)
+
+        self.chan5_atctivator.grid(row=6, column=0)
+        self.chan5_name.grid(row=6, column=1, sticky=Tk.W)
+        self.chan5_port.grid(row=6, column=2)
+        self.chan5_rate.grid(row=6, column=3)
+        # self.chan5_message.grid(row=6, column=4)
+
+
+        # Bottom buttons
+        self.bottom_buttons = Tk.Frame(self)
+        self.bottom_buttons.pack(side=Tk.BOTTOM, expand=Tk.YES, fill=Tk.BOTH, pady=10, padx=10)
+
+        self.close_button = Tk.Button(self.bottom_buttons)
+        self.close_button['text'] = 'Close'
+        self.close_button['command'] = self.destroy
+        self.close_button.pack(side=Tk.RIGHT, pady=5, padx=5)
+
+        self.apply_button = Tk.Button(self.bottom_buttons)
+        self.apply_button['text'] = 'Apply'
+        self.apply_button.pack(side=Tk.RIGHT, pady=5, padx=5)
+
+
+
+
 
 
 
 if  __name__ == '__main__':
-    app = Application()
+    app = MainWindow()
     app.mainloop()

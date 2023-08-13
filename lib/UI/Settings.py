@@ -3,6 +3,7 @@
 import sys
 import xml.etree.ElementTree as ET
 from lib.data.DataStructure import data_keywords
+from lib.UI.UI_interface import SettingsWindow
 
 class ComPortSettings:
     """
@@ -84,7 +85,7 @@ class Settings:
                 self.temp_port)
 
 
-    def readSettings(self):
+    def readSettingsFromFile(self):
         # Read settings from XML file
         tree = ET.parse(self.config_file)
         root = tree.getroot()
@@ -144,15 +145,25 @@ class Settings:
         password = ET.SubElement(camera, 'password')
         password.text = self.camera_settings.password
 
-
-
-
         # Generate XML string
         b_xml = ET.tostring(settings, encoding="unicode")
 
-        with open('resources/test.xml', 'w') as f_write:
+        with open('resources/settings.xml', 'w') as f_write:
             f_write.write(b_xml)
 
+    
+    def readSettingsFromUI(self, settings_window : SettingsWindow):
+        navi_port = settings_window.chan1_port.get()
+        print('READING FROM UI: ', navi_port)
+        # print(navi_port)
+
+
+    def putSettingsToUI(self, setting_window : SettingsWindow):
+        setting_window.chan1_port.insert(0, self.navi_port.port)
+        setting_window.chan1_rate.insert(0, str(self.navi_port.rate))
+        setting_window.chan1_message.insert(0, self.navi_port.message)
+        setting_window.chan1_atctivator.deselect() if not self.navi_port.enable \
+                                                    else setting_window.chan1_atctivator.select()
 
 
 
@@ -162,7 +173,7 @@ class Settings:
 if __name__ == '__main__':
     
     # settings = Settings()
-    # a = settings.readInitParamsDictionary()
+    # a = settings.readInitParamsictionary()
     # print(a)
     # Test XML settings view
 
