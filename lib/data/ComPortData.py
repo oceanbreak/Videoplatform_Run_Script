@@ -47,7 +47,10 @@ class ComPortData:
     def readFromPort(self):
         # Function reads one line from port and stores it into self_line var
         if self._port.is_open:
-            self._line = self._port.readline().decode('utf-8')
+            try:
+                self._line = self._port.readline().decode('utf-8')
+            except TypeError:
+                self._line = None
             # If tmeout, set timer
             if not self._line:
                 self.time_out_timer = 1
