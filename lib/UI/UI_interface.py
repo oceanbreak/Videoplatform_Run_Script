@@ -5,10 +5,14 @@ provides vlc recording of the file """
 # from tkinter import *
 # from tkinter import filedialog
 import tkinter as Tk
+from tkinter.messagebox import showerror, showinfo, showwarning
 
 #init_parameters = sonar_init.Get_Init_Parameters()
 
 class MainWindow(Tk.Frame):
+
+    def popUpWarning(self, text):
+        showwarning('Warning', text)
 
     def createWidgets(self):
 
@@ -28,7 +32,7 @@ class MainWindow(Tk.Frame):
         self.QUIT_button = Tk.Button(self.buttons_field)
         self.QUIT_button["text"] = "QUIT"
         self.QUIT_button["fg"]   = "red"
-        self.QUIT_button['state'] = 'disable'
+        # self.QUIT_button['state'] = 'disable'
         #self.QUIT["command"] =  self.quit_it
         self.QUIT_button.config(font=buttonfont)
 
@@ -104,11 +108,29 @@ class MainWindow(Tk.Frame):
         self.createWidgets()
 
 
-
     def settingsWindow(self):
 
         self.settings_window = SettingsWindow(self.win)
         return self.settings_window
+    
+
+    def setButtonsActive(self):
+        self.start_rec_button['state'] = 'active'
+        self.start_rec_button["fg"]   = "dark green"
+        self.reset_track_button['state'] = 'active'
+        self.set_depth_buton['state'] = 'active'
+
+
+    def setButtonsInactive(self):
+        self.start_rec_button['state'] = 'disable'
+        # self.start_rec_button["fg"]   = "dark green"
+        self.reset_track_button['state'] = 'disable'
+        self.set_depth_buton['state'] = 'disable'
+
+    def updateDataText(self, text):
+        self.data_label['text'] = text
+
+
 
 
 
@@ -142,7 +164,8 @@ class SettingsWindow(Tk.Toplevel):
         self.chan_ms.grid(row=1, column=4, sticky=Tk.W)
 
         # Channel-01
-        self.chan1_atctivator = Tk.Checkbutton(self.channels)
+        self.chan1_active = Tk.IntVar()
+        self.chan1_atctivator = Tk.Checkbutton(self.channels, variable=self.chan1_active)
         self.chan1_name = Tk.Label(self.channels, text='Navigation')
         self.chan1_port = Tk.Entry(self.channels)
         self.chan1_rate = Tk.Entry(self.channels)
@@ -219,6 +242,8 @@ class SettingsWindow(Tk.Toplevel):
         self.apply_button = Tk.Button(self.bottom_buttons)
         self.apply_button['text'] = 'Apply'
         self.apply_button.pack(side=Tk.RIGHT, pady=5, padx=5)
+
+
 
 
 
