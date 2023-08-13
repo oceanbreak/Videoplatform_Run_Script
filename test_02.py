@@ -1,7 +1,7 @@
 from lib.UI.Settings import Settings
 
 settings = Settings()
-settings.readSettings()
+settings.readSettingsFromFile()
 print(settings)
 settings.writeSettings()
 

@@ -50,10 +50,10 @@ class SonarVideoProgram:
     def __init__(self):
         self._is_running = False
         self.__global_settings = Settings()
-        self.__global_settings.readSettings()
+        self.__global_settings.readSettingsFromFile()
 
-        self.root = UI_interface.Tk()
-        self.SonarGui = UI_interface.Application(master=self.root)
+        self.root = UI_interface.Tk.Tk()
+        self.SonarGui = UI_interface.MainWindow(master=self.root)
         self.SonarGui.master.title("OCEAN RECORD v. 4.9.9")
         self.SonarGui.master.maxsize(600, 400)
 

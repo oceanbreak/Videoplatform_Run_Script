@@ -94,6 +94,10 @@ class InclinometerData:
     
     def toDisplayText(self):
         return self.__str__()
+    
+    def toLogItem(self):
+        return (self.pitch, self.roll, self.heading)
+    
 
 class ComPortString:
     # NMEA String or Inclinometer string with keyword
@@ -121,6 +125,10 @@ class DateTime:
     def toDisplayText(self):
         return f'{self.year}/{self.mon:0>2}/{self.day:0>2}  {self.hour:0>2}:{self.min:0>2}:{self.sec:0>2} UTC'
     
+    def toLogItem(self):
+        return f'{self.year}/{self.mon:0>2}/{self.day:0>2}', \
+                f'{self.hour:0>2}:{self.min:0>2}:{self.sec:0>2}'
+
 
 class LengthUnit:
     # Length of track in meters
@@ -130,6 +138,9 @@ class LengthUnit:
 
     def toDisplayText(self):
         return f'{self.length:.1f} m'
+    
+    def toLogItem(self):
+        return f'{self.length:.1f}'
     
 
 class TimeUnit:
@@ -145,4 +156,4 @@ class TimeUnit:
 
     def toDisplayText(self):
         self.convertToHMS()
-        return f'{self.hh:0>2.0f}:{self.mm:0>2.0f}:{self.ss:0>2.0f}'   
+        return f'{self.hh:0>2.0f}:{self.mm:0>2.0f}:{self.ss:0>2.0f}'

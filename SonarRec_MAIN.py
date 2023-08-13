@@ -56,7 +56,7 @@ class SonarVideoProgram:
         self._camera_IP = self.init_parameters['CAM_URL']
         self._login_pass =  (self.init_parameters['CAM_LOGIN'], self.init_parameters['CAM_PASSWORD'])
         self.root = UI_interface.Tk()
-        self.SonarGui = UI_interface.Application(master=self.root)
+        self.SonarGui = UI_interface.MainWindow(master=self.root)
         self.SonarGui.master.title("OCEAN RECORD v. 4.3.1")
         self.SonarGui.master.maxsize(600, 300)
 
