@@ -160,6 +160,14 @@ class BufferCollection:
 
         concatinator = BufferConcatinator(*buffer_output)
         return concatinator.concatinate()
+    
+    def sendMessage(self, buffer_kw, out_message):
+        for buffer_proc in self.buffer_processes:
+            for kw in buffer_proc.data_keyword:
+                if kw  == buffer_kw:
+                    buffer_proc.send_message(out_message)
+                    # print(f'Message "{out_message}" sent to {buffer_proc._com_port}')
+
 
 
 if __name__ == '__main__':
