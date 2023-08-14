@@ -14,7 +14,7 @@ import requests
 import lib.folder_struct.sonar_img_caption as sonar_img_caption
 from threading import Thread
 from tkinter import filedialog
-from lib.folder_struct.Utils import *
+from lib.Utils import *
 from lib.calculations.CoordinateCalc import *
 
 

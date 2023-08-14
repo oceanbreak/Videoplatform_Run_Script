@@ -11,7 +11,7 @@
 import lib.UI.UI_interface as UI_Interface
 from lib.UI.Settings import Settings
 from lib.data.DataCollection import DataCollection
-from lib.folder_struct.Utils import textShorten
+from lib.Utils import textShorten
 from lib.data.BufferGenerator import *
 
 class MainApplication:
