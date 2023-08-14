@@ -47,6 +47,11 @@ class CoordinatesData:
     def toDisplayText(self):
         degr_lat, min_lat, letter_lat, degr_lon, min_lon, letter_lon = self.deg_min()
         return f"{degr_lat:.0f} {min_lat:.3f}'{letter_lat}, {degr_lon:.0f} {min_lat:.3f}'{letter_lon}"
+    
+    def toLogItem(self):
+        degr_lat, min_lat, letter_lat, degr_lon, min_lon, letter_lon = self.deg_min()
+        return f"{degr_lat:.0f};{min_lat:.3f};{letter_lat};{degr_lon:.0f};{min_lat:.3f};{letter_lon}".split(';')
+        
 
 
 class DepthData:
@@ -63,6 +68,9 @@ class DepthData:
     
     def toDisplayText(self):
         return f'{self.depth:.1f} m'
+    
+    def toLogItem(self):
+        return f'{self.depth:.1f}'
 
     
 class TemperatureData:
@@ -80,6 +88,9 @@ class TemperatureData:
     def toDisplayText(self):
         return f'{self.temp:.1f} C'
     
+    def toLogItem(self):
+        return f'{self.temp:.1f}'
+    
 
 class InclinometerData:
 
@@ -96,7 +107,7 @@ class InclinometerData:
         return self.__str__()
     
     def toLogItem(self):
-        return (self.pitch, self.roll, self.heading)
+        return self.pitch, self.roll, self.heading
     
 
 class ComPortString:
@@ -126,8 +137,8 @@ class DateTime:
         return f'{self.year}/{self.mon:0>2}/{self.day:0>2}  {self.hour:0>2}:{self.min:0>2}:{self.sec:0>2} UTC'
     
     def toLogItem(self):
-        return f'{self.year}/{self.mon:0>2}/{self.day:0>2}', \
-                f'{self.hour:0>2}:{self.min:0>2}:{self.sec:0>2}'
+        return [f'{self.year}/{self.mon:0>2}/{self.day:0>2}', \
+                f'{self.hour:0>2}:{self.min:0>2}:{self.sec:0>2}']
 
 
 class LengthUnit:
@@ -157,3 +168,6 @@ class TimeUnit:
     def toDisplayText(self):
         self.convertToHMS()
         return f'{self.hh:0>2.0f}:{self.mm:0>2.0f}:{self.ss:0>2.0f}'
+    
+    def toLogItem(self):
+        return self.toDisplayText()

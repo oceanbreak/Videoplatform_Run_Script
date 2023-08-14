@@ -25,7 +25,7 @@ try:
         
         collection.readDataFromBuffer(output)
 
-        print(collection.toDisplayText())
+        print(collection.toLogItemsList())
 
         time.sleep(0.5)
 

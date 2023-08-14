@@ -111,7 +111,36 @@ class DataCollection:
                     text += var.data.toDisplayText()
                 out_string += text + '\n'
         return out_string
+    
 
+    def toLogItemsList(self):
 
-    def toLogFileLine(self):
-        pass
+        var_list = [self.navi_data,
+                        self.depth_data,
+                        self.altimeter_data,
+                        self.temperature_data,
+                        self.inclinometer_data,
+                        self.datetime,
+                        self.track_length,
+                        self.track_time_length]
+        
+        positions_in_list = [6, 1, 1, 1, 3, 2, 1, 1]
+
+        output_string = []
+        for var, pos_num in zip(var_list, positions_in_list):
+            if var is not None:
+                
+                if var.is_corrupted():
+                    # print('Corrupted')
+                    output_string += [None] * pos_num
+                else:
+                    to_add = var.data.toLogItem()
+                    if type(to_add) == list:
+                        output_string += to_add
+                    else:
+                        output_string.append(to_add)
+            else:
+                # Var is None, leave places
+                output_string += [None] * pos_num
+
+        return output_string
