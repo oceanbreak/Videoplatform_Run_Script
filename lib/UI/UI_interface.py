@@ -5,6 +5,7 @@ provides vlc recording of the file """
 # from tkinter import *
 # from tkinter import filedialog
 import tkinter as Tk
+from tkinter import ttk
 from tkinter.messagebox import showerror, showinfo, showwarning
 import time
 
@@ -113,9 +114,12 @@ class MainWindow(Tk.Frame):
 
 
     def settingsWindow(self):
-
         self.settings_window = SettingsWindow(self.win)
         return self.settings_window
+    
+    def camControlWindow(self):
+        self.cam_control_window = CameraControlWindow(self.win)
+        return self.cam_control_window
     
 
     def setButtonsActive(self):
@@ -142,6 +146,7 @@ class SettingsWindow(Tk.Toplevel):
 
     def __init__(self, master):
         super().__init__(master=master)
+        self.grab_set() # To avoid opening multiple windows
         self.createWidgets()
 
     def createWidgets(self):
@@ -279,8 +284,47 @@ class SettingsWindow(Tk.Toplevel):
         self.apply_button.pack(side=Tk.RIGHT, pady=5, padx=5)
 
 
+class CameraControlWindow(Tk.Toplevel):
+    
+    def __init__(self, master):
+        super().__init__(master=master)
+        self.grab_set()
+        self.createWidgets()
 
 
+    def createWidgets(self):
+
+        self.geometry('200x300')
+        self.title('Camera Control Panel')
+        
+        self.connect_button = Tk.Button(self)
+        self.connect_button['text'] = 'Connect camera'
+
+        self.sync_time_button = Tk.Button(self)
+        self.sync_time_button['text'] = 'Sync time'
+
+        self.rec_sd_button = Tk.Button(self)
+        self.rec_sd_button['text'] = 'Start SD Recording'
+
+        self.format_sd_button = Tk.Button(self)
+        self.format_sd_button['text'] = 'Format SD'
+
+        self.download_button = Tk.Button(self)
+        self.download_button['text'] = 'Download'
+
+        self.download_progress = ttk.Progressbar(self, orient=Tk.HORIZONTAL, length=200)
+
+        self.close_button = Tk.Button(self)
+        self.close_button['text'] = 'Close'
+        self.close_button['command'] = self.destroy
+
+        self.connect_button.pack(side=Tk.TOP, fill=Tk.BOTH, expand=Tk.YES)
+        self.sync_time_button.pack(side=Tk.TOP, fill=Tk.BOTH, expand=Tk.YES)
+        self.rec_sd_button.pack(side=Tk.TOP, fill=Tk.BOTH, expand=Tk.YES)
+        self.format_sd_button.pack(side=Tk.TOP, fill=Tk.BOTH, expand=Tk.YES)
+        self.download_button.pack(side=Tk.TOP, fill=Tk.BOTH, expand=Tk.YES)
+        self.download_progress.pack(side=Tk.TOP, fill=Tk.BOTH, expand=Tk.YES)
+        self.close_button.pack(side=Tk.TOP, fill=Tk.BOTH, expand=Tk.YES)
 
 
 
