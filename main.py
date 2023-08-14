@@ -46,6 +46,8 @@ class MainApplication:
         self.mainUI.connect_button['command'] = self.connect_button_command
         self.mainUI.settings_button['command'] = self.settings_button_command
         self.mainUI.QUIT_button['command'] = self.quit_button_command
+        self.mainUI.cam_dialog_button['command'] = self.cam_button_command
+        self.mainUI.set_depth_buton['command'] = self.set_depth_button_command
         # self.mainUI.choose_dir_button['text'] = textShorten(self.global_settings.default_folder)
 
 
@@ -88,6 +90,14 @@ class MainApplication:
         if self.__is_running:
             self.buffers.stopWritingBuffers()
         self.mainUI.quit()
+
+
+    def cam_button_command(self):
+        self.cam_control_window = self.mainUI.camControlWindow()
+
+    def set_depth_button_command(self):
+        self.buffers.sendMessage('DEPTH', b'set 0')
+        # self.buffer_queue[1].send_message(b'set 0')
 
 
 
