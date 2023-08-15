@@ -13,21 +13,6 @@ def textShorten(input_text):
     else:
        return input_text
 
-def string_generation(srt_timer):
-    # converts number into srt time format
-    return '{:0>2}'.format(srt_timer//3600) + ':' \
-           + '{:0>2}'.format((srt_timer//60) % 60) + ':' \
-           + '{:0>2}'.format(srt_timer % 60) + ',000'
-
-
-def write_srt_string(srt_file_name, data, sec):
-    # Writes one subtitle section to specified file
-    with open(srt_file_name, 'a') as fs:
-        fs.write(str(sec)+'\n')
-        fs.write( string_generation(sec) + ' --> ' + string_generation(sec+1) + '\n')
-        fs.write(data)
-        fs.write("\n\n")
-        print("Wring srt at sec " + str(sec))
 
 
 def write_log_string(log_file_name, data):
