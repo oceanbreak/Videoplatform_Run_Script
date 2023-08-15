@@ -5,6 +5,8 @@ import xml.etree.ElementTree as ET
 from lib.data.DataStructure import data_keywords
 from lib.UI.UI_interface import SettingsWindow
 
+#TODO Добавить частоту записи данныз в лог-файл.
+
 class ComPortSettings:
     """
     Class that describes com port block in cnfig file:
