@@ -14,6 +14,8 @@ from lib.data.DataCollection import DataCollection, DataPacket
 from lib.Utils import textShorten
 from lib.data.BufferGenerator import *
 from lib.calculations.TrackCounter import TrackCounter
+from lib.folder_struct.ScanDirectory import ScanDirectory
+from lib.data.SonarThread import SonarThread
 
 class MainApplication:
 
@@ -35,6 +37,7 @@ class MainApplication:
         # FLAGS
         self.__is_running = False
         self.__is_recording = False
+
 
 
         try:
@@ -116,13 +119,16 @@ class MainApplication:
         self.__is_recording = True
         self.track_counter.initTrackTimer()
         self.mainUI.start_rec_button.config(text='Stop', fg='red', command=self.stop_button_connamd)
+        self.scanDirectory()
         self.calculateTrack()
+
 
 
     def stop_button_connamd(self):
         self.mainUI.start_rec_button.config(text='Start', fg='dark green', command=self.start_button_command)
         # self.track_counter.resetTrack()
         self.__is_recording = False
+        self.scan_dir_thread.stop()
 
 
     def reset_track_command(self):
@@ -238,6 +244,16 @@ class MainApplication:
 
             finally:
                 self.mainUI.after(self.track_calculation_freq, self.calculateTrack)
+
+
+    def scanDirectory(self):
+        scan_dir = ScanDirectory(self.global_settings.default_folder, self.data_collection)
+        self.scan_dir_thread = SonarThread(scan_dir.getAddedItem)
+        self.scan_dir_thread.start()
+
+        # if self.__is_recording:
+        #     self.scan_dr_process.getAddedItem()
+        #     self.mainUI.after(self.update_text_frequency, self.scanDirectory)
 
         
 

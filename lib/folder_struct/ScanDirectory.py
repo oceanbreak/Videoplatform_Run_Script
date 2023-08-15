@@ -7,6 +7,7 @@ from lib.data.SonarThread import SonarThread
 from lib.folder_struct.SrtGenerator import SrtGenerator
 from lib.folder_struct.ImageCaption import ImageCaption
 from lib.data.DataCollection import DataCollection
+from tkinter import Tk
 import os
 
 
@@ -17,7 +18,8 @@ class ScanDirectory:
     IMAGE = 1
     VIDEO = 2
 
-    def __init__(self, folder):
+    def __init__(self, folder, data_collection : DataCollection):
+        self.data_collection = data_collection
         self.__scan_folder = folder
         self.__cur_file_list = self.getFileList()
         self.image_extension_list = ('jpg', 'JPG', 'png', 'PNG')
@@ -44,7 +46,9 @@ class ScanDirectory:
     def newItemFlag(self, item):
         if item[-3:] in self.image_extension_list:
             print(f'Image {item} added')
-            self.image_flag = item
+            snap = ImageCaption(os.path.join(self.__scan_folder, item), self.data_collection)
+            snap.addCaption()
+            snap.addSnapLogLine()
         
         elif item[-3:] in self.video_extension_list:
             print(f'Video {item} added')
