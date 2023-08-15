@@ -45,9 +45,9 @@ class ComPortSettings:
 class CameraSettings:
 
     def __init__(self):
-        self.URL = None
-        self.login = None
-        self.password = None
+        self.URL = ''
+        self.login = ''
+        self.password = ''
 
     def __str__(self):
         return f'URL: {self.URL}, login: {self.login}, password: {self.password}\n'
