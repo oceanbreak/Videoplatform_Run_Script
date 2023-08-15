@@ -18,6 +18,7 @@ from lib.folder_struct.ScanDirectory import ScanDirectory
 from lib.data.SonarThread import SonarThread
 from lib.folder_struct.LogFileGenerator import LogFileGeneraror
 from lib.camera.CamController import CameraContoller
+from tkinter.filedialog import askdirectory
 
 class MainApplication:
 
@@ -69,6 +70,14 @@ class MainApplication:
 
     def setupSettingsWindowButtons(self):
         self.settings_window.apply_button['command'] = self.readSettingsFromUI
+        self.settings_window.default_folder_button['command'] = self.choose_folder_command
+
+
+    def choose_folder_command(self):
+        new_folder = askdirectory(initialdir=self.global_settings.default_folder)
+        self.global_settings.default_folder = new_folder
+        self.settings_window.default_folder_button['text'] = textShorten(new_folder)
+        
         
 
     def connect_button_command(self):
