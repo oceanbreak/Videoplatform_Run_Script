@@ -54,7 +54,7 @@ class ScanDirectory:
         elif item[-3:] in self.video_extension_list:
             print(f'Video {item} added')
             srt = SrtGenerator(full_path, self.data_collection)
-            srt_proc = SonarThread(SrtGenerator.generateSrtFile)
+            srt_proc = SonarThread(srt.generateSrtFile)
             srt_proc.start()
             self.video_flag = item
 

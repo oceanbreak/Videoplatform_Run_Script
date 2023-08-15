@@ -9,6 +9,7 @@ from tkinter import filedialog
 
 
 
+
 # Utils functions
 def timeToSec(hhmmss_string):
     hh, mm, ss = map(int, hhmmss_string.split(':'))
