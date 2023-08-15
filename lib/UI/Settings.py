@@ -65,6 +65,7 @@ class Settings:
         self.temp_port = ComPortSettings(data_keywords.TEMP)
         self.camera_settings = CameraSettings()
         self.default_folder = ''
+        self.log_write_freq = 1
         self.config_file = 'resources/settings.xml'
 
     def __str__(self):
@@ -77,7 +78,8 @@ class Settings:
                 'TEMP: ' +str(self.temp_port) + \
                 "Camera settings:\n" + \
                 str(self.camera_settings) + \
-                f"Default rec folder: {self.default_folder}"
+                f"Default rec folder: {self.default_folder}\n" + \
+                f"Log file writing frequency: {self.log_write_freq} s"
 
     def ports_as_array(self):
         return (self.navi_port,

@@ -36,7 +36,7 @@ class MainApplication:
         # Paramteres
         self.update_text_frequency = 100
         self.track_calculation_freq = 100
-        self.update_log_file_freq = 1000
+        self.update_log_file_freq = self.global_settings.log_write_freq * 1000
 
         # FLAGS
         self.__is_running = False
@@ -118,6 +118,8 @@ class MainApplication:
     def quit_button_command(self):
         yes = self.mainUI.popAskWindow('Quit program?')
         if yes:
+            if self.__is_recording:
+                self.stop_button_command()
             if self.__is_running:
                 self.buffers.stopWritingBuffers()
             self.mainUI.quit()
@@ -138,14 +140,14 @@ class MainApplication:
         self.__is_recording = True
         self.logWriter = LogFileGeneraror(self.global_settings.default_folder, self.data_collection)
         self.track_counter.initTrackTimer()
-        self.mainUI.start_rec_button.config(text='Stop', fg='red', command=self.stop_button_connamd)
+        self.mainUI.start_rec_button.config(text='Stop', fg='red', command=self.stop_button_command)
         self.scanDirectory()
         self.calculateTrack()
         self.generateLogFile()
 
 
 
-    def stop_button_connamd(self):
+    def stop_button_command(self):
         self.mainUI.start_rec_button.config(text='Start', fg='dark green', command=self.start_button_command)
         # self.track_counter.resetTrack()
         self.__is_recording = False
@@ -232,6 +234,9 @@ class MainApplication:
 
         # Folder
         self.settings_window.default_folder_button['text'] = textShorten(self.global_settings.default_folder)
+
+        # Common
+        self.settings_window.log_file_freq_entry.insert(0, self.global_settings.log_write_freq)
 
 
     def readSettingsFromUI(self):

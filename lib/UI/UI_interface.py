@@ -159,7 +159,7 @@ class SettingsWindow(Tk.Toplevel):
         header_font = ('arial', 12, 'bold')
 
         # self.settings_window = Tk.Toplevel(self.win)
-        self.geometry('520x450')
+        self.geometry('520x470')
         self.title('Settings')
 
         # Inputs
@@ -274,6 +274,11 @@ class SettingsWindow(Tk.Toplevel):
         self.default_folder_label.grid(row=4, column=0, columnspan=2)
         self.default_folder_button = Tk.Button(self.cam_settings)
         self.default_folder_button.grid(row=5, columnspan=2, sticky=Tk.W)
+
+        self.log_file_freq_label = Tk.Label(self.cam_settings, text='Log frequency (sec)')
+        self.log_file_freq_entry = Tk.Entry(self.cam_settings)
+        self.log_file_freq_label.grid(row=6, column=0, sticky=Tk.W)
+        self.log_file_freq_entry.grid(row=6, column=1)
 
 
         # Bottom buttons
