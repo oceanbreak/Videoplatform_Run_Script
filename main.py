@@ -17,6 +17,7 @@ from lib.calculations.TrackCounter import TrackCounter
 from lib.folder_struct.ScanDirectory import ScanDirectory
 from lib.data.SonarThread import SonarThread
 from lib.folder_struct.LogFileGenerator import LogFileGeneraror
+from lib.camera.CamController import CameraContoller
 
 class MainApplication:
 
@@ -45,11 +46,11 @@ class MainApplication:
         try:
             self.global_settings.readSettingsFromFile()
         except (FileNotFoundError, ValueError):
-            self.mainUI.popUpWarning('No settings file found')
+            self.mainUI.popUpWarning('No settings file found. Creating')
 
         print(self.global_settings)
             
-
+        
         self.setupMainAppButtons()
         self.mainUI.mainloop()
 
@@ -109,6 +110,7 @@ class MainApplication:
 
     def cam_button_command(self):
         self.cam_control_window = self.mainUI.camControlWindow()
+        self.setupCameraButtons()
 
 
     def set_depth_button_command(self):
@@ -141,6 +143,26 @@ class MainApplication:
             self.data_collection.track_length = DataPacket(self.track_counter.getCurTrackLength())
             self.data_collection.track_time_length = DataPacket(self.track_counter.getCurTrackTime())
             print('Track reset')
+
+
+############### CAMERA WINDOW @@@@@@@@@@@@@@@@@@@@@@@@2
+
+    def setupCameraButtons(self):
+        self.cam_control_window.connect_button['command'] = self.connect_camera_command
+    
+    def connect_camera_command(self):
+        # print('Am i connecting')
+        self.camera_contol = CameraContoller(self.global_settings)
+        if not self.camera_contol.connected():
+            success = self.camera_contol.connectCamera()
+            if success:
+                self.cam_control_window.connect_button['text'] = 'Disconnect camera'
+                self.cam_control_window.activateButtons()
+            else:
+                self.mainUI.popUpWarning('Cannot connect to camera')
+        else:
+            self.camera_contol.disconnectCamera()
+            self.cam_control_window.deactivateButtons()
 
 
 ################# PROGRAM LOGIC #################################
@@ -261,7 +283,7 @@ class MainApplication:
 
     def generateLogFile(self):
         if self.__is_recording:
-            print('Writing log file')
+            # print('Writing log file')
             self.logWriter.writeLogString()
             self.mainUI.after(self.update_log_file_freq, self.generateLogFile)
 

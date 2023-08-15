@@ -302,15 +302,19 @@ class CameraControlWindow(Tk.Toplevel):
 
         self.sync_time_button = Tk.Button(self)
         self.sync_time_button['text'] = 'Sync time'
+        self.sync_time_button.config(state=Tk.DISABLED)
 
         self.rec_sd_button = Tk.Button(self)
         self.rec_sd_button['text'] = 'Start SD Recording'
+        self.rec_sd_button.config(state=Tk.DISABLED)
 
         self.format_sd_button = Tk.Button(self)
         self.format_sd_button['text'] = 'Format SD'
+        self.format_sd_button.config(state=Tk.DISABLED)
 
         self.download_button = Tk.Button(self)
         self.download_button['text'] = 'Download'
+        self.download_button.config(state=Tk.DISABLED)
 
         self.download_progress = ttk.Progressbar(self, orient=Tk.HORIZONTAL, length=200)
 
@@ -325,6 +329,20 @@ class CameraControlWindow(Tk.Toplevel):
         self.download_button.pack(side=Tk.TOP, fill=Tk.BOTH, expand=Tk.YES)
         self.download_progress.pack(side=Tk.TOP, fill=Tk.BOTH, expand=Tk.YES)
         self.close_button.pack(side=Tk.TOP, fill=Tk.BOTH, expand=Tk.YES)
+
+
+    def deactivateButtons(self):
+        self.sync_time_button.config(state=Tk.DISABLED)
+        self.rec_sd_button.config(state=Tk.DISABLED)
+        self.format_sd_button.config(state=Tk.DISABLED)
+        self.download_button.config(state=Tk.DISABLED)
+
+
+    def activateButtons(self):
+        self.sync_time_button.config(state=Tk.NORMAL)
+        self.rec_sd_button.config(state=Tk.NORMAL)
+        self.format_sd_button.config(state=Tk.NORMAL)
+        self.download_button.config(state=Tk.NORMAL)
 
 
 
