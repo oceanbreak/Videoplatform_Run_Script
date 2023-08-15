@@ -1,34 +1,9 @@
-from lib.data.ComPortData import ComPortData
-from lib.data.BufferGenerator import BufferGenerator, BufferConcatinator, BufferCollection
+from lib.folder_struct.ScanDirectory import ScanDirectory
 import time
-from lib.data.DataStructure import CoordinatesData, DepthData, data_keywords
-from lib.data.NmeaParser import NmeaParser
-from lib.UI.Settings import Settings
-from lib.data.DataCollection import DataCollection
 
+dir_scan = ScanDirectory('D:/')
 
-
-global_settings = Settings()
-global_settings.readSettingsFromFile()
-
-buffer = BufferCollection(global_settings)
-
-buffer_rocess = buffer.InnitiateBuffers()
-collection = DataCollection()
-
-try:
-
-    while True:
-
-        output = buffer.getRawData()
-        # print(output)
-        
-        collection.readDataFromBuffer(output)
-
-        print(collection.toLogItemsList())
-
-        time.sleep(0.5)
-
-finally:
-    buffer.stopWritingBuffers()
-
+for i in range(100):
+    print(i)
+    dir_scan.getAddedItem()
+    time.sleep(1)
