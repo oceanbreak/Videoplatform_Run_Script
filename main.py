@@ -116,9 +116,11 @@ class MainApplication:
 
 
     def quit_button_command(self):
-        if self.__is_running:
-            self.buffers.stopWritingBuffers()
-        self.mainUI.quit()
+        yes = self.mainUI.popAskWindow('Quit program?')
+        if yes:
+            if self.__is_running:
+                self.buffers.stopWritingBuffers()
+            self.mainUI.quit()
 
 
     def cam_button_command(self):
@@ -180,7 +182,7 @@ class MainApplication:
             self.cam_control_window.deactivateButtons()
 
     def format_sd_command(self):
-        yes = self.mainUI.askyesno('Format SD?\nThat will erase all data on camera')
+        yes = self.mainUI.popAskWindow('Format SD?\nThat will erase all data on camera')
         if yes:
             self.camera_contol.formatSD()
 

@@ -19,8 +19,8 @@ class MainWindow(Tk.Frame):
     def popError(self, text):
         showerror('Error', text)
 
-    def askyesno(self, text):
-        askyesno('Confirmation', text)
+    def popAskWindow(self, text):
+        return askyesno('Confirmation', text)
 
     def createWidgets(self):
 
