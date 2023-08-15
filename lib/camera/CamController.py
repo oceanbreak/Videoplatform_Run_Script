@@ -80,3 +80,8 @@ class CameraContoller:
 
         resp3 = requests.get(self.URL + message, auth = self.auth)
         print(resp3.content.decode('utf-8'))
+
+
+    def formatSD(self):
+        resp2 = requests.get(self.URL + '/cgi-bin/admin/storagemanagement.cgi?action=format', auth = self.auth)
+        print(resp2.content)

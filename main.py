@@ -77,7 +77,11 @@ class MainApplication:
         new_folder = askdirectory(initialdir=self.global_settings.default_folder)
         self.global_settings.default_folder = new_folder
         self.settings_window.default_folder_button['text'] = textShorten(new_folder)
-        
+
+        # Update camera directory, if camera connected
+        if hasattr(self, 'cam_control'):
+            print('Trying to change cam folder')
+            self.camera_contol.folder = new_folder
         
 
     def connect_button_command(self):
@@ -158,6 +162,8 @@ class MainApplication:
 
     def setupCameraButtons(self):
         self.cam_control_window.connect_button['command'] = self.connect_camera_command
+        # self.cam_control_window.sync_time_button['command'] = self.camera_contol.syncTime
+        self.cam_control_window.format_sd_button['command'] = self.format_sd_command
     
     def connect_camera_command(self):
         # print('Am i connecting')
@@ -168,10 +174,15 @@ class MainApplication:
                 self.cam_control_window.connect_button['text'] = 'Disconnect camera'
                 self.cam_control_window.activateButtons()
             else:
-                self.mainUI.popUpWarning('Cannot connect to camera')
+                self.mainUI.popError('Cannot connect to camera')
         else:
             self.camera_contol.disconnectCamera()
             self.cam_control_window.deactivateButtons()
+
+    def format_sd_command(self):
+        yes = self.mainUI.askyesno('Format SD?\nThat will erase all data on camera')
+        if yes:
+            self.camera_contol.formatSD()
 
 
 ################# PROGRAM LOGIC #################################

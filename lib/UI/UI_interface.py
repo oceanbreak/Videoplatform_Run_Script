@@ -6,7 +6,7 @@ provides vlc recording of the file """
 # from tkinter import filedialog
 import tkinter as Tk
 from tkinter import ttk
-from tkinter.messagebox import showerror, showinfo, showwarning
+from tkinter.messagebox import showerror, showinfo, showwarning, askyesno
 import time
 
 #init_parameters = sonar_init.Get_Init_Parameters()
@@ -15,6 +15,12 @@ class MainWindow(Tk.Frame):
 
     def popUpWarning(self, text):
         showwarning('Warning', text)
+
+    def popError(self, text):
+        showerror('Error', text)
+
+    def askyesno(self, text):
+        askyesno('Confirmation', text)
 
     def createWidgets(self):
 
