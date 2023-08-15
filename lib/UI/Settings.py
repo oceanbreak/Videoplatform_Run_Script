@@ -107,6 +107,7 @@ class Settings:
         # Read common settings
         for item in root.iter('common'):
             self.default_folder = item[0].text
+            self.log_write_freq = int(item[1].text)
 
         # Read IP Camera settingds
         for item in root.iter('IP_camera'):
@@ -124,6 +125,8 @@ class Settings:
         common = ET.SubElement(settings, 'common')
         default_folder = ET.SubElement(common, 'folder')
         default_folder.text = self.default_folder
+        log_freq = ET.SubElement(common, 'log_freq')
+        log_freq.text = str(self.log_write_freq)
 
         # COM port settings
         channels = ET.SubElement(settings, 'channels')

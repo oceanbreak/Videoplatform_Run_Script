@@ -36,7 +36,6 @@ class MainApplication:
         # Paramteres
         self.update_text_frequency = 100
         self.track_calculation_freq = 100
-        self.update_log_file_freq = self.global_settings.log_write_freq * 1000
 
         # FLAGS
         self.__is_running = False
@@ -265,6 +264,8 @@ class MainApplication:
         self.global_settings.inclin_port.rate = int(self.settings_window.chan5_rate.get())
         self.global_settings.inclin_port.enable = self.settings_window.chan5_active.get()
 
+        self.global_settings.log_write_freq = int(self.settings_window.log_file_freq_entry.get())
+
         self.global_settings.writeSettings()
         self.data_collection.clear()
         print("New settings written to file")
@@ -312,7 +313,7 @@ class MainApplication:
         if self.__is_recording:
             # print('Writing log file')
             self.logWriter.writeLogString()
-            self.mainUI.after(self.update_log_file_freq, self.generateLogFile)
+            self.mainUI.after(self.global_settings.log_write_freq*1000, self.generateLogFile)
 
         
 
