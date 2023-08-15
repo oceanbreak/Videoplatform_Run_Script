@@ -10,9 +10,10 @@
 
 import lib.UI.UI_interface as UI_Interface
 from lib.UI.Settings import Settings
-from lib.data.DataCollection import DataCollection
+from lib.data.DataCollection import DataCollection, DataPacket
 from lib.Utils import textShorten
 from lib.data.BufferGenerator import *
+from lib.calculations.TrackCounter import TrackCounter
 
 class MainApplication:
 
@@ -21,13 +22,19 @@ class MainApplication:
 
         self.data_collection = DataCollection()
         self.global_settings = Settings()
+        self.track_counter = TrackCounter()
 
         self.root = UI_Interface.Tk.Tk()
         self.mainUI = UI_Interface.MainWindow(self.root)
         self.mainUI.master.title('OceanRecord')
 
+        # Paramteres
         self.update_text_frequency = 100
+        self.track_calculation_freq = 100
+
+        # FLAGS
         self.__is_running = False
+        self.__is_recording = False
 
 
         try:
@@ -41,6 +48,7 @@ class MainApplication:
         self.setupMainAppButtons()
         self.mainUI.mainloop()
 
+############### SETIP UI ELEMENTS #######################################
 
     def setupMainAppButtons(self):
         self.mainUI.connect_button['command'] = self.connect_button_command
@@ -48,6 +56,8 @@ class MainApplication:
         self.mainUI.QUIT_button['command'] = self.quit_button_command
         self.mainUI.cam_dialog_button['command'] = self.cam_button_command
         self.mainUI.set_depth_buton['command'] = self.set_depth_button_command
+        self.mainUI.start_rec_button['command'] = self.start_button_command
+        self.mainUI.reset_track_button['command'] = self.reset_track_command
         # self.mainUI.choose_dir_button['text'] = textShorten(self.global_settings.default_folder)
 
 
@@ -95,11 +105,35 @@ class MainApplication:
     def cam_button_command(self):
         self.cam_control_window = self.mainUI.camControlWindow()
 
+
     def set_depth_button_command(self):
         self.buffers.sendMessage('DEPTH', b'set 0')
         # self.buffer_queue[1].send_message(b'set 0')
 
 
+    def start_button_command(self):
+        print('Im in rec buttton')
+        self.__is_recording = True
+        self.track_counter.initTrackTimer()
+        self.mainUI.start_rec_button.config(text='Stop', fg='red', command=self.stop_button_connamd)
+        self.calculateTrack()
+
+
+    def stop_button_connamd(self):
+        self.mainUI.start_rec_button.config(text='Start', fg='dark green', command=self.start_button_command)
+        # self.track_counter.resetTrack()
+        self.__is_recording = False
+
+
+    def reset_track_command(self):
+        if not self.__is_recording:
+            self.track_counter.resetTrack()
+            self.data_collection.track_length = DataPacket(self.track_counter.getCurTrackLength())
+            self.data_collection.track_time_length = DataPacket(self.track_counter.getCurTrackTime())
+            print('Track reset')
+
+
+################# PROGRAM LOGIC #################################
 
     def putSettingsToUI(self):
         """
@@ -189,6 +223,22 @@ class MainApplication:
         if self.__is_running:
             self.mainUI.data_label['text'] = self.data_collection.toDisplayText()
             self.mainUI.after(self.update_text_frequency, self.updateDisplay)
+
+
+    def calculateTrack(self):
+        if self.__is_recording:
+            try:
+                self.track_counter.incrementTime()
+                self.data_collection.track_time_length = DataPacket(self.track_counter.getCurTrackTime())
+                self.track_counter.incrementTrack(self.data_collection.navi_data.data)
+                self.data_collection.track_length = DataPacket(self.track_counter.getCurTrackLength())
+                
+            except AttributeError:
+                print( 'Error in track data')
+
+            finally:
+                self.mainUI.after(self.track_calculation_freq, self.calculateTrack)
+
         
 
 

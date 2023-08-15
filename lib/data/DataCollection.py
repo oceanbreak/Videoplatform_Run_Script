@@ -115,16 +115,16 @@ class DataCollection:
 
     def toLogItemsList(self):
 
-        var_list = [self.navi_data,
+        var_list = [self.track_length,
+                        self.navi_data,
                         self.depth_data,
                         self.altimeter_data,
-                        self.temperature_data,
-                        self.inclinometer_data,
                         self.datetime,
-                        self.track_length,
-                        self.track_time_length]
+                        self.track_time_length,
+                        self.temperature_data,
+                        self.inclinometer_data]
         
-        positions_in_list = [6, 1, 1, 1, 3, 2, 1, 1]
+        positions_in_list = [1, 6, 1, 1, 2, 1, 1, 3]
 
         output_string = []
         for var, pos_num in zip(var_list, positions_in_list):

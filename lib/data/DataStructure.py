@@ -46,11 +46,11 @@ class CoordinatesData:
     
     def toDisplayText(self):
         degr_lat, min_lat, letter_lat, degr_lon, min_lon, letter_lon = self.deg_min()
-        return f"{degr_lat:.0f} {min_lat:.3f}'{letter_lat}, {degr_lon:.0f} {min_lat:.3f}'{letter_lon}"
+        return f"{degr_lat:.0f} {min_lat:.4f}'{letter_lat}, {degr_lon:.0f} {min_lat:.4f}'{letter_lon}"
     
     def toLogItem(self):
         degr_lat, min_lat, letter_lat, degr_lon, min_lon, letter_lon = self.deg_min()
-        return f"{degr_lat:.0f};{min_lat:.3f};{letter_lat};{degr_lon:.0f};{min_lat:.3f};{letter_lon}".split(';')
+        return f"{degr_lat:.0f};{min_lat:.4f};{letter_lat};{degr_lon:.0f};{min_lat:.4f};{letter_lon}".split(';')
         
 
 
@@ -167,7 +167,7 @@ class TimeUnit:
 
     def toDisplayText(self):
         self.convertToHMS()
-        return f'{self.hh:0>2.0f}:{self.mm:0>2.0f}:{self.ss:0>2.0f}'
+        return f'{self.hh:0>2.0f}:{self.mm:0>2.0f}:{self.ss:0>4.1f}'
     
     def toLogItem(self):
         return self.toDisplayText()
