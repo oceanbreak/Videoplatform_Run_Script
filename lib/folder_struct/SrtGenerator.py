@@ -1,12 +1,22 @@
 import time
 import os
 from lib.data.DataCollection import DataCollection
+from lib.data.SonarThread import SonarThread
 
+
+# TODO Test if it continues runnong after video file stops growing
 class SrtGenerator:
 
     def __init__(self, video_file : str, data_collection : DataCollection):
         self.video_file = video_file
         self.data_collection = data_collection
+        self.srt_file_name = '.'.join(self.video_file.split('.')[:-1]) + '.srt'
+        self.stop_flag = False
+        self.cur_size = os.path.getsize(self.video_file)
+        self.cur_sec = 0
+        time.sleep(0.5)
+
+
 
     def string_generation(self, srt_timer):
         # converts number into srt time format
@@ -26,19 +36,14 @@ class SrtGenerator:
 
 
     def generateSrtFile(self):
-        self.srt_file_name = '.'.join(self.video_file.split('.')[:-1]) + '.srt'
-        cur_size = os.path.getsize(self.video_file)
-        time.sleep(0.5)
-
-        cur_sec = 1
-
+        print('I am still here')
         while True:
             new_size = os.path.getsize(self.video_file)
-            if new_size <= cur_size:
+            if new_size <= self.cur_size:
                 print('   STOP SRT generation for ' + self.video_file)
                 break
-            cur_size = new_size
+            self.cur_size = new_size
 
-            self.write_srt_string(self.dataCollection.toDisplayText(), cur_sec)
-            cur_sec += 1
+            self.write_srt_string(self.data_collection.toDisplayText(), self.cur_sec)
+            self.cur_sec += 1
             time.sleep(1)

@@ -44,14 +44,18 @@ class ScanDirectory:
 
         
     def newItemFlag(self, item):
+        full_path = os.path.join(self.__scan_folder, item)
         if item[-3:] in self.image_extension_list:
             print(f'Image {item} added')
-            snap = ImageCaption(os.path.join(self.__scan_folder, item), self.data_collection)
+            snap = ImageCaption(full_path, self.data_collection)
             snap.addCaption()
             snap.addSnapLogLine()
         
         elif item[-3:] in self.video_extension_list:
             print(f'Video {item} added')
+            srt = SrtGenerator(full_path, self.data_collection)
+            srt_proc = SonarThread(SrtGenerator.generateSrtFile)
+            srt_proc.start()
             self.video_flag = item
 
     def resetFlags(self):
