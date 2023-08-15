@@ -11,7 +11,7 @@ Developed in Sonar lab</br>
 #### The program is developed for collecting data from TUV Videomodule. Also it may be used for logging such data as navigation, depth and so on.
 ---
 
-### <u>Требования / dependencies</u>
+### <u>Требования</u> / <u>dependencies</u>
 + python 3.7.9
 + pyserial
 + pillow
