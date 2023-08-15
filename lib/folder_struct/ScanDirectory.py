@@ -9,7 +9,7 @@ from lib.folder_struct.ImageCaption import ImageCaption
 from lib.data.DataCollection import DataCollection
 from tkinter import Tk
 import os
-
+from threading import Thread
 
 
 class ScanDirectory:
@@ -54,7 +54,7 @@ class ScanDirectory:
         elif item[-3:] in self.video_extension_list:
             print(f'Video {item} added')
             srt = SrtGenerator(full_path, self.data_collection)
-            srt_proc = SonarThread(srt.generateSrtFile)
+            srt_proc = Thread(None, srt.generateSrtFile)
             srt_proc.start()
             self.video_flag = item
 
