@@ -15,7 +15,7 @@ class ImageCaption:
         self.path = path
         self.file = file
         self.data_text = data_collection.toDisplayText()
-        self.font = ImageFont.truetype('resources/F25_Bank_Printer.ttf', 25)
+        self.font = ImageFont.truetype('arial.ttf', 25)
 
     def addCaption(self):
         """
