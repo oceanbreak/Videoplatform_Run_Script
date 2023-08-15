@@ -14,7 +14,6 @@ def textShorten(input_text):
        return input_text
 
 
-
 def write_log_string(log_file_name, data):
     with open(log_file_name, 'a') as fs:
         fs.write(';'.join(data))
@@ -26,12 +25,3 @@ def generateFileName(prefix = 'log', extension = 'txt'):
     date_str = '{:0>2}'.format(cur_time.tm_mday) +  '{:0>2}'.format(cur_time.tm_mon)  + '{:0>2}'.format(cur_time.tm_year)[-2:]
     time_str = '{:0>2}'.format(cur_time.tm_hour) + '{:0>2}'.format(cur_time.tm_min)  + '{:0>2}'.format(cur_time.tm_sec)
     return prefix + '_' + date_str + '_' + time_str + '.' + extension
-
-
-
-
-if __name__ == '__main__':
-    for  i in range(10):
-        data = 'This line number is %s \n' % i
-        write_srt_string('test.srt', data, i)
-        # print(string_generation(i))

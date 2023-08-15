@@ -16,6 +16,7 @@ from lib.data.BufferGenerator import *
 from lib.calculations.TrackCounter import TrackCounter
 from lib.folder_struct.ScanDirectory import ScanDirectory
 from lib.data.SonarThread import SonarThread
+from lib.folder_struct.LogFileGenerator import LogFileGeneraror
 
 class MainApplication:
 
@@ -33,6 +34,7 @@ class MainApplication:
         # Paramteres
         self.update_text_frequency = 100
         self.track_calculation_freq = 100
+        self.update_log_file_freq = 1000
 
         # FLAGS
         self.__is_running = False
@@ -117,10 +119,12 @@ class MainApplication:
     def start_button_command(self):
         print('Im in rec buttton')
         self.__is_recording = True
+        self.logWriter = LogFileGeneraror(self.global_settings.default_folder, self.data_collection)
         self.track_counter.initTrackTimer()
         self.mainUI.start_rec_button.config(text='Stop', fg='red', command=self.stop_button_connamd)
         self.scanDirectory()
         self.calculateTrack()
+        self.generateLogFile()
 
 
 
@@ -254,6 +258,12 @@ class MainApplication:
         # if self.__is_recording:
         #     self.scan_dr_process.getAddedItem()
         #     self.mainUI.after(self.update_text_frequency, self.scanDirectory)
+
+    def generateLogFile(self):
+        if self.__is_recording:
+            print('Writing log file')
+            self.logWriter.writeLogString()
+            self.mainUI.after(self.update_log_file_freq, self.generateLogFile)
 
         
 
