@@ -92,6 +92,15 @@ class Settings:
                 self.inclin_port,
                 self.temp_port,
                 self.sonar_port)
+    
+
+    def getActivChanNum(self):
+        # Calculate number of active channels
+        active_num = 0
+        for var in self.ports_as_array():
+            if var.enable:
+                active_num += 1
+        return active_num
 
 
     def readSettingsFromFile(self):
