@@ -34,7 +34,7 @@ class MainWindow(Tk.Frame):
         self.win = Tk.Frame()
         self.win.pack(side=Tk.BOTTOM, expand=Tk.YES, fill=Tk.BOTH)
         self.buttons_field = Tk.Frame()
-        self.buttons_field.pack(side=Tk.TOP, expand=Tk.YES, fill=Tk.BOTH)
+        self.buttons_field.pack(side=Tk.TOP, expand=Tk.NO, fill=Tk.BOTH)
 
         #QUIT BUTTON
         self.QUIT_button = Tk.Button(self.buttons_field)
