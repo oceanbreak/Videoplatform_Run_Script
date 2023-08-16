@@ -34,6 +34,7 @@ class CoordinatesData:
         self.lat = lat
         self.lon = lon
         self.keyword = None
+        self.pos_num = 6
 
     def __str__(self):
         return f'{self.lat}, {self.lon}'
@@ -59,6 +60,7 @@ class DepthData:
     def __init__(self, depth : float):
         self.depth = depth
         self.keyword = None
+        self.pos_num = 1
 
     def value(self):
         return self.depth
@@ -77,6 +79,7 @@ class TemperatureData:
 
     def __init__(self, temp):
         self.temp = temp
+        self.pos_num = 1
         # self.keyword = data_keywords.DEPTH
 
     def value(self):
@@ -99,6 +102,7 @@ class InclinometerData:
         self.roll = roll
         self.heading = heading
         self.kewword = None
+        self.pos_num = 3
 
     def __str__(self):
         return f'Pitch: {self.pitch}, Roll: {self.roll}, Heading: {self.heading}'
@@ -125,16 +129,18 @@ class ComPortString:
 
 class DateTime:
 
-    def __init__(self, gmtime : time.struct_time):
+    def __init__(self, gmtime : time.struct_time, UTC=True):
         self.year = gmtime.tm_year
         self.mon = gmtime.tm_mon
         self.day = gmtime.tm_mday
         self.hour = gmtime.tm_hour
         self.min = gmtime.tm_min
         self.sec = gmtime.tm_sec
+        self.postfix = 'UTC' if UTC else ''
+        self.pos_num = 2
 
     def toDisplayText(self):
-        return f'{self.year}/{self.mon:0>2}/{self.day:0>2}  {self.hour:0>2}:{self.min:0>2}:{self.sec:0>2} UTC'
+        return f'{self.year}/{self.mon:0>2}/{self.day:0>2}  {self.hour:0>2}:{self.min:0>2}:{self.sec:0>2} {self.postfix}'
     
     def toLogItem(self):
         return [f'{self.year}/{self.mon:0>2}/{self.day:0>2}', \
@@ -146,6 +152,7 @@ class LengthUnit:
 
     def __init__(self, length):
         self.length = length
+        self.pos_num = 1
 
     def toDisplayText(self):
         return f'{self.length:.1f} m'
@@ -159,6 +166,7 @@ class TimeUnit:
 
     def __init__(self, secs):
         self.secs = secs
+        self.pos_num = 1
 
     def convertToHMS(self):
         self.hh = self.secs // 3600
