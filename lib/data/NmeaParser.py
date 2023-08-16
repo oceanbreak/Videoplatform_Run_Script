@@ -31,6 +31,10 @@ class NmeaParser:
             return self.parseDBS(string)
         if 'MTW' in message:
             return self.parseMTW(string)
+        if 'RMC' in message:
+            return self.parseRMC(string)
+        if 'GLL' in message:
+            return self.parseGLL(string)
 
     def parseGGA(self, nmea_string : str):
         """
@@ -43,6 +47,56 @@ class NmeaParser:
             lonval = float(items[4])
             latsign = items[3]
             lonsign = items[5]
+        except ValueError:
+            return None
+
+        lat_degrees = latval//100
+        lon_degrees = lonval//100
+        lat_minutes = latval % 100
+        lon_minutes = lonval % 100
+
+        lattitude = self.coord_sign[latsign] * (lat_degrees + lat_minutes/60)
+        longtitude = self.coord_sign[lonsign] * (lon_degrees + lon_minutes/60)
+
+        return CoordinatesData(lattitude, longtitude)
+    
+
+    def parseGLL(self, nmea_string : str):
+        """
+        params: --GGA NMEA string
+        return: <CoordinatesData> object
+        """
+        items = nmea_string.split(',')
+        try:
+            latval = float(items[1])
+            lonval = float(items[3])
+            latsign = items[2]
+            lonsign = items[4]
+        except ValueError:
+            return None
+
+        lat_degrees = latval//100
+        lon_degrees = lonval//100
+        lat_minutes = latval % 100
+        lon_minutes = lonval % 100
+
+        lattitude = self.coord_sign[latsign] * (lat_degrees + lat_minutes/60)
+        longtitude = self.coord_sign[lonsign] * (lon_degrees + lon_minutes/60)
+
+        return CoordinatesData(lattitude, longtitude)
+    
+
+    def parseRMC(self, nmea_string : str):
+        """
+        params: --RMC NMEA string
+        return: <CoordinatesData> object
+        """
+        items = nmea_string.split(',')
+        try:
+            latval = float(items[3])
+            lonval = float(items[5])
+            latsign = items[4]
+            lonsign = items[6]
         except ValueError:
             return None
 
