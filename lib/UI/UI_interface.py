@@ -30,6 +30,7 @@ class MainWindow(Tk.Frame):
 
         self.data_label.config(image=self.ph)
         print('OK creating image')
+        self.data_label.config(text='Developed by Sonarlab team (c)', compound=Tk.TOP)
 
     def cearImageOnLabel(self):
         self.data_label.config(image='')
