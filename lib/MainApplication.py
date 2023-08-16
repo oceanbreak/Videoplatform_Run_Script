@@ -69,6 +69,7 @@ class MainApplication:
 
     def choose_folder_command(self):
         new_folder = askdirectory(initialdir=self.global_settings.default_folder)
+        if new_folder == '': return
         self.global_settings.default_folder = new_folder
         self.settings_window.default_folder_button['text'] = textShorten(new_folder)
 
