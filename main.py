@@ -23,10 +23,10 @@ from tkinter.filedialog import askdirectory
 class MainApplication:
 
     def __init__(self):
+    
         
-
-        self.data_collection = DataCollection()
         self.global_settings = Settings()
+        self.data_collection = DataCollection(self.global_settings)
         self.track_counter = TrackCounter()
 
         self.root = UI_Interface.Tk.Tk()
