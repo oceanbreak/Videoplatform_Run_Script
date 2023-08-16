@@ -31,7 +31,7 @@ class TrackCounter:
 
     def incrementTrack(self, new_coord : CoordinatesData):
         # print(new_coord.degrees)
-        print(new_coord, new_coord.is_corrupt)
+        # print(new_coord, new_coord.is_corrupt)
         if not new_coord.is_corrupt:
             if self.__init_coord is None:
                 self.__init_coord = new_coord
