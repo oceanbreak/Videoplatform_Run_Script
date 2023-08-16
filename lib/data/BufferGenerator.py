@@ -1,7 +1,7 @@
 from lib.data.SonarThread import SonarThread
 from lib.data.ComPortData import ComPortData
 from lib.data.DataStructure import ComPortString, data_keywords
-from lib.UI.Settings import ComPortSettings
+from lib.UI.Settings import ComPortSettings, Settings
 import time
 print("__generate_buffer__\n")
 
@@ -94,13 +94,14 @@ class BufferConcatinator:
 
 class BufferCollection:
 
-    def __init__(self, settings):
+    def __init__(self, settings : Settings):
 
         self.ports = {settings.navi_port : settings.navi_port.port,
          settings.depth_port : settings.depth_port.port,
          settings.altimeter_port : settings.altimeter_port.port,
          settings.temp_port : settings.temp_port.port,
-         settings.inclin_port : settings.inclin_port.port}
+         settings.inclin_port : settings.inclin_port.port,
+         settings.sonar_port : settings.sonar_port.port}
         
         self.rearanged_buffer_settings = None
         self.buffer_processes = None

@@ -14,9 +14,10 @@ class data_keywords:
     ALTIMETER = "ALT"
     INCLIN = "INCLIN"
     TEMP = "TEMP"
+    SONAR = "SONAR"
     
     # As array:
-    as_array = (NAVI, DEPTH, ALTIMETER, INCLIN, TEMP)
+    as_array = (NAVI, DEPTH, ALTIMETER, INCLIN, TEMP, SONAR)
     
 class BaseData:
 

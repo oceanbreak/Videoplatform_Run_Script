@@ -63,6 +63,7 @@ class Settings:
         self.altimeter_port = ComPortSettings(data_keywords.ALTIMETER)
         self.inclin_port = ComPortSettings(data_keywords.INCLIN)
         self.temp_port = ComPortSettings(data_keywords.TEMP)
+        self.sonar_port = ComPortSettings(data_keywords.SONAR)
         self.camera_settings = CameraSettings()
         self.default_folder = ''
         self.log_write_freq = 1
@@ -77,6 +78,7 @@ class Settings:
                 'ALT: ' +str(self.altimeter_port) + \
                 'INCLIN: ' +str(self.inclin_port) + \
                 'TEMP: ' +str(self.temp_port) + \
+                'SONAR: ' +str(self.sonar_port) + \
                 "Camera settings:\n" + \
                 str(self.camera_settings) + \
                 f"Default rec folder: {self.default_folder}\n" + \
@@ -88,7 +90,8 @@ class Settings:
                 self.depth_port,
                 self.altimeter_port,
                 self.inclin_port,
-                self.temp_port)
+                self.temp_port,
+                self.sonar_port)
 
 
     def readSettingsFromFile(self):

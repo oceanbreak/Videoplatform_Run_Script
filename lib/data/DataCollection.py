@@ -74,7 +74,7 @@ class DataCollection:
         self.datetime = DataPacket(DateTime(time.gmtime()).setCorrupt(), enable=False)
         self.track_length = DataPacket(LengthUnit(0.0))
         self.track_time_length = DataPacket(TimeUnit(0.0))
-        self.ship_sonar_data = DataPacket(DepthData(0.0).setCorrupt(), enable=False).set_corrupt()
+        self.ship_sonar_data = DataPacket(DepthData(0.0).setCorrupt(), enable=self.settings.sonar_port.is_enabled())
 
 
 
@@ -114,6 +114,10 @@ class DataCollection:
                 data = parser.parseByMessage(bufferRawData[keyword], message)
                 self.temperature_data = DataPacket(data)
 
+            if keyword == data_keywords.SONAR:
+                message = self.settings.sonar_port.message
+                data = parser.parseByMessage(bufferRawData[keyword], message)
+                self.ship_sonar_data = DataPacket(data)
 
 
     def toDisplayText(self):
@@ -124,12 +128,13 @@ class DataCollection:
                         self.depth_data,
                         self.altimeter_data,
                         self.temperature_data,
+                        self.ship_sonar_data,
                         self.inclinometer_data,
                         self.datetime,
                         self.track_length,
                         self.track_time_length]
         
-        name_list = ['', 'Depth: ', 'Alt: ', 'Temp: ', 'Inclin: ', '', 'Track lentgh: ', 'Time elapsed: ']
+        name_list = ['', 'Depth: ', 'Alt: ', 'Temp: ', 'Sonar: ', 'Inclin: ', '', 'Track lentgh: ', 'Time elapsed: ']
         
         for var, name in zip(var_list, name_list):
             
@@ -155,7 +160,8 @@ class DataCollection:
                         self.datetime,
                         self.track_time_length,
                         self.temperature_data,
-                        self.inclinometer_data]
+                        self.inclinometer_data,
+                        self.ship_sonar_data]
 
         positions_in_list = [var.data.pos_num for var in var_list]
 
@@ -187,7 +193,8 @@ class DataCollection:
                         self.datetime,
                         self.track_time_length,
                         self.temperature_data,
-                        self.inclinometer_data]
+                        self.inclinometer_data,
+                        self.ship_sonar_data]
         
         # names_list = ['Tr_length', 'Nav', 'Depth', 'Alt', '', 'Tr_time', 'Temp', 'Incl']
         names_list = [self.header_TR_LENGTH,
@@ -197,7 +204,8 @@ class DataCollection:
                       self.header_DATE_TIME,
                       self.header_TR_TIME,
                       self.header_TEMPERATURE,
-                      self.header_INCLIN]
+                      self.header_INCLIN,
+                      self.header_SHIP_SONAR]
 
         output_string = []
         for var, header_item in zip(var_list, names_list):

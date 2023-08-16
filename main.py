@@ -228,6 +228,14 @@ class MainApplication:
         self.settings_window.chan4_message.insert(0, self.global_settings.temp_port.message)
         self.settings_window.chan4_atctivator.deselect() if not self.global_settings.temp_port.enable \
                                                     else self.settings_window.chan4_atctivator.select()
+        
+        # SONAR
+        self.settings_window.chan6_port.insert(0, self.global_settings.sonar_port.port)
+        self.settings_window.chan6_rate.insert(0, str(self.global_settings.sonar_port.rate))
+        self.settings_window.chan6_message.insert(0, self.global_settings.sonar_port.message)
+        self.settings_window.chan6_atctivator.deselect() if not self.global_settings.sonar_port.enable \
+                                                    else self.settings_window.chan6_atctivator.select()
+        
         # INCLIN
         self.settings_window.chan5_port.insert(0, self.global_settings.inclin_port.port)
         self.settings_window.chan5_rate.insert(0, str(self.global_settings.inclin_port.rate))
@@ -270,6 +278,11 @@ class MainApplication:
         self.global_settings.temp_port.rate = int(self.settings_window.chan4_rate.get())
         self.global_settings.temp_port.message = self.settings_window.chan4_message.get()
         self.global_settings.temp_port.enable = self.settings_window.chan4_active.get()
+
+        self.global_settings.sonar_port.port = self.settings_window.chan6_port.get()
+        self.global_settings.sonar_port.rate = int(self.settings_window.chan6_rate.get())
+        self.global_settings.sonar_port.message = self.settings_window.chan6_message.get()
+        self.global_settings.sonar_port.enable = self.settings_window.chan6_active.get()
 
         self.global_settings.inclin_port.port = self.settings_window.chan5_port.get()
         self.global_settings.inclin_port.rate = int(self.settings_window.chan5_rate.get())
