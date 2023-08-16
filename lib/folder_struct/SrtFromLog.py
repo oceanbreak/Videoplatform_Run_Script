@@ -6,9 +6,14 @@ with video name containing start and end time
 
 import os
 from tkinter import filedialog
+from lib.UI.Settings import Settings
 
 
+class SrtFromLog:
 
+    def __init__(self, settings : Settings):
+        self.settings = settings
+        self.folder_path = filedialog.askdirectory(initialdir=settings.default_folder)
 
 # Utils functions
 def timeToSec(hhmmss_string):
