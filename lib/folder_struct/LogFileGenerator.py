@@ -12,6 +12,12 @@ class LogFileGeneraror:
         self.file_name = self.generateFileName()
         self.file_full_path = os.path.join(self.path, self.file_name)
         self.data_collection = data_collection
+        
+        # Write header
+        with open(self.file_full_path, 'a') as fs:
+            to_write = [item if item!=None else '' for item in self.data_collection.logHeader()]
+            fs.write(';'.join(to_write))
+            fs.write('\n')
 
 
     def writeLogString(self):

@@ -23,11 +23,10 @@ from tkinter.filedialog import askdirectory
 class MainApplication:
 
     def __init__(self):
+    
         
-
-        self.data_collection = DataCollection()
         self.global_settings = Settings()
-        self.track_counter = TrackCounter()
+        
 
         self.root = UI_Interface.Tk.Tk()
         self.mainUI = UI_Interface.MainWindow(self.root)
@@ -41,17 +40,22 @@ class MainApplication:
         self.__is_running = False
         self.__is_recording = False
 
-
-
+        # Read settings
         try:
             self.global_settings.readSettingsFromFile()
         except (FileNotFoundError, ValueError):
             self.mainUI.popUpWarning('No settings file found. Creating')
 
         print(self.global_settings)
+
+        self.data_collection = DataCollection(self.global_settings)
+        self.track_counter = TrackCounter()
             
         
         self.setupMainAppButtons()
+
+        # Double function of quit button
+        self.root.protocol('WM_DELETE_WINDOW', self.quit_button_command)
         self.mainUI.mainloop()
 
 ############### SETIP UI ELEMENTS #######################################
@@ -241,6 +245,8 @@ class MainApplication:
 
         # Common
         self.settings_window.log_file_freq_entry.insert(0, self.global_settings.log_write_freq)
+        self.settings_window.UTC_activator.deselect() if not self.global_settings.UTC_time \
+                                                    else self.settings_window.UTC_activator.select()
 
 
     def readSettingsFromUI(self):
@@ -270,6 +276,7 @@ class MainApplication:
         self.global_settings.inclin_port.enable = self.settings_window.chan5_active.get()
 
         self.global_settings.log_write_freq = int(self.settings_window.log_file_freq_entry.get())
+        self.global_settings.UTC_time = int(self.settings_window.UTC_active.get())
 
         self.global_settings.writeSettings()
         self.data_collection.clear()
