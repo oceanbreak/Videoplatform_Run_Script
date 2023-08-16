@@ -146,8 +146,6 @@ class MainWindow(Tk.Frame):
 
 
 
-
-
 class SettingsWindow(Tk.Toplevel):
 
     def __init__(self, master):
@@ -159,7 +157,7 @@ class SettingsWindow(Tk.Toplevel):
         header_font = ('arial', 12, 'bold')
 
         # self.settings_window = Tk.Toplevel(self.win)
-        self.geometry('520x470')
+        self.geometry('520x550')
         self.title('Settings')
 
         # Inputs
@@ -234,6 +232,20 @@ class SettingsWindow(Tk.Toplevel):
         self.chan4_rate.grid(row=5, column=3)
         self.chan4_message.grid(row=5, column=4)
 
+        # Channel-06
+        self.chan6_active = Tk.IntVar()
+        self.chan6_atctivator = Tk.Checkbutton(self.channels, variable=self.chan6_active)
+        self.chan6_name = Tk.Label(self.channels, text='Ship Sonar')
+        self.chan6_port = Tk.Entry(self.channels)
+        self.chan6_rate = Tk.Entry(self.channels)
+        self.chan6_message = Tk.Entry(self.channels)
+
+        self.chan6_atctivator.grid(row=6, column=0)
+        self.chan6_name.grid(row=6, column=1, sticky=Tk.W)
+        self.chan6_port.grid(row=6, column=2)
+        self.chan6_rate.grid(row=6, column=3)
+        self.chan6_message.grid(row=6, column=4)
+
         # Channel-05
         self.chan5_active = Tk.IntVar()
         self.chan5_atctivator = Tk.Checkbutton(self.channels, variable=self.chan5_active)
@@ -242,10 +254,10 @@ class SettingsWindow(Tk.Toplevel):
         self.chan5_rate = Tk.Entry(self.channels)
         # self.chan5_message = Tk.Entry(self.channels)
 
-        self.chan5_atctivator.grid(row=6, column=0)
-        self.chan5_name.grid(row=6, column=1, sticky=Tk.W)
-        self.chan5_port.grid(row=6, column=2)
-        self.chan5_rate.grid(row=6, column=3)
+        self.chan5_atctivator.grid(row=7, column=0)
+        self.chan5_name.grid(row=7, column=1, sticky=Tk.W)
+        self.chan5_port.grid(row=7, column=2)
+        self.chan5_rate.grid(row=7, column=3)
         # self.chan5_message.grid(row=6, column=4)
 
 
@@ -271,14 +283,20 @@ class SettingsWindow(Tk.Toplevel):
         self.cam_password_entry.grid(row=3, column=1)
 
         self.default_folder_label = Tk.Label(self.cam_settings, text='Recording folder', font = header_font)
-        self.default_folder_label.grid(row=4, column=0, columnspan=2)
+        self.default_folder_label.grid(row=4, column=0, columnspan=2, pady=10)
         self.default_folder_button = Tk.Button(self.cam_settings)
-        self.default_folder_button.grid(row=5, columnspan=2, sticky=Tk.W)
+        self.default_folder_button.grid(row=5, columnspan=2, sticky=Tk.W, pady=10)
 
         self.log_file_freq_label = Tk.Label(self.cam_settings, text='Log frequency (sec)')
         self.log_file_freq_entry = Tk.Entry(self.cam_settings)
         self.log_file_freq_label.grid(row=6, column=0, sticky=Tk.W)
         self.log_file_freq_entry.grid(row=6, column=1)
+
+        self.UTC_time_label = Tk.Label(self.cam_settings, text='Time in UTC')
+        self.UTC_active = Tk.IntVar()
+        self.UTC_activator = Tk.Checkbutton(self.cam_settings, variable=self.UTC_active)
+        self.UTC_time_label.grid(row=7, column=0, sticky=Tk.W)
+        self.UTC_activator.grid(row=7, column=1, sticky=Tk.W)
 
 
         # Bottom buttons
