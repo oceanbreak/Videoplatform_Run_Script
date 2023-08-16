@@ -26,8 +26,7 @@ class MainApplication:
     
         
         self.global_settings = Settings()
-        self.data_collection = DataCollection(self.global_settings)
-        self.track_counter = TrackCounter()
+        
 
         self.root = UI_Interface.Tk.Tk()
         self.mainUI = UI_Interface.MainWindow(self.root)
@@ -41,14 +40,16 @@ class MainApplication:
         self.__is_running = False
         self.__is_recording = False
 
-
-
+        # Read settings
         try:
             self.global_settings.readSettingsFromFile()
         except (FileNotFoundError, ValueError):
             self.mainUI.popUpWarning('No settings file found. Creating')
 
         print(self.global_settings)
+
+        self.data_collection = DataCollection(self.global_settings)
+        self.track_counter = TrackCounter()
             
         
         self.setupMainAppButtons()
