@@ -244,6 +244,8 @@ class MainApplication:
 
         # Common
         self.settings_window.log_file_freq_entry.insert(0, self.global_settings.log_write_freq)
+        self.settings_window.UTC_activator.deselect() if not self.global_settings.UTC_time \
+                                                    else self.settings_window.UTC_activator.select()
 
 
     def readSettingsFromUI(self):
@@ -273,6 +275,7 @@ class MainApplication:
         self.global_settings.inclin_port.enable = self.settings_window.chan5_active.get()
 
         self.global_settings.log_write_freq = int(self.settings_window.log_file_freq_entry.get())
+        self.global_settings.UTC_time = int(self.settings_window.UTC_active.get())
 
         self.global_settings.writeSettings()
         self.data_collection.clear()
