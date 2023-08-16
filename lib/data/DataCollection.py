@@ -10,16 +10,26 @@ class DataPacket:
     Data packet for chanels that has a flag that data is corrupted
     """
 
-    def __init__(self,  data):
+    def __init__(self,  data, enable=True):
 
         # Flags that show if data availible
         self.__corrupt = False
+        self.__enable = enable
 
         # Info about data 
         self.data = data
 
         # Set corrupt is None or empty line came
         if data is None: self.set_corrupt()
+
+    def enable(self):
+        self.__enable = True
+
+    def disable(self):
+        self.__enable = False
+
+    def is_enabled(self):
+        return self.__enable
 
     def set_corrupt(self):
         self.__corrupt = True
@@ -37,11 +47,11 @@ class DataCollection:
 
     def __init__(self):
 
-        self.navi_data = None
-        self.depth_data = None
-        self.altimeter_data = None
-        self.temperature_data = None
-        self.inclinometer_data = None
+        self.navi_data = DataPacket(CoordinatesData(0.0, 0.0), enable=False)
+        self.depth_data = DataPacket(DepthData(0.0), enable=False)
+        self.altimeter_data = DataPacket(DepthData(0.0), enable=False)
+        self.temperature_data = DataPacket(TemperatureData(0.0), enable=False)
+        self.inclinometer_data = DataPacket(InclinometerData(0.,0,0), enable=False)
         self.datetime = None
         self.track_length = DataPacket(LengthUnit(0.0))
         self.track_time_length = DataPacket(TimeUnit(0.0))
@@ -56,7 +66,7 @@ class DataCollection:
 
         parser = NmeaParser()
         # BOOM! - time stamp
-        self.datetime = DataPacket(DateTime(time.gmtime()))
+        self.datetime = DataPacket(DateTime(time.localtime(), UTC=False))
 
         for keyword in bufferRawData:
 
@@ -114,6 +124,39 @@ class DataCollection:
     
 
     def toLogItemsList(self):
+
+        var_list = [self.track_length,
+                        self.navi_data,
+                        self.depth_data,
+                        self.altimeter_data,
+                        self.datetime,
+                        self.track_time_length,
+                        self.temperature_data,
+                        self.inclinometer_data]
+        
+        # positions_in_list = [1, 6, 1, 1, 2, 1, 1, 3]
+        positions_in_list = [var.data.pos_num for var in var_list]
+
+        output_string = []
+        for var, pos_num in zip(var_list, positions_in_list):
+            if var.is_enabled():
+                
+                if var.is_corrupted():
+                    # print('Corrupted')
+                    output_string += [None] * pos_num
+                else:
+                    to_add = var.data.toLogItem()
+                    if type(to_add) == list:
+                        output_string += to_add
+                    else:
+                        output_string.append(to_add)
+            else:
+                # Var is None, leave places
+                output_string += [None] * pos_num
+
+        return output_string
+
+    def logHeader(self):
 
         var_list = [self.track_length,
                         self.navi_data,
