@@ -34,6 +34,7 @@ class DataPacket:
 
     def set_corrupt(self):
         self.__corrupt = True
+        return self
 
     def set_OK(self):
         self.__corrupt = False
@@ -46,6 +47,16 @@ class DataPacket:
 
 class DataCollection:
 
+    header_TR_LENGTH = 'Tr_length'
+    header_TR_TIME = 'Tr_time'
+    header_NAVI = 'Nav'
+    header_DEPTH = 'Depth'
+    header_ALTIMETER = 'Alt'
+    header_SHIP_SONAR = 'Sonar'
+    header_DATE_TIME = ''
+    header_TEMPERATURE = 'Temp'
+    header_INCLIN = 'Incl'
+
     def __init__(self, settings : Settings):
 
         self.settings = settings
@@ -53,14 +64,17 @@ class DataCollection:
         
 
     def clear(self):
-        self.navi_data = DataPacket(CoordinatesData(0.0, 0.0), enable=False)
-        self.depth_data = DataPacket(DepthData(0.0), enable=False)
-        self.altimeter_data = DataPacket(DepthData(0.0), enable=False)
-        self.temperature_data = DataPacket(TemperatureData(0.0), enable=False)
-        self.inclinometer_data = DataPacket(InclinometerData(0.,0,0), enable=False)
-        self.datetime = DataPacket(DateTime(time.gmtime()), enable=False)
+
+        # Init all data as disabled except track length
+        self.navi_data = DataPacket(CoordinatesData(0.0, 0.0).setCorrupt(), enable=self.settings.navi_port.is_enabled())
+        self.depth_data = DataPacket(DepthData(0.0).setCorrupt(), enable=self.settings.depth_port.is_enabled())
+        self.altimeter_data = DataPacket(DepthData(0.0).setCorrupt(), enable=self.settings.altimeter_port.is_enabled())
+        self.temperature_data = DataPacket(TemperatureData(0.0).setCorrupt(), enable=self.settings.temp_port.is_enabled())
+        self.inclinometer_data = DataPacket(InclinometerData(0.,0,0).setCorrupt(), enable=self.settings.inclin_port.is_enabled())
+        self.datetime = DataPacket(DateTime(time.gmtime()).setCorrupt(), enable=False)
         self.track_length = DataPacket(LengthUnit(0.0))
         self.track_time_length = DataPacket(TimeUnit(0.0))
+        self.ship_sonar_data = DataPacket(DepthData(0.0).setCorrupt(), enable=False).set_corrupt()
 
 
 
@@ -158,9 +172,9 @@ class DataCollection:
                         output_string += to_add
                     else:
                         output_string.append(to_add)
-            else:
-                # Var is None, leave places
-                output_string += [None] * pos_num
+            # else:
+            #     # Var is None, leave places
+            #     output_string += [None] * pos_num
 
         return output_string
 
@@ -175,15 +189,24 @@ class DataCollection:
                         self.temperature_data,
                         self.inclinometer_data]
         
-        names_list = ['Track_length', '', 'Depth', 'Altimeter', '', 'Track time', 'Temperature', '']
+        # names_list = ['Tr_length', 'Nav', 'Depth', 'Alt', '', 'Tr_time', 'Temp', 'Incl']
+        names_list = [self.header_TR_LENGTH,
+                      self.header_NAVI,
+                      self.header_DEPTH,
+                      self.header_ALTIMETER,
+                      self.header_DATE_TIME,
+                      self.header_TR_TIME,
+                      self.header_TEMPERATURE,
+                      self.header_INCLIN]
 
         output_string = []
         for var, header_item in zip(var_list, names_list):
-            var_subheader = var.data.log_header()
-            if type(var_subheader) == list:
-                for word in var_subheader:
-                    output_string.append(f'{header_item} {word}'.strip())
-            else:
-                output_string.append(f'{header_item} {var_subheader}'.strip())
+            if var.is_enabled():
+                var_subheader = var.data.log_header()
+                if type(var_subheader) == list:
+                    for word in var_subheader:
+                        output_string.append(f'{header_item} {word}'.strip())
+                else:
+                    output_string.append(f'{header_item} {var_subheader}'.strip())
 
         return output_string
