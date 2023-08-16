@@ -66,6 +66,7 @@ class Settings:
         self.camera_settings = CameraSettings()
         self.default_folder = ''
         self.log_write_freq = 1
+        self.UTC_time = 1
         self.config_file = 'resources/settings.xml'
 
     def __str__(self):
@@ -79,7 +80,8 @@ class Settings:
                 "Camera settings:\n" + \
                 str(self.camera_settings) + \
                 f"Default rec folder: {self.default_folder}\n" + \
-                f"Log file writing frequency: {self.log_write_freq} s"
+                f"Log file writing frequency: {self.log_write_freq} s\n" + \
+                f"Time in UTC: {'YES' if self.UTC_time else 'NO'}"
 
     def ports_as_array(self):
         return (self.navi_port,
@@ -108,6 +110,7 @@ class Settings:
         for item in root.iter('common'):
             self.default_folder = item[0].text
             self.log_write_freq = int(item[1].text)
+            self.UTC_time = int(item[2].text)
 
         # Read IP Camera settingds
         for item in root.iter('IP_camera'):
@@ -127,6 +130,8 @@ class Settings:
         default_folder.text = self.default_folder
         log_freq = ET.SubElement(common, 'log_freq')
         log_freq.text = str(self.log_write_freq)
+        UTC_time = ET.SubElement(common, 'UTC')
+        UTC_time.text = str(self.UTC_time)
 
         # COM port settings
         channels = ET.SubElement(settings, 'channels')
