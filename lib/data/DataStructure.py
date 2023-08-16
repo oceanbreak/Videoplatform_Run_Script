@@ -26,6 +26,9 @@ class BaseData:
     def setCorrupt(self):
         self.is_corrupt = True
         return self
+    
+    def isCorrupt(self):
+        return self.is_corrupt
 
 class CoordinatesData(BaseData):
 
@@ -163,7 +166,7 @@ class DateTime(BaseData):
 
 
     def log_header(self):
-        return ['Date', f'Time {self.postfix}']
+        return ['Date', f'Time{self.postfix}']
 
 
     def toDisplayText(self):
