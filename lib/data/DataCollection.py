@@ -2,15 +2,16 @@
 # It stores datain memeory for access of defferent parts of the program
 
 from lib.data.DataStructure import *
-from lib.UI.Settings import ComPortSettings
+from lib.UI.Settings import ComPortSettings, Settings
 from lib.data.NmeaParser import NmeaParser, InclinParser
+from lib.data.DataStructure import BaseData
 
 class DataPacket:
     """
     Data packet for chanels that has a flag that data is corrupted
     """
 
-    def __init__(self,  data, enable=True):
+    def __init__(self,  data : BaseData, enable=True):
 
         # Flags that show if data availible
         self.__corrupt = False
@@ -20,7 +21,7 @@ class DataPacket:
         self.data = data
 
         # Set corrupt is None or empty line came
-        if data is None: self.set_corrupt()
+        if data.is_corrupt: self.set_corrupt()
 
     def enable(self):
         self.__enable = True
@@ -45,14 +46,15 @@ class DataPacket:
 
 class DataCollection:
 
-    def __init__(self):
+    def __init__(self, settings : Settings):
 
+        self.settings = settings
         self.navi_data = DataPacket(CoordinatesData(0.0, 0.0), enable=False)
         self.depth_data = DataPacket(DepthData(0.0), enable=False)
         self.altimeter_data = DataPacket(DepthData(0.0), enable=False)
         self.temperature_data = DataPacket(TemperatureData(0.0), enable=False)
         self.inclinometer_data = DataPacket(InclinometerData(0.,0,0), enable=False)
-        self.datetime = None
+        self.datetime = DataPacket(DateTime(time.gmtime()), enable=False)
         self.track_length = DataPacket(LengthUnit(0.0))
         self.track_time_length = DataPacket(TimeUnit(0.0))
 
@@ -76,19 +78,23 @@ class DataCollection:
                 self.inclinometer_data = DataPacket(data)
 
             if keyword == data_keywords.NAVI:
-                data = parser.parseByMessage(bufferRawData[keyword])
+                message = self.settings.navi_port.message
+                data = parser.parseByMessage(bufferRawData[keyword], message)
                 self.navi_data = DataPacket(data)
 
             if keyword == data_keywords.DEPTH:
-                data = parser.parseByMessage(bufferRawData[keyword])
+                message = self.settings.depth_port.message
+                data = parser.parseByMessage(bufferRawData[keyword], message)
                 self.depth_data = DataPacket(data)
 
             if keyword == data_keywords.ALTIMETER:
-                data = parser.parseByMessage(bufferRawData[keyword])
+                message = self.settings.altimeter_port.message
+                data = parser.parseByMessage(bufferRawData[keyword], message)
                 self.altimeter_data = DataPacket(data)
 
             if keyword == data_keywords.TEMP:
-                data = parser.parseByMessage(bufferRawData[keyword])
+                message = self.settings.temp_port.message
+                data = parser.parseByMessage(bufferRawData[keyword], message)
                 self.temperature_data = DataPacket(data)
 
 
@@ -111,7 +117,7 @@ class DataCollection:
         for var, name in zip(var_list, name_list):
             
             text = name
-            if var is not None:
+            if var.is_enabled():
                 
                 if var.is_corrupted():
                     # print('Corrupted')
@@ -133,8 +139,7 @@ class DataCollection:
                         self.track_time_length,
                         self.temperature_data,
                         self.inclinometer_data]
-        
-        # positions_in_list = [1, 6, 1, 1, 2, 1, 1, 3]
+
         positions_in_list = [var.data.pos_num for var in var_list]
 
         output_string = []
@@ -167,23 +172,15 @@ class DataCollection:
                         self.temperature_data,
                         self.inclinometer_data]
         
-        positions_in_list = [1, 6, 1, 1, 2, 1, 1, 3]
+        names_list = ['Track_length', '', 'Depth', 'Altimeter', '', 'Track time', 'Temperature', '']
 
         output_string = []
-        for var, pos_num in zip(var_list, positions_in_list):
-            if var is not None:
-                
-                if var.is_corrupted():
-                    # print('Corrupted')
-                    output_string += [None] * pos_num
-                else:
-                    to_add = var.data.toLogItem()
-                    if type(to_add) == list:
-                        output_string += to_add
-                    else:
-                        output_string.append(to_add)
+        for var, header_item in zip(var_list, names_list):
+            var_subheader = var.data.log_header()
+            if type(var_subheader) == list:
+                for word in var_subheader:
+                    output_string.append(f'{header_item} {word}'.strip())
             else:
-                # Var is None, leave places
-                output_string += [None] * pos_num
+                output_string.append(f'{header_item} {var_subheader}'.strip())
 
         return output_string

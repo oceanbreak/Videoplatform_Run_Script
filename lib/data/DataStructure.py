@@ -18,9 +18,16 @@ class data_keywords:
     # As array:
     as_array = (NAVI, DEPTH, ALTIMETER, INCLIN, TEMP)
     
+class BaseData:
 
+    def __init__(self):
+        self.is_corrupt = False
 
-class CoordinatesData:
+    def setCorrupt(self):
+        self.is_corrupt = True
+        return self
+
+class CoordinatesData(BaseData):
 
     # Helper dict of signs of each letters
     coord_sign = {'N':1, 'S':-1, 'E':1, 'W':-1}
@@ -31,13 +38,16 @@ class CoordinatesData:
         :return: coords in gps format DDMM.MMMMMM, 'N'
         where D is degree, M is minute.
         """
+        super().__init__()
         self.lat = lat
         self.lon = lon
-        self.keyword = None
         self.pos_num = 6
 
     def __str__(self):
         return f'{self.lat}, {self.lon}'
+    
+    def log_header(self):
+        return ['Lat_deg', 'Lat_min', 'Lat', 'Lon_deg', 'Lon_min', 'Lon']
     
     def degrees(self):
         return (self.lat, self.lon)
@@ -55,11 +65,11 @@ class CoordinatesData:
         
 
 
-class DepthData:
+class DepthData(BaseData):
 
     def __init__(self, depth : float):
+        super().__init__()
         self.depth = depth
-        self.keyword = None
         self.pos_num = 1
 
     def value(self):
@@ -68,6 +78,9 @@ class DepthData:
     def __str__(self):
         return f'Depth range: {self.depth:.1f} m'
     
+    def log_header(self):
+        return 'm'
+    
     def toDisplayText(self):
         return f'{self.depth:.1f} m'
     
@@ -75,9 +88,10 @@ class DepthData:
         return f'{self.depth:.1f}'
 
     
-class TemperatureData:
+class TemperatureData(BaseData):
 
     def __init__(self, temp):
+        super().__init__()
         self.temp = temp
         self.pos_num = 1
         # self.keyword = data_keywords.DEPTH
@@ -88,6 +102,9 @@ class TemperatureData:
     def __str__(self):
         return f'Temp: {self.temp:.1f}'
     
+    def log_header(self):
+        return 'C'
+    
     def toDisplayText(self):
         return f'{self.temp:.1f} C'
     
@@ -95,17 +112,20 @@ class TemperatureData:
         return f'{self.temp:.1f}'
     
 
-class InclinometerData:
+class InclinometerData(BaseData):
 
     def __init__(self, pitch : int, roll : int, heading : int):
+        super().__init__()
         self.pitch = pitch
         self.roll = roll
         self.heading = heading
-        self.kewword = None
         self.pos_num = 3
 
     def __str__(self):
         return f'Pitch: {self.pitch}, Roll: {self.roll}, Heading: {self.heading}'
+    
+    def log_header(self):
+        return ['Pitch', 'Roll', 'Heading']
     
     def toDisplayText(self):
         return self.__str__()
@@ -114,11 +134,11 @@ class InclinometerData:
         return self.pitch, self.roll, self.heading
     
 
-class ComPortString:
+class ComPortString(BaseData):
     # NMEA String or Inclinometer string with keyword
 
     def __init__(self, keyword, string):
-        self.keyword = keyword
+        super().__init__()
         self.string = string
 
     def __str__(self):
@@ -127,9 +147,10 @@ class ComPortString:
 
 # Common datatype
 
-class DateTime:
+class DateTime(BaseData):
 
     def __init__(self, gmtime : time.struct_time, UTC=True):
+        super().__init__()
         self.year = gmtime.tm_year
         self.mon = gmtime.tm_mon
         self.day = gmtime.tm_mday
@@ -139,6 +160,11 @@ class DateTime:
         self.postfix = 'UTC' if UTC else ''
         self.pos_num = 2
 
+
+    def log_header(self):
+        return ['Date', f'Time {self.postfix}']
+
+
     def toDisplayText(self):
         return f'{self.year}/{self.mon:0>2}/{self.day:0>2}  {self.hour:0>2}:{self.min:0>2}:{self.sec:0>2} {self.postfix}'
     
@@ -147,12 +173,16 @@ class DateTime:
                 f'{self.hour:0>2}:{self.min:0>2}:{self.sec:0>2}']
 
 
-class LengthUnit:
+class LengthUnit(BaseData):
     # Length of track in meters
 
     def __init__(self, length):
+        super().__init__()
         self.length = length
         self.pos_num = 1
+
+    def log_header(self):
+        return 'm'
 
     def toDisplayText(self):
         return f'{self.length:.1f} m'
@@ -161,12 +191,16 @@ class LengthUnit:
         return f'{self.length:.1f}'
     
 
-class TimeUnit:
+class TimeUnit(BaseData):
      # Duration of track in sec
 
     def __init__(self, secs):
+        super().__init__()
         self.secs = secs
         self.pos_num = 1
+
+    def log_header(self):
+        return ''
 
     def convertToHMS(self):
         self.hh = self.secs // 3600

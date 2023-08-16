@@ -16,12 +16,7 @@ class NmeaParser:
         pass
         #TODO: parse NMEA strings to data structures
 
-    def parseByMessage(self, string : str):
-        try:
-            message = string.split(',')[0]
-        except (TypeError, IndexError, AttributeError):
-            # print(f"Current string can nor be parsed:\n{string}")
-            return None
+    def parseByMessage(self, string : str, message):
         # Handle diffrenct parsers with different messages
         if 'GGA' in message:
             return self.parseGGA(string)
@@ -48,7 +43,7 @@ class NmeaParser:
             latsign = items[3]
             lonsign = items[5]
         except ValueError:
-            return None
+            return CoordinatesData(0,0,is_corrupt=True)
 
         lat_degrees = latval//100
         lon_degrees = lonval//100
@@ -66,14 +61,14 @@ class NmeaParser:
         params: --GGA NMEA string
         return: <CoordinatesData> object
         """
-        items = nmea_string.split(',')
         try:
+            items = nmea_string.split(',')
             latval = float(items[1])
             lonval = float(items[3])
             latsign = items[2]
             lonsign = items[4]
-        except ValueError:
-            return None
+        except (AttributeError, ValueError):
+            return CoordinatesData(0,0).setCorrupt()
 
         lat_degrees = latval//100
         lon_degrees = lonval//100
@@ -91,14 +86,14 @@ class NmeaParser:
         params: --RMC NMEA string
         return: <CoordinatesData> object
         """
-        items = nmea_string.split(',')
         try:
+            items = nmea_string.split(',')
             latval = float(items[3])
             lonval = float(items[5])
             latsign = items[4]
             lonsign = items[6]
-        except ValueError:
-            return None
+        except (AttributeError, ValueError):
+            return CoordinatesData(0,0).setCorrupt()
 
         lat_degrees = latval//100
         lon_degrees = lonval//100
@@ -113,31 +108,31 @@ class NmeaParser:
     
     def parseDBS(self, nmea_string : str):
 
-        items = nmea_string.split(',')
-
         try:
+            items = nmea_string.split(',')
             value = float(items[3])
             return DepthData(value)
-        except ValueError:
-            return None
+        except (AttributeError, ValueError):
+            return DepthData(0.0).setCorrupt()
     
 
     def parseDBT(self, nmea_string : str):
-        items = nmea_string.split(',')
         try:
+            items = nmea_string.split(',')
             value = float(items[3])
             return DepthData(value)
-        except ValueError:
-            return None
+        except (AttributeError, ValueError):
+            return DepthData(0.0).setCorrupt()
 
     
     def parseMTW(self, nmea_string : str):
-        items = nmea_string.split(',')
+        
         try:
+            items = nmea_string.split(',')
             value = float(items[1])
             return TemperatureData(value)
-        except ValueError:
-            return None      
+        except (AttributeError, ValueError):
+            return TemperatureData(0.0).setCorrupt()      
 
 
 class InclinParser:
@@ -164,7 +159,7 @@ class InclinParser:
             return InclinometerData(pitch, roll, head)
         
         except (TypeError):
-            return None
+            return InclinometerData(0,0,0).setCorrupt()
 
 
 
