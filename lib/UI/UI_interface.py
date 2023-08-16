@@ -28,7 +28,7 @@ class MainWindow(Tk.Frame):
         self.im = Image.open('resources\image\SonarLabLogo.png').resize((200,140))
         self.ph = ImageTk.PhotoImage(self.im)
 
-        self.data_label.config(image=self.ph, padx=20, pady=20)
+        self.data_label.config(image=self.ph)
         print('OK creating image')
 
     def cearImageOnLabel(self):
@@ -46,7 +46,7 @@ class MainWindow(Tk.Frame):
         self.win = Tk.Frame()
         self.win.pack(side=Tk.BOTTOM, expand=Tk.YES, fill=Tk.BOTH)
         self.buttons_field = Tk.Frame()
-        self.buttons_field.pack(side=Tk.TOP, expand=Tk.NO, fill=Tk.BOTH)
+        self.buttons_field.pack(side=Tk.TOP, expand=Tk.NO, fill=Tk.X)
 
         #QUIT BUTTON
         self.QUIT_button = Tk.Button(self.buttons_field)
