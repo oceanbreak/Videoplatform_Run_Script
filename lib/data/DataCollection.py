@@ -49,6 +49,10 @@ class DataCollection:
     def __init__(self, settings : Settings):
 
         self.settings = settings
+        self.clear()
+        
+
+    def clear(self):
         self.navi_data = DataPacket(CoordinatesData(0.0, 0.0), enable=False)
         self.depth_data = DataPacket(DepthData(0.0), enable=False)
         self.altimeter_data = DataPacket(DepthData(0.0), enable=False)
@@ -59,16 +63,15 @@ class DataCollection:
         self.track_time_length = DataPacket(TimeUnit(0.0))
 
 
-    def clear(self):
-        self.__init__()
-
-
 
     def readDataFromBuffer(self, bufferRawData : dict):
 
         parser = NmeaParser()
         # BOOM! - time stamp
-        self.datetime = DataPacket(DateTime(time.localtime(), UTC=False))
+        if self.settings.UTC_time:
+            self.datetime = DataPacket(DateTime(time.gmtime(), UTC=True))
+        else:
+            self.datetime = DataPacket(DateTime(time.localtime(), UTC=False))
 
         for keyword in bufferRawData:
 
