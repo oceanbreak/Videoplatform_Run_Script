@@ -27,7 +27,7 @@ class LogFileGeneraror:
             fs.write('\n')
 
 
-    def generateFileName(self, prefix = 'log', extension = 'txt'):
+    def generateFileName(self, prefix = 'log', extension = 'csv'):
         cur_time = time.gmtime()
         date_str = '{:0>2}'.format(cur_time.tm_mday) +  '{:0>2}'.format(cur_time.tm_mon)  + '{:0>2}'.format(cur_time.tm_year)[-2:]
         time_str = '{:0>2}'.format(cur_time.tm_hour) + '{:0>2}'.format(cur_time.tm_min)  + '{:0>2}'.format(cur_time.tm_sec)
