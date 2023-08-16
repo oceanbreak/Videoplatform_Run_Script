@@ -31,6 +31,7 @@ class MainApplication:
         self.root = UI_Interface.Tk.Tk()
         self.mainUI = UI_Interface.MainWindow(self.root)
         self.mainUI.master.title('OceanRecord')
+        self.root.geometry('500x300')
 
         # Paramteres
         self.update_text_frequency = 100
@@ -88,6 +89,7 @@ class MainApplication:
         
 
     def connect_button_command(self):
+        self.mainUI.cearImageOnLabel()
         self.mainUI.updateDataText('Connecting...')
         self.mainUI.setButtonsActive()
         self.mainUI.connect_button['text'] = 'Disconnect'
@@ -110,7 +112,8 @@ class MainApplication:
             self.stop_button_command()
         self.__is_running = False
         self.buffers.stopWritingBuffers()
-        self.mainUI.updateDataText('Welcome to Sonarlab')
+        self.mainUI.updateDataText('')
+        self.mainUI.setupImageOnLabel()
         self.mainUI.setButtonsInactive()
         self.mainUI.connect_button['text'] = 'Connect'
         self.mainUI.connect_button['command'] = self.connect_button_command

@@ -8,6 +8,7 @@ import tkinter as Tk
 from tkinter import ttk
 from tkinter.messagebox import showerror, showinfo, showwarning, askyesno
 import time
+from PIL import Image, ImageTk
 
 #init_parameters = sonar_init.Get_Init_Parameters()
 
@@ -21,6 +22,17 @@ class MainWindow(Tk.Frame):
 
     def popAskWindow(self, text):
         return askyesno('Confirmation', text)
+    
+    def setupImageOnLabel(self):
+        # Add image
+        self.im = Image.open('resources\image\SonarLabLogo.png').resize((200,140))
+        self.ph = ImageTk.PhotoImage(self.im)
+
+        self.data_label.config(image=self.ph, padx=20, pady=20)
+        print('OK creating image')
+
+    def cearImageOnLabel(self):
+        self.data_label.config(image='')
 
     def createWidgets(self):
 
@@ -85,6 +97,8 @@ class MainWindow(Tk.Frame):
         #DATA LABEL
         self.data_label = Tk.Label(self.win)
         self.data_label["text"] = self.data_text
+        self.setupImageOnLabel()
+
         self.data_label.config(font=labelfont, bg = label_bg, fg = label_fg)
 
         self.settings_button.pack(side=Tk.LEFT, expand=Tk.YES, fill=Tk.BOTH)
