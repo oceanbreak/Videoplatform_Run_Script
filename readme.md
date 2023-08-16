@@ -17,6 +17,12 @@ Developed in Sonar lab</br>
 + pillow
 + requests
 ---
+### Главное окно программы
+
+Программа запускается с приветственным экраном. Для начала отображения данных необходимо нажать кнопку <b>Connect</b>.
+
+![alt text](resources/image/main_window.png)
+
 
 ### Меню Settings
 
