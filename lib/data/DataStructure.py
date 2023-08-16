@@ -134,12 +134,13 @@ class InclinometerData(BaseData):
         return self.pitch, self.roll, self.heading
     
 
-class ComPortString(BaseData):
+class ComPortString():
     # NMEA String or Inclinometer string with keyword
 
     def __init__(self, keyword, string):
         super().__init__()
         self.string = string
+        self.keyword = keyword
 
     def __str__(self):
         return str(self.keyword) + ": " + str(self.string)
