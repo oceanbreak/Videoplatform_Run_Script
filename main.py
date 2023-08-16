@@ -100,12 +100,17 @@ class MainApplication:
 
 
     def disconnect_button_command(self):
+        if self.__is_recording:
+            yes = self.mainUI.popAskWindow('Log-file writing in process. Stop?')
+            if not yes: return
+            self.stop_button_command()
         self.__is_running = False
         self.buffers.stopWritingBuffers()
         self.mainUI.updateDataText('Welcome to Sonarlab')
         self.mainUI.setButtonsInactive()
         self.mainUI.connect_button['text'] = 'Connect'
         self.mainUI.connect_button['command'] = self.connect_button_command
+
 
     
     def settings_button_command(self):
