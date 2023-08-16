@@ -63,7 +63,7 @@ class NmeaParser:
 
     def parseGLL(self, nmea_string : str):
         """
-        params: --GGA NMEA string
+        params: -GLLA NMEA string
         return: <CoordinatesData> object
         """
         items = nmea_string.split(',')
