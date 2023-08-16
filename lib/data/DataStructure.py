@@ -45,13 +45,13 @@ class CoordinatesData(BaseData):
         super().__init__()
         self.lat = lat
         self.lon = lon
-        self.pos_num = 6
+        self.pos_num = 2
 
     def __str__(self):
         return f'{self.lat}, {self.lon}'
     
     def log_header(self):
-        return ['Lat_deg', 'Lat_min', 'Lat', 'Lon_deg', 'Lon_min', 'Lon']
+        return ['Lat', 'Lon']
     
     def degrees(self):
         return (self.lat, self.lon)
@@ -61,11 +61,11 @@ class CoordinatesData(BaseData):
     
     def toDisplayText(self):
         degr_lat, min_lat, letter_lat, degr_lon, min_lon, letter_lon = self.deg_min()
-        return f"{degr_lat:.0f} {min_lat:.4f}'{letter_lat}, {degr_lon:.0f} {min_lat:.4f}'{letter_lon}"
+        return f"{degr_lat:.0f} {min_lat:.4f}'{letter_lat}, {degr_lon:.0f} {min_lon:.4f}'{letter_lon}"
     
     def toLogItem(self):
         degr_lat, min_lat, letter_lat, degr_lon, min_lon, letter_lon = self.deg_min()
-        return f"{degr_lat:.0f};{min_lat:.4f};{letter_lat};{degr_lon:.0f};{min_lat:.4f};{letter_lon}".split(';')
+        return f"{degr_lat:.0f} {min_lat:.4f} {letter_lat};{degr_lon:.0f} {min_lon:.4f} {letter_lon}".split(';')
         
 
 
