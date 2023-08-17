@@ -2,3 +2,6 @@
 __pycache__
 /course_testing.py
 .idea
+build
+dist
+main.spec
