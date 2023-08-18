@@ -11,4 +11,14 @@
 from lib.MainApplication import MainApplication
 
 if __name__ == '__main__':
+   
     app = MainApplication()
+
+    try:
+
+        app.mainUI.mainloop()
+
+    except BaseException as e:
+        
+        print(e)
+        app.buffers.stopWritingBuffers()

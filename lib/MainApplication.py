@@ -47,7 +47,7 @@ class MainApplication:
 
         # Double function of quit button
         self.root.protocol('WM_DELETE_WINDOW', self.quit_button_command)
-        self.mainUI.mainloop()
+        # self.mainUI.mainloop()
 
 ############### SETIP UI ELEMENTS #######################################
 
