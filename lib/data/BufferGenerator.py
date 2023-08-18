@@ -64,7 +64,8 @@ class BufferGenerator:
 
     def stop_writing_buffer(self):
         self.proc_buffer.stop()
-        self._data_line.closePort()
+        if hasattr(self, '_data_line'):
+            self._data_line.closePort()
 
 
     def getData(self):

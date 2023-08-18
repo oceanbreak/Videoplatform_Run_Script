@@ -49,7 +49,9 @@ class ComPortData:
         if self._port.is_open:
             try:
                 self._line = self._port.readline().decode('utf-8')
-            except TypeError:
+                self._line = self._line.rstrip()
+            except serial.SerialException:
+                print('Bad line')
                 self._line = None
             # If tmeout, set timer
             if not self._line:
@@ -57,7 +59,9 @@ class ComPortData:
             else:
                 self.time_out_timer = 0
 
-            self._line = self._line.rstrip()
+            
+
+            
 
 
     def pullData(self, ignore_chksm=True):
