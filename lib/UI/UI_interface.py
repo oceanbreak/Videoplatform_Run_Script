@@ -72,7 +72,13 @@ class MainWindow(Tk.Frame):
         #self.hi_there["command"] = self.start_stop
         self.start_rec_button.config(font=buttonfont)
 
-        #DIRECTORY CHOICE BUTTON
+        # SRT FROM LOG BUTTON
+        self.srt_from_log_button = Tk.Button(self.buttons_field)
+        self.srt_from_log_button['text'] = 'SRT'
+        self.srt_from_log_button["fg"]   = "black"
+        self.srt_from_log_button['font'] = buttonfont
+
+        # CAM BUTTON
         self.cam_dialog_button = Tk.Button(self.buttons_field)
         self.cam_dialog_button['text'] = 'CAM'
         self.cam_dialog_button["fg"]   = "dark blue"
@@ -106,6 +112,7 @@ class MainWindow(Tk.Frame):
         self.connect_button.pack({"side": "left", "expand": "YES", "fill": "both"})
         self.QUIT_button.pack({"side": "left", "expand": "YES", "fill": "both"})
         self.start_rec_button.pack({"side": "left", "expand": "YES", "fill": "both"})
+        self.srt_from_log_button.pack({"side": "left", "expand": "YES", "fill": "both"})
         self.cam_dialog_button.pack({"side": "left", "expand": "YES", "fill": "both"})
 
 
@@ -297,8 +304,8 @@ class SettingsWindow(Tk.Toplevel):
         self.cam_password_label.grid(row=3, column=0, sticky=Tk.W)
         self.cam_password_entry.grid(row=3, column=1)
 
-        self.default_folder_label = Tk.Label(self.cam_settings, text='Recording folder', font = header_font)
-        self.default_folder_label.grid(row=4, column=0, columnspan=2, pady=10)
+        self.default_folder_label = Tk.Label(self.cam_settings, text='Common', font = header_font)
+        self.default_folder_label.grid(row=4, column=0, columnspan=2, pady=10, sticky=Tk.W)
         self.default_folder_button = Tk.Button(self.cam_settings)
         self.default_folder_button.grid(row=5, columnspan=2, sticky=Tk.W, pady=10)
 
@@ -307,7 +314,7 @@ class SettingsWindow(Tk.Toplevel):
         self.log_file_freq_label.grid(row=6, column=0, sticky=Tk.W)
         self.log_file_freq_entry.grid(row=6, column=1)
 
-        self.UTC_time_label = Tk.Label(self.cam_settings, text='Time in UTC')
+        self.UTC_time_label = Tk.Label(self.cam_settings, text='UTC time')
         self.UTC_active = Tk.IntVar()
         self.UTC_activator = Tk.Checkbutton(self.cam_settings, variable=self.UTC_active)
         self.UTC_time_label.grid(row=7, column=0, sticky=Tk.W)

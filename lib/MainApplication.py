@@ -21,7 +21,7 @@ class MainApplication:
         self.root = UI_Interface.Tk.Tk()
         self.mainUI = UI_Interface.MainWindow(self.root)
         self.mainUI.master.title('OceanRecord')
-        self.root.geometry('500x400')
+        self.root.geometry('530x400')
 
         # Paramteres
         self.update_text_frequency = 100
