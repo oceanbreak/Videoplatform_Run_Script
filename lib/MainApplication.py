@@ -282,6 +282,11 @@ class MainApplication:
         self.global_settings.inclin_port.rate = int(self.settings_window.chan5_rate.get())
         self.global_settings.inclin_port.enable = self.settings_window.chan5_active.get()
 
+        # Cam
+        self.global_settings.camera_settings.URL = self.settings_window.cam_IP_entry.get()
+        self.global_settings.camera_settings.login = self.settings_window.cam_login_entry.get()
+        self.global_settings.camera_settings.password = self.settings_window.cam_password_entry.get()
+
         self.global_settings.log_write_freq = int(self.settings_window.log_file_freq_entry.get())
         self.global_settings.UTC_time = int(self.settings_window.UTC_active.get())
 
