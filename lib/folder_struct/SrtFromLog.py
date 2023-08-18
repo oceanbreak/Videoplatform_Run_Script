@@ -9,11 +9,34 @@ from tkinter import filedialog
 from lib.UI.Settings import Settings
 
 
+class LogReader:
+    
+    # Class that stores data read from log-file
+    # based on its header
+
+    def __init__(self, log_file_path):
+
+        self.log_file_path = log_file_path
+
 class SrtFromLog:
+
+    video_format_list = ['avi', 'AVI', 'mp4', 'MP4']
 
     def __init__(self, settings : Settings):
         self.settings = settings
-        self.folder_path = filedialog.askdirectory(initialdir=settings.default_folder)
+        self.folder_path = None
+
+
+    def askFolder(self):
+        ret = filedialog.askdirectory(initialdir=self.settings.default_folder)
+        if ret != '':
+            self.folder_path = ret
+
+    def getVideoList(self):
+        self.video_list = [name for name in os.listdir(self.folder_path) 
+                           if name.split('.')[-1] in self.video_format_list
+                            and name[0]=='R']
+
 
 # Utils functions
 def timeToSec(hhmmss_string):
