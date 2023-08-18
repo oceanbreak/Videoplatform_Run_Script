@@ -1,1 +1,1 @@
-pyinstaller -F -i resources\icon.ico main.py
+pyinstaller -F -i resources\OceanRecIcon.ico main.py
