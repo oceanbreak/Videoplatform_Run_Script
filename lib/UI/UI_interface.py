@@ -61,7 +61,7 @@ class MainWindow(Tk.Frame):
         self.connect_button = Tk.Button(self.buttons_field)
         self.connect_button["text"] = "Connect"
         # self.connect_button['command'] = self.settingsWindow
-        # self.connect_button["fg"]   = "red"
+        self.connect_button["fg"]   = "red"
         self.connect_button.config(font=buttonfont)
 
         #START/STOP BUTTON
@@ -100,6 +100,7 @@ class MainWindow(Tk.Frame):
         # Settings
         self.settings_button = Tk.Button(self.buttons_field)
         self.settings_button['text'] = 'Settings'
+        self.settings_button.config(font=buttonfont)
 
         #DATA LABEL
         self.data_label = Tk.Label(self.win)
@@ -109,12 +110,11 @@ class MainWindow(Tk.Frame):
         self.data_label.config(font=labelfont, bg = label_bg, fg = label_fg)
 
         self.settings_button.pack(side=Tk.LEFT, expand=Tk.YES, fill=Tk.BOTH)
-        self.connect_button.pack({"side": "left", "expand": "YES", "fill": "both"})
-        self.QUIT_button.pack({"side": "left", "expand": "YES", "fill": "both"})
-        self.start_rec_button.pack({"side": "left", "expand": "YES", "fill": "both"})
+        # self.QUIT_button.pack({"side": "left", "expand": "YES", "fill": "both"})
         self.srt_from_log_button.pack({"side": "left", "expand": "YES", "fill": "both"})
         self.cam_dialog_button.pack({"side": "left", "expand": "YES", "fill": "both"})
-
+        self.connect_button.pack({"side": "left", "expand": "YES", "fill": "both"})
+        self.start_rec_button.pack({"side": "left", "expand": "YES", "fill": "both"})
 
         self.set_depth_buton.pack({"side": "top", "expand": "YES", "fill": "both"})
         self.reset_track_button.pack({"side": "bottom", "expand": "YES", "fill": "both"})
