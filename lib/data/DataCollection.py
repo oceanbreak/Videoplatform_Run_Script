@@ -57,6 +57,9 @@ class DataCollection:
     header_TEMPERATURE = 'Temp'
     header_INCLIN = 'Incl'
 
+
+
+
     def __init__(self, settings : Settings):
 
         self.settings = settings
@@ -76,7 +79,39 @@ class DataCollection:
         self.track_time_length = DataPacket(TimeUnit(0.0))
         self.ship_sonar_data = DataPacket(DepthData(0.0).setCorrupt(), enable=self.settings.sonar_port.is_enabled())
 
+            # Header names as list
 
+        self.header_NAME_LIST = [self.header_DATE_TIME,
+                            self.header_TR_LENGTH,
+                            self.header_TR_TIME,
+                            self.header_NAVI,
+                            self.header_DEPTH,
+                            self.header_ALTIMETER,
+                            self.header_SHIP_SONAR,
+                            self.header_TEMPERATURE,
+                            self.header_INCLIN]
+
+        self.header_SECONDARY = [self.datetime.data.log_header(),
+                                self.track_length.data.log_header(),
+                                self.track_time_length.data.log_header(),
+                                self.navi_data.data.log_header(),
+                                self.depth_data.data.log_header(),
+                                self.altimeter_data.data.log_header(),
+                                self.ship_sonar_data.data.log_header(),
+                                self.temperature_data.data.log_header(),
+                                self.inclinometer_data.data.log_header()]
+
+
+    def dataAsList(self):
+        return [self.datetime,
+                self.track_length,
+                self.track_time_length,
+                self.navi_data,
+                self.depth_data,
+                self.altimeter_data,
+                self.ship_sonar_data,
+                self.temperature_data,
+                self.inclinometer_data]
 
     def readDataFromBuffer(self, bufferRawData : dict):
 
@@ -153,15 +188,7 @@ class DataCollection:
 
     def toLogItemsList(self):
 
-        var_list = [self.track_length,
-                        self.navi_data,
-                        self.depth_data,
-                        self.altimeter_data,
-                        self.datetime,
-                        self.track_time_length,
-                        self.temperature_data,
-                        self.inclinometer_data,
-                        self.ship_sonar_data]
+        var_list = self.dataAsList()
 
         positions_in_list = [var.data.pos_num for var in var_list]
 
@@ -186,29 +213,10 @@ class DataCollection:
 
     def logHeader(self):
 
-        var_list = [self.track_length,
-                        self.navi_data,
-                        self.depth_data,
-                        self.altimeter_data,
-                        self.datetime,
-                        self.track_time_length,
-                        self.temperature_data,
-                        self.inclinometer_data,
-                        self.ship_sonar_data]
-        
-        # names_list = ['Tr_length', 'Nav', 'Depth', 'Alt', '', 'Tr_time', 'Temp', 'Incl']
-        names_list = [self.header_TR_LENGTH,
-                      self.header_NAVI,
-                      self.header_DEPTH,
-                      self.header_ALTIMETER,
-                      self.header_DATE_TIME,
-                      self.header_TR_TIME,
-                      self.header_TEMPERATURE,
-                      self.header_INCLIN,
-                      self.header_SHIP_SONAR]
+        var_list = self.dataAsList()
 
         output_string = []
-        for var, header_item in zip(var_list, names_list):
+        for var, header_item in zip(var_list, self.header_NAME_LIST):
             if var.is_enabled():
                 var_subheader = var.data.log_header()
                 if type(var_subheader) == list:
