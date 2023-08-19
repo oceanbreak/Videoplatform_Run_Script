@@ -9,6 +9,7 @@ from lib.data.SonarThread import SonarThread
 from lib.folder_struct.LogFileGenerator import LogFileGeneraror
 from lib.camera.CamController import CameraContoller
 from tkinter.filedialog import askdirectory
+from lib.folder_struct.SrtFromLog import LogReader
 
 class MainApplication:
 
@@ -59,6 +60,7 @@ class MainApplication:
         self.mainUI.set_depth_buton['command'] = self.set_depth_button_command
         self.mainUI.start_rec_button['command'] = self.start_button_command
         self.mainUI.reset_track_button['command'] = self.reset_track_command
+        self.mainUI.srt_from_log_button['command'] = self.srt_from_log_command
         # self.mainUI.choose_dir_button['text'] = textShorten(self.global_settings.default_folder)
 
 
@@ -77,6 +79,9 @@ class MainApplication:
         if hasattr(self, 'cam_control'):
             print('Trying to change cam folder')
             self.camera_contol.folder = new_folder
+
+    def srt_from_log_command(self):
+        self.log_reader = LogReader(self.global_settings.default_folder, self.data_collection)
         
 
     def connect_button_command(self):

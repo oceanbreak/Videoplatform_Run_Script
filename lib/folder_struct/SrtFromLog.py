@@ -7,16 +7,63 @@ with video name containing start and end time
 import os
 from tkinter import filedialog
 from lib.UI.Settings import Settings
+from lib.data.DataCollection import DataCollection
+from lib.data.DataStructure import *
 
+
+class DataColumn(list):
+    # List of data with column nubmer uncluded
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(self, *args, **kwargs)
+        self.__col_num = None
+
+    def setColNum(self, col_num : int):
+        self.__col_num = col_num
+
+    def getColNum(self):
+        return self.__col_num
 
 class LogReader:
     
     # Class that stores data read from log-file
     # based on its header
 
-    def __init__(self, log_file_path):
-
+    def __init__(self, log_file_path, data_collection : DataCollection):
+        self.data_collection = data_collection
         self.log_file_path = log_file_path
+        self.log_list = [name for name in os.listdir(self.log_file_path) if name.split('.')[-1] == 'csv']
+        self.full_header = data_collection.logHeader(ignore_enabled=True)
+        print(self.full_header)
+
+
+    def readLogHeader(self, log_file):
+        # Read header
+        # :return list of data types with column numbers
+        with open(log_file, 'r') as log:
+            header_string = log.readline().rstrip().split(';')
+
+        if len(header_string) > 0:
+            for header_name in header_string:
+                self.header_indices[header_name] = header_string.index(header_name)
+
+
+    def readLogFile(self):
+        """
+        Takes log file and splits it into dictionary
+        where key is real time and value is other data
+        :param path:
+        :return:
+        """
+        log = {}
+        for log_file in self.log_list:
+            with open(os.path.join(path, log_file), 'r') as log_input:
+                for line in log_input:
+                    data = line.rstrip().split(';')
+                    date_time = '_'.join(data[-2:])
+                    log[date_time] = data[:-2]
+        return log
+
 
 class SrtFromLog:
 

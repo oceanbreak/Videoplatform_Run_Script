@@ -211,13 +211,13 @@ class DataCollection:
 
         return output_string
 
-    def logHeader(self):
+    def logHeader(self, ignore_enabled=False):
 
         var_list = self.dataAsList()
 
         output_string = []
         for var, header_item in zip(var_list, self.header_NAME_LIST):
-            if var.is_enabled():
+            if var.is_enabled() or ignore_enabled:
                 var_subheader = var.data.log_header()
                 if type(var_subheader) == list:
                     for word in var_subheader:
