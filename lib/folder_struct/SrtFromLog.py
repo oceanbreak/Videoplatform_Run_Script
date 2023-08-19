@@ -180,7 +180,7 @@ class SrtFromLog:
         self.data_collection = data_collection
         self.settings = settings
         self.folder_path = None
-        self.log_list = [name for name in os.listdir(self.log_file_path) if name.split('.')[-1] == 'csv']
+        
 
     def askFolder(self):
         ret = filedialog.askdirectory(initialdir=self.settings.default_folder)
@@ -191,6 +191,9 @@ class SrtFromLog:
         self.video_list = [name for name in os.listdir(self.folder_path) 
                            if name.split('.')[-1] in self.video_format_list
                             and name[0]=='R']
+        
+    def getLogList(self):
+        self.log_list = [name for name in os.listdir(self.folder_path) if name.split('.')[-1] == 'csv']
 
 
 # Utils functions
