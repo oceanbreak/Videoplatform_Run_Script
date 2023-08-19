@@ -304,14 +304,14 @@ class MainApplication:
     
     def updateData(self):
         if self.__is_running:
-            print('updating buffer')
+            # print('updating buffer')
             raw_data = self.buffers.getRawData()
             self.data_collection.readDataFromBuffer(raw_data)
             self.mainUI.after(self.update_text_frequency, self.updateData)
 
     def updateTime(self):
         if self.__is_running:
-            print('Updating time')
+            # print('Updating time')
             self.data_collection.updateTime()
             self.mainUI.after(1000, self.updateTime)
 
