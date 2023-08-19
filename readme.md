@@ -1,5 +1,4 @@
-# OceanRecord
-### v. 5.0.0- 15.08. 2023
+# Ocean Record
 ---
 Разработка лаборатории гидролокации дна</br>
 Developed in Sonar lab</br>
