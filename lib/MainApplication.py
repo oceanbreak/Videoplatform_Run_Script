@@ -20,7 +20,7 @@ class MainApplication:
 
         self.root = UI_Interface.Tk.Tk()
         self.mainUI = UI_Interface.MainWindow(self.root)
-        self.mainUI.master.title('OceanRecord')
+        self.mainUI.master.title('Ocean Record')
         self.root.geometry('530x400')
 
         # Paramteres

@@ -1,4 +1,4 @@
-# OceanRecord
+# Ocean Record
 ---
 Разработка лаборатории гидролокации дна</br>
 Developed in Sonar lab</br>
