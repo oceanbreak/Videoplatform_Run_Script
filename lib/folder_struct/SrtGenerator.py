@@ -32,11 +32,11 @@ class SrtGenerator:
             fs.write( self.string_generation(sec) + ' --> ' + self.string_generation(sec+1) + '\n')
             fs.write(data)
             fs.write("\n\n")
-            print("Wring srt at sec " + str(sec))
+            print(f"Wring srt {self.srt_file_name} at sec " + str(sec))
 
 
     def generateSrtFile(self):
-        print('I am still here')
+        # print('I am still here')
         while True:
             new_size = os.path.getsize(self.video_file)
             if new_size <= self.cur_size:
