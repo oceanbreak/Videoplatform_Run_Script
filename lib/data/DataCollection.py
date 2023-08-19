@@ -112,15 +112,18 @@ class DataCollection:
                 self.ship_sonar_data,
                 self.temperature_data,
                 self.inclinometer_data]
-
-    def readDataFromBuffer(self, bufferRawData : dict):
-
-        parser = NmeaParser()
+    
+    def updateTime(self):
         # BOOM! - time stamp
         if self.settings.UTC_time:
             self.datetime = DataPacket(DateTime(time.gmtime(), UTC=True))
         else:
             self.datetime = DataPacket(DateTime(time.localtime(), UTC=False))
+
+    def readDataFromBuffer(self, bufferRawData : dict):
+
+        parser = NmeaParser()
+        
 
         for keyword in bufferRawData:
 

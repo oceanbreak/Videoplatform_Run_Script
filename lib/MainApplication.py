@@ -90,12 +90,14 @@ class MainApplication:
         self.mainUI.setButtonsActive()
         self.mainUI.connect_button['text'] = 'Disconnect'
         self.mainUI.connect_button['command'] = self.disconnect_button_command
+        
 
         try:
             self.buffers = BufferCollection(self.global_settings)
             self.buffers.InnitiateBuffers()
             self.__is_running = True
             self.updateData()
+            self.updateTime()
             self.updateDisplay()
         except AttributeError:
             self.disconnect_button_command()
@@ -302,9 +304,16 @@ class MainApplication:
     
     def updateData(self):
         if self.__is_running:
+            print('updating buffer')
             raw_data = self.buffers.getRawData()
             self.data_collection.readDataFromBuffer(raw_data)
             self.mainUI.after(self.update_text_frequency, self.updateData)
+
+    def updateTime(self):
+        if self.__is_running:
+            print('Updating time')
+            self.data_collection.updateTime()
+            self.mainUI.after(1000, self.updateTime)
 
     
     def updateDisplay(self):
