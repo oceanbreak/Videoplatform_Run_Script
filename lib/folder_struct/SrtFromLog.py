@@ -10,19 +10,110 @@ from lib.UI.Settings import Settings
 from lib.data.DataCollection import DataCollection
 from lib.data.DataStructure import *
 
+class LogVariable:
+    """
+    Custom class for variable to access it through list
+    """
 
-class DataColumn(list):
-    # List of data with column nubmer uncluded
+    def __init__(self):
+        self.value = False
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(self, *args, **kwargs)
-        self.__col_num = None
 
-    def setColNum(self, col_num : int):
-        self.__col_num = col_num
 
-    def getColNum(self):
-        return self.__col_num
+class LogString:
+    """
+    Class for storing log string data
+    """
+
+    def __init__(self, log_header : list, log_string : list, log_mapper : list):
+
+        self.log_header = log_header
+        self.log_string = log_string
+        self.log_mapper = log_mapper
+
+        self.date = LogVariable()
+        self.time = LogVariable()
+        self.track_length = LogVariable()
+        self.track_time = LogVariable()
+        self.nav_lat = LogVariable()
+        self.nav_lon = LogVariable()
+        self.depth = LogVariable()
+        self.altimeter = LogVariable()
+        self.sonar = LogVariable()
+        self.temp = LogVariable()
+        self.inc_pitch = LogVariable()
+        self.inc_roll = LogVariable()
+        self.inc_head = LogVariable()
+
+        self.map_vars = (self.date,
+                         self.time,
+                         self.track_length,
+                         self.track_time,
+                         self.nav_lat,
+                         self.nav_lon,
+                         self.depth,
+                         self.altimeter,
+                         self.sonar,
+                         self.temp,
+                         self.inc_pitch,
+                         self.inc_roll,
+                         self.inc_head)
+        
+        self.getFromLogString()
+
+
+    def getFromLogString(self):
+        for name, val in zip(self.log_header, self.log_string):
+            for map_name in self.log_mapper:
+                if name in map_name:
+                    index = self.log_mapper.index(map_name)
+                    self.map_vars[index].value = val
+
+                    break
+
+    def toSrtString(self):
+        # Make SRT string based on what is availible
+
+        # NAVI
+        if self.nav_lat.value and self.nav_lon.value:
+            navigation_string = self.nav_lat.value + ' ' + self.nav_lon.value + '\n'
+        else:
+            navigation_string = ''
+
+        # DEPTH, ALT
+        dep_alt_string = ''
+        if self.depth.value:
+            dep_alt_string += f'Depth: {self.depth.value} m'
+        if self.altimeter.value:
+            dep_alt_string += f', Alt: {self.altimeter.value} m'
+        if len(dep_alt_string) > 0:
+            dep_alt_string += '\n'
+
+        # Sonar, temperature
+        sonar_temp_string = ''
+        if self.sonar.value:
+            sonar_temp_string += f'Sonar: {self.sonar.value} m'
+        if self.temp.value:
+            sonar_temp_string += f', Temp: {self.temp.value} C'
+        if len(sonar_temp_string) > 0:
+            sonar_temp_string += '\n'
+
+        # Inclinometer
+        if self.inc_head.value and self.inc_pitch.value and self.inc_roll.value:
+            incl_string = f'Pitch: {self.inc_pitch.value}, Roll: {self.inc_roll.value}, Heading: {self.inc_head.value}\n'
+        else:
+            incl_string = ''
+
+
+        # DateTime
+        date_time_string = f'{self.date.value} {self.time.value}\n'
+
+        # Track length string
+        tr_length_string = f'Track length: {self.track_length.value}, time elapsed: {self.track_time.value}'
+
+        return navigation_string + dep_alt_string + sonar_temp_string + incl_string + \
+                    date_time_string + tr_length_string
+        
 
 class LogReader:
     
@@ -32,47 +123,64 @@ class LogReader:
     def __init__(self, log_file_path, data_collection : DataCollection):
         self.data_collection = data_collection
         self.log_file_path = log_file_path
-        self.log_list = [name for name in os.listdir(self.log_file_path) if name.split('.')[-1] == 'csv']
-        self.full_header = data_collection.logHeader(ignore_enabled=True)
-        print(self.full_header)
+        
+        self.map_header = data_collection.logHeader(ignore_enabled=True)
+        self.header = None
+        # print(self.full_header)
+
+        self.log_data = {}
 
 
-    def readLogHeader(self, log_file):
+    def readLogHeader(self):
         # Read header
         # :return list of data types with column numbers
-        with open(log_file, 'r') as log:
+
+        with open(self.log_file_path, 'r') as log:
             header_string = log.readline().rstrip().split(';')
 
-        if len(header_string) > 0:
-            for header_name in header_string:
-                self.header_indices[header_name] = header_string.index(header_name)
-
-
+        return header_string
+    
     def readLogFile(self):
-        """
-        Takes log file and splits it into dictionary
-        where key is real time and value is other data
-        :param path:
-        :return:
-        """
-        log = {}
-        for log_file in self.log_list:
-            with open(os.path.join(path, log_file), 'r') as log_input:
-                for line in log_input:
-                    data = line.rstrip().split(';')
-                    date_time = '_'.join(data[-2:])
-                    log[date_time] = data[:-2]
-        return log
+        i=0
+        with open(self.log_file_path, 'r') as log:
+            for line in log:
+                if i==0:
+                    self.header = self.readLogHeader()
+                else:
+                    line = line.rstrip().split(';')
+                    log_line = LogString(self.header, line, self.map_header)
+
+                    self.log_data[(log_line.date, log_line.time)] = log_line
+
+                i+=1
+
+
+    # def readLogFile(self):
+    #     """
+    #     Takes log file and splits it into dictionary
+    #     where key is real time and value is other data
+    #     :param path:
+    #     :return:
+    #     """
+    #     log = {}
+    #     for log_file in self.log_list:
+    #         with open(os.path.join(path, log_file), 'r') as log_input:
+    #             for line in log_input:
+    #                 data = line.rstrip().split(';')
+    #                 date_time = '_'.join(data[-2:])
+    #                 log[date_time] = data[:-2]
+    #     return log
 
 
 class SrtFromLog:
 
     video_format_list = ['avi', 'AVI', 'mp4', 'MP4']
 
-    def __init__(self, settings : Settings):
+    def __init__(self, settings : Settings, data_collection : DataCollection):
+        self.data_collection = data_collection
         self.settings = settings
         self.folder_path = None
-
+        self.log_list = [name for name in os.listdir(self.log_file_path) if name.split('.')[-1] == 'csv']
 
     def askFolder(self):
         ret = filedialog.askdirectory(initialdir=self.settings.default_folder)
