@@ -114,6 +114,17 @@ class LogString:
         return navigation_string + dep_alt_string + sonar_temp_string + incl_string + \
                     date_time_string + tr_length_string
         
+class LogData(dict):
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+    def timestamps(self):
+        return self.keys()
+    
+    def loglines(self):
+        return self.values()
+
 
 class LogReader:
     
@@ -128,8 +139,7 @@ class LogReader:
         self.header = None
         # print(self.full_header)
 
-        self.log_data = {}
-
+        self.log_data = LogData()
 
     def readLogHeader(self):
         # Read header
@@ -141,6 +151,8 @@ class LogReader:
         return header_string
     
     def readLogFile(self):
+        # Form log_data that is dictionary with keys - time stamps,
+        # values - LogString objects
         i=0
         with open(self.log_file_path, 'r') as log:
             for line in log:
@@ -150,27 +162,36 @@ class LogReader:
                     line = line.rstrip().split(';')
                     log_line = LogString(self.header, line, self.map_header)
 
-                    self.log_data[(log_line.date, log_line.time)] = log_line
-
+                    self.log_data[(log_line.date.value, log_line.time.value)] = log_line
                 i+=1
 
+    def getLogData(self):
+        return self.log_data
 
-    # def readLogFile(self):
-    #     """
-    #     Takes log file and splits it into dictionary
-    #     where key is real time and value is other data
-    #     :param path:
-    #     :return:
-    #     """
-    #     log = {}
-    #     for log_file in self.log_list:
-    #         with open(os.path.join(path, log_file), 'r') as log_input:
-    #             for line in log_input:
-    #                 data = line.rstrip().split(';')
-    #                 date_time = '_'.join(data[-2:])
-    #                 log[date_time] = data[:-2]
-    #     return log
+class TimeStamp:
 
+    def __init__(self):
+        self.year = None
+        self.month = None
+        self.day = None
+        self.hour = None
+        self.minute = None
+        self.second = None
+
+    def logStamp(self, date, time):
+        # Makes data from log time_samp of format
+        # YYYY/MM/DD, hh":mm:ss
+        self.year, self.month, self.day = date.split('/')
+        self.hour, self.minute, self.second = time.split(':')
+
+    def videoBewardStamp(self, date, time):
+        self.year = date[0:4]
+        self.month = date[4:6]
+        self.day = date[6:8]
+        self.hour = time[0:2]
+        self.minute = time[2:4]
+        self.second = time[4:6]
+        
 
 class SrtFromLog:
 
