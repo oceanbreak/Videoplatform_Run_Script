@@ -34,6 +34,15 @@ class SrtGenerator:
             fs.write("\n\n")
             # print(f"Wring srt {self.srt_file_name} at sec " + str(sec))
 
+    def write_srt_data(self, data):
+        with open(self.srt_file_name, 'w') as fs:
+            for sec in range(len(data)):
+                fs.write(str(sec)+'\n')
+                fs.write( self.string_generation(sec) + ' --> ' + self.string_generation(sec+1) + '\n')
+                fs.write(data[sec])
+                fs.write("\n\n")
+
+
 
     def generateSrtFile(self):
         # print('I am still here')
