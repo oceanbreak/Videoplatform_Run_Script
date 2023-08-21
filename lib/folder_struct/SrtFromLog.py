@@ -150,9 +150,13 @@ class LogReader:
 
         return header_string
     
-    def readLogFile(self):
+    def readLogFile(self, log_file_path=''):
         # Form log_data that is dictionary with keys - time stamps,
         # values - LogString objects
+
+        # Update file path if needed
+        if log_file_path != '':
+            self.log_file_path = log_file_path
         i=0
         with open(self.log_file_path, 'r') as log:
             for line in log:
@@ -161,8 +165,9 @@ class LogReader:
                 else:
                     line = line.rstrip().split(';')
                     log_line = LogString(self.header, line, self.map_header)
-
-                    self.log_data[(log_line.date.value, log_line.time.value)] = log_line
+                    timestamp = (log_line.date.value, log_line.time.value)
+                    # timestamp.logStamp(log_line.date.value, log_line.time.value)
+                    self.log_data[timestamp] = log_line
                 i+=1
 
     def getLogData(self):
@@ -183,6 +188,7 @@ class TimeStamp:
         # YYYY/MM/DD, hh":mm:ss
         self.year, self.month, self.day = date.split('/')
         self.hour, self.minute, self.second = time.split(':')
+        return self
 
     def videoBewardStamp(self, date, time):
         self.year = date[0:4]
@@ -191,7 +197,15 @@ class TimeStamp:
         self.hour = time[0:2]
         self.minute = time[2:4]
         self.second = time[4:6]
+        return self
         
+    def __str__(self):
+        return f'{self.year}/{self.month}/{self.day} {self.hour}:{self.minute}:{self.second}'
+    
+    def __eq__(self, other):
+        return self.year == other.year and self.month == other.month and \
+                self.day == other.day and self.hour == other.hour and \
+                self.minute == other.minute and self.second == other.second
 
 class SrtFromLog:
 
@@ -201,12 +215,14 @@ class SrtFromLog:
         self.data_collection = data_collection
         self.settings = settings
         self.folder_path = None
+        self.log_data = None
         
 
     def askFolder(self):
         ret = filedialog.askdirectory(initialdir=self.settings.default_folder)
         if ret != '':
             self.folder_path = ret
+        return ret
 
     def getVideoList(self):
         self.video_list = [name for name in os.listdir(self.folder_path) 
@@ -215,6 +231,27 @@ class SrtFromLog:
         
     def getLogList(self):
         self.log_list = [name for name in os.listdir(self.folder_path) if name.split('.')[-1] == 'csv']
+
+
+    def readLogData(self):
+        log_reader = LogReader('', self.data_collection)
+        for log_file in self.log_list:
+            path = os.path.join(self.folder_path, log_file)
+            log_reader.readLogFile(path)
+        self.log_data = log_reader.getLogData()
+        return self.log_data
+    
+    def run(self):
+        ret = self.askFolder()
+        if ret == '':
+            print('No folder specified')
+            return 0
+        self.getVideoList()
+        self.getLogList()
+        print(f'Found {len(self.video_list)} videos in folder: ', self.video_list)
+        print(f'Found {len(self.log_list)} log_files in folder: ', self.log_list)
+        self.readLogData()
+        print(self.log_data)
 
 
 # Utils functions
