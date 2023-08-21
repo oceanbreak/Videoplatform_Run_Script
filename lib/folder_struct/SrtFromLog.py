@@ -59,13 +59,14 @@ class SrtFromLog:
 
         for cur_sec in range(duration):
             cur_timestamp = video_timer.incrementVideoSecond()
-            print(cur_timestamp.toLogTimestamp())
+            # print(cur_timestamp.toLogTimestamp())
             try:
                 srt_data.append(self.log_data[cur_timestamp.toLogTimestamp()].toSrtString())
             except KeyError:
                 srt_data.append('No data')
         
         srt_gen.write_srt_data(srt_data)
+
 
     def iterateOverVideos(self):
         for video_file in self.video_list:
@@ -85,8 +86,10 @@ class SrtFromLog:
             print(f'Found {len(self.log_list)} log_files in folder: ', self.log_list)
             self.readLogData()
             self.iterateOverVideos()
+            return 1
         except ValueError as e:
             print('Error occured', e)
+            return 0
 
         
 
