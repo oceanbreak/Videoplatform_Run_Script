@@ -23,6 +23,7 @@ class MainApplication:
         self.mainUI = UI_Interface.MainWindow(self.root)
         self.mainUI.master.title('Ocean Record')
         self.root.geometry('530x400')
+        self.root.wm_iconbitmap('resources/OceanRecIcon.ico')
 
         # Paramteres
         self.update_text_frequency = 100
