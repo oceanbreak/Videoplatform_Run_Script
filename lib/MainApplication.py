@@ -9,7 +9,7 @@ from lib.data.SonarThread import SonarThread
 from lib.folder_struct.LogFileGenerator import LogFileGeneraror
 from lib.camera.CamController import CameraContoller
 from tkinter.filedialog import askdirectory
-from lib.folder_struct.SrtFromLog import LogReader
+from lib.folder_struct.SrtFromLog import SrtFromLog
 
 class MainApplication:
 
@@ -81,7 +81,13 @@ class MainApplication:
             self.camera_contol.folder = new_folder
 
     def srt_from_log_command(self):
-        self.log_reader = LogReader(self.global_settings.default_folder, self.data_collection)
+        self.log_reader = SrtFromLog(self.global_settings, self.data_collection)
+        ret = self.log_reader.run()
+        if ret:
+            video_list = self.log_reader.video_list
+            text = 'Successfully created SRT for videos:\n' + \
+                    '\n'.join(video_list)
+            self.mainUI.popInfo(text)
         
 
     def connect_button_command(self):
