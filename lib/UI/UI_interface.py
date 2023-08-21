@@ -23,6 +23,9 @@ class MainWindow(Tk.Frame):
     def popAskWindow(self, text):
         return askyesno('Confirmation', text)
     
+    def popInfo(self, text):
+        showinfo('Info', text)
+    
     def setupImageOnLabel(self):
         # Add image
         self.im = Image.open('resources\image\SonarLabLogo.png').resize((200,140))
