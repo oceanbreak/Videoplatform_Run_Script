@@ -4,5 +4,6 @@ __pycache__
 .idea
 build
 dist
+releases
 main.spec
 test.py
