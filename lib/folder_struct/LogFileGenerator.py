@@ -23,6 +23,7 @@ class LogFileGeneraror:
     def writeLogString(self):
         with open(self.file_full_path, 'a') as fs:
             to_write = [item if item!=None else '' for item in self.data_collection.toLogItemsList()]
+            print(to_write)
             fs.write(';'.join(to_write))
             fs.write('\n')
 

@@ -50,7 +50,7 @@ class ComPortData:
             try:
                 self._line = self._port.readline().decode('utf-8')
                 self._line = self._line.rstrip()
-            except serial.SerialException:
+            except (serial.SerialException, TypeError):
                 print('Bad line')
                 self._line = None
             # If tmeout, set timer

@@ -135,7 +135,7 @@ class InclinometerData(BaseData):
         return self.__str__()
     
     def toLogItem(self):
-        return self.pitch, self.roll, self.heading
+        return f"{self.pitch:.1f};{self.roll:.1f};{self.heading:.1f}".split(";")
     
 
 class ComPortString():
