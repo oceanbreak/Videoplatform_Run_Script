@@ -14,7 +14,7 @@ class SrtGenerator:
         self.stop_flag = False
         self.cur_size = os.path.getsize(self.video_file)
         self.cur_sec = 0
-        time.sleep(0.5)
+        time.sleep(2.0)
 
 
 
