@@ -359,7 +359,7 @@ class CameraControlWindow(Tk.Toplevel):
         self.sync_time_button.config(state=Tk.DISABLED)
 
         self.rec_sd_button = Tk.Button(self)
-        self.rec_sd_button['text'] = 'Start SD Recording'
+        self.rec_sd_button['text'] = 'Start SD rec'
         self.rec_sd_button.config(state=Tk.DISABLED)
 
         self.format_sd_button = Tk.Button(self)

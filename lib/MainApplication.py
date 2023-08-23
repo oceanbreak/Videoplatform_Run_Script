@@ -43,6 +43,7 @@ class MainApplication:
 
         self.data_collection = DataCollection(self.global_settings)
         self.track_counter = TrackCounter()
+        self.camera_contol = CameraContoller(self.global_settings)
             
         
         self.setupMainAppButtons()
@@ -181,28 +182,55 @@ class MainApplication:
 ############### CAMERA WINDOW @@@@@@@@@@@@@@@@@@@@@@@@2
 
     def setupCameraButtons(self):
+        if self.camera_contol.connected():
+            self.cam_control_window.activateButtons()
+            self.cam_control_window.connect_button['text'] = 'Disconnect camera'
+
+        if self.camera_contol.recording():
+            self.cam_control_window.rec_sd_button['text'] = 'Stop SD rec'
+            self.cam_control_window.rec_sd_button['fg'] = 'red'
+
         self.cam_control_window.connect_button['command'] = self.connect_camera_command
-        # self.cam_control_window.sync_time_button['command'] = self.camera_contol.syncTime
+        self.cam_control_window.sync_time_button['command'] = self.camera_contol.syncTime
         self.cam_control_window.format_sd_button['command'] = self.format_sd_command
+        self.cam_control_window.rec_sd_button['command'] = self.cam_rec_command
+
+
     
     def connect_camera_command(self):
         # print('Am i connecting')
-        self.camera_contol = CameraContoller(self.global_settings)
         if not self.camera_contol.connected():
             success = self.camera_contol.connectCamera()
             if success:
                 self.cam_control_window.connect_button['text'] = 'Disconnect camera'
-                self.cam_control_window.activateButtons()
+                # self.cam_control_window.activateButtons()
+
             else:
                 self.mainUI.popError('Cannot connect to camera')
         else:
             self.camera_contol.disconnectCamera()
             self.cam_control_window.deactivateButtons()
+            self.cam_control_window.connect_button['text'] = 'Connect camera'
+
+        self.setupCameraButtons()
 
     def format_sd_command(self):
         yes = self.mainUI.popAskWindow('Format SD?\nThat will erase all data on camera')
         if yes:
             self.camera_contol.formatSD()
+
+    def cam_rec_command(self):
+        if self.camera_contol.recording():
+            self.camera_contol.stopRecSD()
+            self.cam_control_window.rec_sd_button['text'] = 'Start SD rec'
+            self.cam_control_window.rec_sd_button['fg'] = 'black'
+            print('Camera stopped record')
+        else:
+            self.camera_contol.startRecSD()
+            self.cam_control_window.rec_sd_button['text'] = 'Stop SD rec'
+            self.cam_control_window.rec_sd_button['fg'] = 'red'
+            print('Camera started recording')
+
 
 
 ################# PROGRAM LOGIC #################################
