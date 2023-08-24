@@ -12,6 +12,8 @@ from tkinter.filedialog import askdirectory
 from lib.folder_struct.SrtFromLog import SrtFromLog
 from threading import Thread
 
+#TODO Cancel button for downloading
+
 def threadDecorator(function):
     def wrapper(*args):
         t_func = Thread(None, function, args=args)
@@ -39,6 +41,7 @@ class MainApplication:
         # FLAGS
         self.__is_running = False
         self.__is_recording = False
+        self.__is_downloading = False
 
         # Read settings
         try:
@@ -189,6 +192,7 @@ class MainApplication:
 ############### CAMERA WINDOW @@@@@@@@@@@@@@@@@@@@@@@@2
 
     def setupCameraButtons(self):
+
         if self.camera_control.connected():
             self.cam_control_window.activateButtons()
             self.cam_control_window.connect_button['text'] = 'Disconnect camera'
@@ -201,7 +205,8 @@ class MainApplication:
         self.cam_control_window.sync_time_button['command'] = self.sync_time_command
         self.cam_control_window.format_sd_button['command'] = self.format_sd_command
         self.cam_control_window.rec_sd_button['command'] = self.cam_rec_command
-        self.displayVideoList()
+        self.cam_control_window.download_button['command'] = self.download
+        # self.displayVideoList()
 
     @threadDecorator
     def sync_time_command(self):
@@ -256,6 +261,37 @@ class MainApplication:
         if self.camera_control.connected():
             v_list = self.camera_control.listVideos()
             self.cam_control_window.insertDisplayText('\n'.join(v_list))
+
+
+    @threadDecorator
+    def download(self):
+        if self.camera_control.connected():
+            self.__is_downloading = True
+            self.updateDownloadBar()
+            self.cam_control_window.disableAll()
+
+
+
+            self.camera_control.download()
+            
+
+            self.mainUI.popInfo('Download complete')
+            self.__is_downloading = False
+            self.cam_control_window.enableAll()
+            self.camera_control.eraseDowloadProgress()
+
+            # Reset download bar
+            self.cam_control_window.download_file_label['text'] = ''
+            self.cam_control_window.progress_complete.set(self.camera_control.download_progress)
+
+
+    def updateDownloadBar(self):
+        if self.__is_downloading:
+            # print(self.camera_control.cur_download_filename, self.camera_control.download_progress)
+            text = f'Downloading {self.camera_control.cur_download_filename}'
+            self.cam_control_window.download_file_label['text'] = text
+            self.cam_control_window.progress_complete.set(self.camera_control.download_progress)
+            self.mainUI.after(100, self.updateDownloadBar)
 
 
     # def updateVideoList(self):

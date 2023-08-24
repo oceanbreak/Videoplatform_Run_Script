@@ -345,6 +345,7 @@ class CameraControlWindow(Tk.Toplevel):
         self.grab_set()
         self.buttonfont = ('arial', 12, 'bold')
         self.createWidgets()
+        self.protocol("WM_DELETE_WINDOW", self.close_window)
 
     
     def createWidgets(self):
@@ -383,7 +384,7 @@ class CameraControlWindow(Tk.Toplevel):
 
         self.close_button = Tk.Button(self.button_field)
         self.close_button['text'] = 'Close'
-        self.close_button['command'] = self.destroy
+        self.close_button['command'] = self.close_window
         self.close_button['font'] = self.buttonfont
 
         self.connect_button.pack(side=Tk.TOP, fill=Tk.BOTH, expand=Tk.YES)
@@ -403,11 +404,20 @@ class CameraControlWindow(Tk.Toplevel):
         # Add some text in the text widget
         self.display.insert(Tk.END, 'Camera is not connected')
 
-        self.download_progress = ttk.Progressbar(self.download_field, orient=Tk.HORIZONTAL, length=300)
+        self.download_file_label = Tk.Label(self.download_field, text='')
 
-        self.scrollbar.pack(side=Tk.RIGHT, fill='y')
-        self.display.pack(side=Tk.RIGHT, fill='y')
+
+        self.progress_complete = Tk.DoubleVar()
+        self.download_progress = ttk.Progressbar(self.download_field, \
+                                                 variable=self.progress_complete, \
+                                                orient=Tk.HORIZONTAL, \
+                                                length=300)
+
+        self.download_file_label.pack(side=Tk.BOTTOM, fill=Tk.BOTH, expand=Tk.YES)
         self.download_progress.pack(side=Tk.BOTTOM, fill=Tk.BOTH, expand=Tk.YES)
+        self.scrollbar.pack(side=Tk.RIGHT, fill=Tk.BOTH, expand=Tk.YES )
+        self.display.pack(side=Tk.RIGHT, fill=Tk.BOTH, expand=Tk.YES)
+
 
 
 
@@ -428,6 +438,24 @@ class CameraControlWindow(Tk.Toplevel):
     def insertDisplayText(self, text):
         self.display.delete('1.0', Tk.END)
         self.display.insert(Tk.END, text)
+
+    def close_window(self):
+        self.destroy()
+
+    def disable_window(self):
+        pass
+
+    def disableAll(self):
+        self.deactivateButtons()
+        self.close_button.config(state=Tk.DISABLED)
+        self.connect_button.config(state=Tk.DISABLED)
+        self.protocol("WM_DELETE_WINDOW", self.disable_window)
+
+    def enableAll(self):
+        self.activateButtons()
+        self.close_button.config(state=Tk.NORMAL)
+        self.connect_button.config(state=Tk.NORMAL)
+        self.protocol("WM_DELETE_WINDOW", self.close_window)
 
 
 

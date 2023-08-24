@@ -10,6 +10,7 @@ import datetime
 from urllib import request
 from requests.exceptions import ConnectTimeout
 from threading import Thread
+import os
 
 
 
@@ -22,6 +23,9 @@ class CameraContoller:
         self.password = settings.camera_settings.password
         self.folder = settings.default_folder
         self.auth = (self.login, self.password)
+        self.settings = settings
+        self.download_progress = 0.0
+        self.cur_download_filename = ''
 
         self.__connected = False
         self.__recording = False
@@ -130,3 +134,33 @@ class CameraContoller:
         string = resp.content.decode('utf-8')
         video_names = [name.split('\t')[0] for name in string.split('\n')]
         return video_names
+    
+
+    def download(self):
+        # Download files
+        video_names = self.listVideos()
+        for index, name in enumerate(video_names):
+            if name !='':
+                self.cur_download_filename = name
+                message1 = '/cgi-bin/admin/storagemanagement.cgi?action=download&filename=' + name
+                resp1 = requests.get(self.URL + message1, auth = self.auth,  stream=True)
+                total_length = resp1.headers.get('content-length')
+                
+                with open(os.path.join(self.settings.default_folder, name), 'wb') as f:
+                    if total_length is None: # no content length header
+                        f.write(resp1.content)
+                    else:
+                        dl = 0
+                        total_length = int(total_length)
+                        for data in resp1.iter_content(chunk_size=4096):
+                            dl += len(data)
+                            f.write(data)
+                            self.download_progress =  100 * dl / total_length
+                            # sys.stdout.write("\r(%i of %i) %s [%s%s]" % (index+1, len(video_names),
+                            #                                             name, '=' * done, ' ' * (50-done)) )    
+                            # sys.stdout.flush()
+        # Reset file name
+        self.cur_download_filename = ''
+
+    def eraseDowloadProgress(self):
+        self.download_progress = 0.0
