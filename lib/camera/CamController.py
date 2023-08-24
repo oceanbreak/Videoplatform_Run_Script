@@ -9,6 +9,10 @@ from lib.UI.Settings import Settings
 import datetime
 from urllib import request
 from requests.exceptions import ConnectTimeout
+from threading import Thread
+
+
+
 
 class CameraContoller:
 
@@ -45,7 +49,7 @@ class CameraContoller:
         #     return False
         try:
             cam_req = requests.get(self.URL + '/cgi-bin/capture.cgi?action=set&capture_folder='
-                                + self.folder, auth=self.auth, timeout=2)
+                                + self.folder, auth=self.auth, timeout=5)
             if cam_req.status_code == 200:
                 print(f'Camera connected\nRecord folder: {self.folder}')
                 self.__connected = True
@@ -117,3 +121,12 @@ class CameraContoller:
                 if value =='yes':
                     return True
         return False
+    
+
+    def listVideos(self):
+        # Read file list from camera
+        message = '/cgi-bin/admin/storagemanagement.cgi?action=list'
+        resp = requests.get(self.URL + message, auth = self.auth)
+        string = resp.content.decode('utf-8')
+        video_names = [name.split('\t')[0] for name in string.split('\n')]
+        return video_names

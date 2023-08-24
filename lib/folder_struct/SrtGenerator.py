@@ -4,7 +4,7 @@ from lib.data.DataCollection import DataCollection
 from lib.data.SonarThread import SonarThread
 
 
-# TODO Test if it continues runnong after video file stops growing
+
 class SrtGenerator:
 
     def __init__(self, video_file : str, data_collection : DataCollection):

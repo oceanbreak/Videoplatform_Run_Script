@@ -10,6 +10,13 @@ from lib.folder_struct.LogFileGenerator import LogFileGeneraror
 from lib.camera.CamController import CameraContoller
 from tkinter.filedialog import askdirectory
 from lib.folder_struct.SrtFromLog import SrtFromLog
+from threading import Thread
+
+def threadDecorator(function):
+    def wrapper(*args):
+        t_func = Thread(None, function, args=args)
+        t_func.start()
+    return wrapper
 
 class MainApplication:
 
@@ -43,7 +50,7 @@ class MainApplication:
 
         self.data_collection = DataCollection(self.global_settings)
         self.track_counter = TrackCounter()
-        self.camera_contol = CameraContoller(self.global_settings)
+        self.camera_control = CameraContoller(self.global_settings)
             
         
         self.setupMainAppButtons()
@@ -80,7 +87,7 @@ class MainApplication:
         # Update camera directory, if camera connected
         if hasattr(self, 'cam_control'):
             print('Trying to change cam folder')
-            self.camera_contol.folder = new_folder
+            self.camera_control.folder = new_folder
 
     def srt_from_log_command(self):
         self.log_reader = SrtFromLog(self.global_settings, self.data_collection)
@@ -182,54 +189,80 @@ class MainApplication:
 ############### CAMERA WINDOW @@@@@@@@@@@@@@@@@@@@@@@@2
 
     def setupCameraButtons(self):
-        if self.camera_contol.connected():
+        if self.camera_control.connected():
             self.cam_control_window.activateButtons()
             self.cam_control_window.connect_button['text'] = 'Disconnect camera'
 
-        if self.camera_contol.recording():
+        if self.camera_control.recording():
             self.cam_control_window.rec_sd_button['text'] = 'Stop SD rec'
             self.cam_control_window.rec_sd_button['fg'] = 'red'
 
         self.cam_control_window.connect_button['command'] = self.connect_camera_command
-        self.cam_control_window.sync_time_button['command'] = self.camera_contol.syncTime
+        self.cam_control_window.sync_time_button['command'] = self.sync_time_command
         self.cam_control_window.format_sd_button['command'] = self.format_sd_command
         self.cam_control_window.rec_sd_button['command'] = self.cam_rec_command
+        self.displayVideoList()
 
+    @threadDecorator
+    def sync_time_command(self):
+        self.camera_control.syncTime()
 
-    
+    @threadDecorator
     def connect_camera_command(self):
         # print('Am i connecting')
-        if not self.camera_contol.connected():
-            success = self.camera_contol.connectCamera()
+        if not self.camera_control.connected():
+            success = self.camera_control.connectCamera()
             if success:
                 self.cam_control_window.connect_button['text'] = 'Disconnect camera'
+                self.displayVideoList()
                 # self.cam_control_window.activateButtons()
 
             else:
                 self.mainUI.popError('Cannot connect to camera')
         else:
-            self.camera_contol.disconnectCamera()
+            self.camera_control.disconnectCamera()
             self.cam_control_window.deactivateButtons()
             self.cam_control_window.connect_button['text'] = 'Connect camera'
+            self.cam_control_window.insertDisplayText('Camera is not connected')
 
         self.setupCameraButtons()
 
+
+    @threadDecorator
     def format_sd_command(self):
         yes = self.mainUI.popAskWindow('Format SD?\nThat will erase all data on camera')
         if yes:
-            self.camera_contol.formatSD()
+            self.camera_control.formatSD()
+            self.mainUI.after(5000, self.displayVideoList)
+    
 
+    @threadDecorator
     def cam_rec_command(self):
-        if self.camera_contol.recording():
-            self.camera_contol.stopRecSD()
+        if self.camera_control.recording():
+            self.camera_control.stopRecSD()
             self.cam_control_window.rec_sd_button['text'] = 'Start SD rec'
             self.cam_control_window.rec_sd_button['fg'] = 'black'
             print('Camera stopped record')
         else:
-            self.camera_contol.startRecSD()
+            self.camera_control.startRecSD()
             self.cam_control_window.rec_sd_button['text'] = 'Stop SD rec'
             self.cam_control_window.rec_sd_button['fg'] = 'red'
             print('Camera started recording')
+        self.displayVideoList()
+
+
+    @threadDecorator
+    def displayVideoList(self):
+        if self.camera_control.connected():
+            v_list = self.camera_control.listVideos()
+            self.cam_control_window.insertDisplayText('\n'.join(v_list))
+
+
+    # def updateVideoList(self):
+    #     print(f'Camera connected: {self.camera_control.connected()}')
+    #     # Update video list when recording
+    #     self.displayVideoList()
+    #     self.mainUI.after(10000, self.updateVideoList)
 
 
 

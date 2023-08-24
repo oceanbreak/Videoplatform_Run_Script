@@ -343,46 +343,72 @@ class CameraControlWindow(Tk.Toplevel):
     def __init__(self, master):
         super().__init__(master=master)
         self.grab_set()
+        self.buttonfont = ('arial', 12, 'bold')
         self.createWidgets()
 
-
+    
     def createWidgets(self):
 
-        self.geometry('200x300')
+        self.geometry('500x300')
         self.title('Camera Control Panel')
+
+        self.button_field = Tk.Frame(self)
+        self.button_field.pack(side=Tk.LEFT, fill=Tk.BOTH, expand=Tk.YES)
+
+        self.download_field = Tk.Frame(self)
+        self.download_field.pack(side=Tk.LEFT, fill=Tk.BOTH, expand=Tk.YES)
         
-        self.connect_button = Tk.Button(self)
+
+        # BUTTONS 
+
+        self.connect_button = Tk.Button(self.button_field)
         self.connect_button['text'] = 'Connect camera'
+        self.connect_button['font'] = self.buttonfont
 
-        self.sync_time_button = Tk.Button(self)
+        self.sync_time_button = Tk.Button(self.button_field)
         self.sync_time_button['text'] = 'Sync time'
-        self.sync_time_button.config(state=Tk.DISABLED)
+        self.sync_time_button.config(state=Tk.DISABLED, font=self.buttonfont)
 
-        self.rec_sd_button = Tk.Button(self)
+        self.rec_sd_button = Tk.Button(self.button_field)
         self.rec_sd_button['text'] = 'Start SD rec'
-        self.rec_sd_button.config(state=Tk.DISABLED)
+        self.rec_sd_button.config(state=Tk.DISABLED, font=self.buttonfont)
 
-        self.format_sd_button = Tk.Button(self)
+        self.format_sd_button = Tk.Button(self.button_field)
         self.format_sd_button['text'] = 'Format SD'
-        self.format_sd_button.config(state=Tk.DISABLED)
+        self.format_sd_button.config(state=Tk.DISABLED, font=self.buttonfont)
 
-        self.download_button = Tk.Button(self)
+        self.download_button = Tk.Button(self.button_field)
         self.download_button['text'] = 'Download'
-        self.download_button.config(state=Tk.DISABLED)
+        self.download_button.config(state=Tk.DISABLED, font=self.buttonfont)
 
-        self.download_progress = ttk.Progressbar(self, orient=Tk.HORIZONTAL, length=200)
-
-        self.close_button = Tk.Button(self)
+        self.close_button = Tk.Button(self.button_field)
         self.close_button['text'] = 'Close'
         self.close_button['command'] = self.destroy
+        self.close_button['font'] = self.buttonfont
 
         self.connect_button.pack(side=Tk.TOP, fill=Tk.BOTH, expand=Tk.YES)
         self.sync_time_button.pack(side=Tk.TOP, fill=Tk.BOTH, expand=Tk.YES)
         self.rec_sd_button.pack(side=Tk.TOP, fill=Tk.BOTH, expand=Tk.YES)
         self.format_sd_button.pack(side=Tk.TOP, fill=Tk.BOTH, expand=Tk.YES)
         self.download_button.pack(side=Tk.TOP, fill=Tk.BOTH, expand=Tk.YES)
-        self.download_progress.pack(side=Tk.TOP, fill=Tk.BOTH, expand=Tk.YES)
         self.close_button.pack(side=Tk.TOP, fill=Tk.BOTH, expand=Tk.YES)
+
+        ## DOWNLOAD ###
+
+        # Add a Scrollbar(horizontal)
+        self.scrollbar = ttk.Scrollbar(self.download_field, orient='vertical')
+
+        self.display = Tk.Text(self.download_field, yscrollcommand=self.scrollbar.set, font=('Calibri', 12))
+
+        # Add some text in the text widget
+        self.display.insert(Tk.END, 'Camera is not connected')
+
+        self.download_progress = ttk.Progressbar(self.download_field, orient=Tk.HORIZONTAL, length=300)
+
+        self.scrollbar.pack(side=Tk.RIGHT, fill='y')
+        self.display.pack(side=Tk.RIGHT, fill='y')
+        self.download_progress.pack(side=Tk.BOTTOM, fill=Tk.BOTH, expand=Tk.YES)
+
 
 
     def deactivateButtons(self):
@@ -399,6 +425,9 @@ class CameraControlWindow(Tk.Toplevel):
         self.download_button.config(state=Tk.NORMAL)
 
 
+    def insertDisplayText(self, text):
+        self.display.delete('1.0', Tk.END)
+        self.display.insert(Tk.END, text)
 
 
 
