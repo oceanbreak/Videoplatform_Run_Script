@@ -44,7 +44,7 @@ Developed in Sonar lab</br>
 
 ### Меню Settings
 
-![alt text](resources/image/settings_window.png)
+![alt text](resources/image/settings_window_new.png)
  #### COM-ports settings
 
  В меню настроек <b>Settings</b> для каждого типа данных необходимо прописать порт, скорость и NMEA-идентификатор строки, из которой будут браться данные. Также возле каждого типа данных стоит чекбокс, который определяет, будет ли осуществляться сбор этих данных. В области <i>Message</i> прописывается идентификатор NMEA-строки, из которой будут браться данные.
