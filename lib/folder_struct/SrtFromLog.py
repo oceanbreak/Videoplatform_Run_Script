@@ -4,6 +4,8 @@ based of known log file for Videomodule
 with video name containing start and end time
 """
 
+#TODO SRT delay 2 seconds
+
 import os
 from tkinter import filedialog
 from lib.UI.Settings import Settings
