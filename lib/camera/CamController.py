@@ -85,7 +85,7 @@ class CameraContoller:
         now = datetime.datetime.now()
         HH, MM, SS, DT, MN, YY = (now.hour,
                                 now.minute,
-                                now.second + 3,
+                                now.second,
                                 now.day,
                                 now.month,
                                 now.year)
