@@ -11,6 +11,7 @@ from urllib import request
 from requests.exceptions import ConnectTimeout
 from threading import Thread
 import os
+import time
 
 
 
@@ -92,12 +93,16 @@ class CameraContoller:
 
     def syncTime(self):
         now = datetime.datetime.now()
-        HH, MM, SS, DT, MN, YY = (now.hour,
-                                now.minute,
-                                now.second,
-                                now.day,
-                                now.month,
-                                now.year)
+        if self.settings.UTC_time:
+            now = time.gmtime()
+        else:
+            now = time.localtime()
+        HH, MM, SS, DT, MN, YY = (now.tm_hour,
+                                now.tm_min,
+                                now.tm_sec,
+                                now.tm_mday,
+                                now.tm_mon,
+                                now.tm_year)
 
         message = '/cgi-bin/admin/date.cgi?action=set&year=%i&month=%i&day=%i' \
                     '&hour=%i&minute=%i&second=%i' % (YY, MN, DT, HH, MM, SS)
