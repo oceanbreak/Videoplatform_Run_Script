@@ -55,6 +55,7 @@ Developed in Sonar lab</br>
 + <b>Depth</b> - глубина по датчику давления. Доступные значения Message: <b>DBS, DBT</b>
 + <b>Altimeter</b> - отстояние от грунта. Доступные значения Message: <b>DBS, DBT</b>
 + <b>Temperature</b> - температура воды. Доступные значения Message: <b>MTW</b>
++ <b>Ship Sonar</b> - глубина по судовому эхолоту. Доступные значения Message: <b>DBS, DBT</b>
 + <b>Inclinometer</b> - датчик положения аппарата*. Специализированный канал данных БНПА "Видеомодуль".
 
 #### IP-camera settings
