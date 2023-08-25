@@ -212,6 +212,7 @@ class MainApplication:
     @threadDecorator
     def sync_time_command(self):
         self.camera_control.syncTime()
+        self.cam_control_window.insertDisplayText(f'Camera time set {self.data_collection.datetime.data.toDisplayText()}')
 
     @threadDecorator
     def connect_camera_command(self):
