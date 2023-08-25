@@ -196,6 +196,7 @@ class MainApplication:
         if self.camera_control.connected():
             self.cam_control_window.activateButtons()
             self.cam_control_window.connect_button['text'] = 'Disconnect camera'
+            self.displayVideoList()
 
         if self.camera_control.recording():
             self.cam_control_window.rec_sd_button['text'] = 'Stop SD rec'
@@ -206,7 +207,7 @@ class MainApplication:
         self.cam_control_window.format_sd_button['command'] = self.format_sd_command
         self.cam_control_window.rec_sd_button['command'] = self.cam_rec_command
         self.cam_control_window.download_button['command'] = self.download
-        # self.displayVideoList()
+        
 
     @threadDecorator
     def sync_time_command(self):
@@ -220,7 +221,8 @@ class MainApplication:
             if success:
                 self.cam_control_window.connect_button['text'] = 'Disconnect camera'
                 self.displayVideoList()
-                # self.cam_control_window.activateButtons()
+                # self.setupCameraButtons()
+                self.cam_control_window.activateButtons()
 
             else:
                 self.mainUI.popError('Cannot connect to camera')
@@ -230,7 +232,7 @@ class MainApplication:
             self.cam_control_window.connect_button['text'] = 'Connect camera'
             self.cam_control_window.insertDisplayText('Camera is not connected')
 
-        self.setupCameraButtons()
+        # self.setupCameraButtons()
 
 
     @threadDecorator
@@ -267,14 +269,12 @@ class MainApplication:
     def download(self):
         if self.camera_control.connected():
             self.__is_downloading = True
+            self.cam_control_window.download_button['command'] = self.cancel_download
             self.updateDownloadBar()
             self.cam_control_window.disableAll()
 
-
-
             self.camera_control.download()
             
-
             self.mainUI.popInfo('Download complete')
             self.__is_downloading = False
             self.cam_control_window.enableAll()
@@ -283,6 +283,11 @@ class MainApplication:
             # Reset download bar
             self.cam_control_window.download_file_label['text'] = ''
             self.cam_control_window.progress_complete.set(self.camera_control.download_progress)
+
+
+    def cancel_download(self):
+        self.camera_control.stopDownload()
+        self.cam_control_window.download_button['command'] = self.download
 
 
     def updateDownloadBar(self):
