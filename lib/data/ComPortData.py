@@ -50,7 +50,7 @@ class ComPortData:
             try:
                 self._line = self._port.readline().decode('utf-8')
                 self._line = self._line.rstrip()
-            except (serial.SerialException, TypeError):
+            except (serial.SerialException, TypeError, UnicodeDecodeError):
                 print('Bad line')
                 self._line = None
             # If tmeout, set timer
@@ -67,13 +67,14 @@ class ComPortData:
     def pullData(self, ignore_chksm=True):
         # Pulls one line from port and stores to input_data if it matches one of keyword
         self.readFromPort()
-        for index, prog in enumerate(self.prog):
-            if prog.match(self._line) and (self.checksumOk() or ignore_chksm):
-                self._input_data[index] = self._line
-                self.same_data_timestamp[index] = time.time()
+        if self._line is not  None:
+            for index, prog in enumerate(self.prog):
+                if prog.match(self._line) and (self.checksumOk() or ignore_chksm):
+                    self._input_data[index] = self._line
+                    self.same_data_timestamp[index] = time.time()
 
-            if self.time_out_timer > 0:
-                self._input_data[index] = None
+                if self.time_out_timer > 0:
+                    self._input_data[index] = None
 
 
     def checksumOk(self):
