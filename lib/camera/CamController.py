@@ -29,6 +29,7 @@ class CameraContoller:
 
         self.__connected = False
         self.__recording = False
+        self.__downloading = False
 
 
     def connected(self):
@@ -138,6 +139,7 @@ class CameraContoller:
 
     def download(self):
         # Download files
+        self.__downloading = True
         video_names = self.listVideos()
         for index, name in enumerate(video_names):
             if name !='':
@@ -156,11 +158,19 @@ class CameraContoller:
                             dl += len(data)
                             f.write(data)
                             self.download_progress =  100 * dl / total_length
+
+                            # Break if flag is set
+                            if not self.__downloading:
+                                return 0
                             # sys.stdout.write("\r(%i of %i) %s [%s%s]" % (index+1, len(video_names),
                             #                                             name, '=' * done, ' ' * (50-done)) )    
                             # sys.stdout.flush()
         # Reset file name
         self.cur_download_filename = ''
 
+    def stopDownload(self):
+        self.__downloading = False
+
     def eraseDowloadProgress(self):
         self.download_progress = 0.0
+        self.cur_download_filename = ''
