@@ -60,12 +60,13 @@ class SrtFromLog:
         duration = video_timer.videoTimeToSeconds()
 
         for cur_sec in range(duration):
-            cur_timestamp = video_timer.incrementVideoSecond()
+            cur_timestamp = video_timer.getCurSecond()
             # print(cur_timestamp.toLogTimestamp())
             try:
                 srt_data.append(self.log_data[cur_timestamp.toLogTimestamp()].toSrtString())
             except KeyError:
                 srt_data.append('No data')
+            video_timer.incrementVideoSecond()
         
         srt_gen.write_srt_data(srt_data)
 
@@ -281,6 +282,9 @@ class VideoTimer:
     def incrementVideoSecond(self):
         # Increment start to 1 second
         return self.time_start.addSeconds()
+    
+    def getCurSecond(self):
+        return self.time_start
     
 
 
