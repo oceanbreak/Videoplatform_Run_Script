@@ -449,12 +449,14 @@ class CameraControlWindow(Tk.Toplevel):
         self.deactivateButtons()
         self.close_button.config(state=Tk.DISABLED)
         self.connect_button.config(state=Tk.DISABLED)
+        self.download_button.config(state=Tk.NORMAL, text = 'Cancel')
         self.protocol("WM_DELETE_WINDOW", self.disable_window)
 
     def enableAll(self):
         self.activateButtons()
         self.close_button.config(state=Tk.NORMAL)
         self.connect_button.config(state=Tk.NORMAL)
+        self.download_button.config(state=Tk.NORMAL, text = 'Download')
         self.protocol("WM_DELETE_WINDOW", self.close_window)
 
 
