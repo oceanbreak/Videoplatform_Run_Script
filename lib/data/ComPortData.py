@@ -24,7 +24,7 @@ class ComPortData:
 
         # Program regexp
         for index, message in enumerate(self.__messages):
-            self.prog.append(re.compile('\D*' + message))
+            self.prog.append(re.compile('\n*\D*' + message))
 
         # Open port for read
         try:
@@ -48,10 +48,14 @@ class ComPortData:
         # Function reads one line from port and stores it into self_line var
         if self._port.is_open:
             try:
-                self._line = self._port.readline().decode('utf-8')
+                line = self._port.readline()
+                line = line.split(b'$')[-1]
+                # print(line)
+                self._line = line.decode('utf-8')
                 self._line = self._line.rstrip()
             except (serial.SerialException, TypeError, UnicodeDecodeError):
-                print('Bad line')
+                # print(self._line)
+                print(f'{self._port_name} - Bad line')
                 self._line = None
             # If tmeout, set timer
             if not self._line:
