@@ -198,15 +198,15 @@ class MainApplication:
             self.cam_control_window.connect_button['text'] = 'Disconnect camera'
             self.displayVideoList()
 
-        if self.camera_control.recording():
-            self.cam_control_window.rec_sd_button['text'] = 'Stop SD rec'
-            self.cam_control_window.rec_sd_button['fg'] = 'red'
-
         self.cam_control_window.connect_button['command'] = self.connect_camera_command
         self.cam_control_window.sync_time_button['command'] = self.sync_time_command
         self.cam_control_window.format_sd_button['command'] = self.format_sd_command
         self.cam_control_window.rec_sd_button['command'] = self.cam_rec_command
         self.cam_control_window.download_button['command'] = self.download
+
+        if self.camera_control.recording():
+            self.cam_control_window.rec_sd_button['text'] = 'Stop SD rec'
+            self.cam_control_window.rec_sd_button['fg'] = 'red'
         
 
     @threadDecorator
@@ -219,7 +219,9 @@ class MainApplication:
         # print('Am i connecting')
         if not self.camera_control.connected():
             success = self.camera_control.connectCamera()
+            time.sleep(0.2)
             if success:
+                self.setupCameraButtons()
                 self.cam_control_window.connect_button['text'] = 'Disconnect camera'
                 self.displayVideoList()
                 # self.setupCameraButtons()
