@@ -35,8 +35,8 @@ class MainApplication:
         self.root.wm_iconbitmap('resources/OceanRecIcon.ico')
 
         # Paramteres
-        self.update_text_frequency = 100
-        self.track_calculation_freq = 100
+        self.update_text_frequency = 200
+        self.track_calculation_freq = 200
 
         # FLAGS
         self.__is_running = False
