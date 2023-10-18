@@ -144,13 +144,13 @@ class InclinParser:
 
         try:
 
-            pitch_sign = self.sign[word[8]]
-            pitch_val = float(word[9:12] + '.' + word[12:14])
+            pitch_sign = self.sign[word[14]]
+            pitch_val = float(word[15:18] + '.' + word[18:20])
             pitch = pitch_sign * pitch_val
 
-            roll_sign = self.sign[word[14]]
-            roll_val = float(word[15:18] + '.' +  word[18:20])
-            roll = roll_sign * roll_val      
+            roll_sign = self.sign[word[8]]
+            roll_val = float(word[9:12] + '.' +  word[18:20])
+            roll = roll_sign * roll_val          
 
             head_sign = self.sign[word[20]]
             head_val = float(word[21:24] + '.' +  word[24:26])
