@@ -96,7 +96,7 @@ class TemperatureData(BaseData):
 
     def __init__(self, temp):
         super().__init__()
-        self.temp = temp
+        self.temp = temp - 3.7
         self.pos_num = 1
         # self.keyword = data_keywords.DEPTH
 
