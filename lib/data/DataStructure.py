@@ -2,7 +2,7 @@
 This module defines data structures
 for Videomodule sensors data"""
 
-from lib.calculations.CoordinateCalc import convertCoordtoDM
+from lib.calculations.CoordinateCalc import convertCoordtoDM, convertCoordtoDeg
 import time
 
 
@@ -43,8 +43,19 @@ class CoordinatesData(BaseData):
         where D is degree, M is minute.
         """
         super().__init__()
-        self.lat = lat
-        self.lon = lon
+        if type(lat) == type(lon) == float:
+            self.lat = lat
+            self.lon = lon
+        # Handle string input
+        elif type(lat) == type(lon) == str:
+            try:
+                deg_lat, min_lat, letter_lat = lat.split(' ')
+                deg_lon, min_lon, letter_lon = lon.split(' ')
+                self.lat, self.lon = convertCoordtoDeg(deg_lat, min_lat, letter_lat,
+                                                       deg_lon, min_lon, letter_lon)
+            except:
+                print('Wrong coordinate type')
+                raise ValueError
         self.pos_num = 2
 
     def __str__(self):
