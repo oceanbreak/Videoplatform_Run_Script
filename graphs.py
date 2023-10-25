@@ -6,8 +6,38 @@ from lib.data.DataStructure import CoordinatesData
 from lib.UI.Settings import Settings
 from lib.data.DataCollection import DataCollection
 from tkinter import filedialog
+from scipy.signal import savgol_filter
 
+def moving_average(data, window):
+    data = np.array(data)
 
+    if window % 2 !=1:
+        print('Window size must be odd')
+        raise ValueError
+    range_window = (-window//2+1, window//2+1)
+
+    out_data = []
+    for i, val in enumerate(data):
+        temp_arr = []
+        if i < window // 2:
+            for j in range(*range_window):
+                if i+j >= 0:
+                    temp_arr.append(data[i+j])
+
+        elif i > data.shape[0] - window/2:
+            
+            for j in range(*range_window):
+                try:
+                    temp_arr.append(data[i+j])
+                except IndexError:
+                    pass
+        else:
+            for j in range(*range_window):
+                temp_arr.append(data[i+j])
+#         print(f'{i}: {temp_arr}')
+        temp_arr = np.array(temp_arr)
+        out_data.append(np.mean(temp_arr[temp_arr != None]))
+    return out_data
 
 
 class Graphs:
@@ -23,6 +53,14 @@ class Graphs:
         self.data_collection = data_collection
         self.settings = settings
         self.log_file = ''
+
+    @staticmethod
+    def floatVal(value):
+        try:
+            val = float(value)
+        except ValueError:
+            val = None
+        return val
 
     def askFiles(self):
         ret = filedialog.askopenfilename(initialdir=self.settings.default_folder)
@@ -41,33 +79,98 @@ class Graphs:
         reader.readLogFile(self.log_file)
         self.log_data = reader.getLogData()
 
-    def plotCoordinates(self):
+    def formAxes(self):
         # Form coordinates in DD.DDDDD format
-        # coords = [CoordinatesData(line.nav_lat.value, line.nav_lon.value) for line in self.log_data.values()]
-        # print(coords)
-        lat_arr = []
-        lon_arr = []
+        self.lat_arr = []
+        self.lon_arr = []
+        self.depth_arr = []
+        self.temp_arr = []
+        self.tr_length_arr = []
+        self.tr_time_arr = []
+        self.altimeter_arr = []
 
         for line in self.log_data.values():
             coords = (CoordinatesData(line.nav_lat.value, line.nav_lon.value))
             y, x = coords.degrees()
-            lat_arr.append(y)
-            lon_arr.append(x)
-        print(len(lat_arr), len(lon_arr))
+            self.lat_arr.append(y)
+            self.lon_arr.append(x)
+            
+            self.depth_arr.append(self.floatVal(line.depth.value))
+            self.tr_length_arr.append(self.floatVal(line.track_length.value))
+            # self.tr_time_arr.append(float(line.track_time.value))
+            self.temp_arr.append(self.floatVal(line.temp.value))
 
+    def plotCoordinates(self):
         fig, ax = plt.subplots(figsize=(5,10))
-        ax.plot(lon_arr,lat_arr)
+        ax.plot(self.lon_arr,self.lat_arr)
         ax.set_xticklabels(ax.get_xticks(), rotation = 45)
         ax.xaxis.set_major_formatter(self.major_formatter_lon)
         ax.yaxis.set_major_formatter(self.major_formatter_lat)
         ax.grid()
+        # ax.set_title('Трек')
+        ax.set_xlabel('Долгота')
+        ax.set_ylabel('Широта')
 
         out_file_name = f'{self.log_name}_{self.NAVI_BASE_NAME}.png'
         plt.savefig(os.path.join(self.log_path, self.GRAPHS_SUBFOLDER, out_file_name), dpi=300)
         plt.show()
 
-            # print(line.nav_lat.value, line.nav_lon.value)
-            # print(CoordinatesData(line.nav_lat.value, line.nav_lon.value))
+    def plotTemperatureRange(self):
+        fig, ax = plt.subplots(figsize=(12,5))
+        temp_filtered = moving_average(self.temp_arr, 13)
+        # temp_filtered = self.temp_arr
+        ax.plot(self.tr_length_arr, temp_filtered)
+
+        ax.grid()
+        # ax.set_title('Температура')
+        ax.set_xlabel('Длина трека, м')
+        ax.set_ylabel('Температура, С')
+
+        out_file_name = f'{self.log_name}_{self.TEMP_RANGE_NAME}.png'
+        plt.savefig(os.path.join(self.log_path, self.GRAPHS_SUBFOLDER, out_file_name), dpi=300)
+        plt.show()
+
+
+    def plotDepthRange(self):
+        fig, ax = plt.subplots(figsize=(12,5))
+        depth_filtered = savgol_filter(self.depth_arr, 23, 2)
+        # temp_filtered = self.temp_arr
+        ax.plot(self.tr_length_arr, depth_filtered)
+
+        ax.grid()
+        ax.set_xlabel('Длина трека, м')
+        ax.set_ylabel('Глубина, м')
+        ax.invert_yaxis()
+
+        out_file_name = f'{self.log_name}_{self.DEPTH_RANGE_NAME}.png'
+        plt.savefig(os.path.join(self.log_path, self.GRAPHS_SUBFOLDER, out_file_name), dpi=300)
+        plt.show()
+
+    def plotTempDepth(self):
+        fig, ax = plt.subplots(figsize=(4,12))
+        temp_filtered = moving_average(self.temp_arr, 13)
+        # temp_filtered = self.temp_arr
+        ax.invert_yaxis()
+        ax.set_xlabel('Температура, С')
+        ax.set_ylabel('Глубина, м')
+        ax.plot(temp_filtered, self.depth_arr)
+
+        ax.grid()
+
+        out_file_name = f'{self.log_name}_{self.TEMP_DEPTH_BASE_NAME}.png'
+        plt.savefig(os.path.join(self.log_path, self.GRAPHS_SUBFOLDER, out_file_name), dpi=300)
+        plt.show()      
+
+    def run(self):
+        ret = self.askFiles()
+        if ret:
+            self.readLogFile()
+            self.formAxes()
+            self.plotCoordinates()
+            self.plotTemperatureRange()
+            self.plotDepthRange()
+            self.plotTempDepth()
+      
     
     # Def format of coord
     @staticmethod
@@ -93,10 +196,7 @@ if __name__ == '__main__':
     data_collection = DataCollection(settings)
     
     graphs = Graphs(data_collection, settings)
-    graphs.askFiles()
-    graphs.readLogFile()
-    
-    graphs.plotCoordinates()
+    graphs.run()
 
     # for line in graphs.log_data.values():
     #     print(line.nav_lat.value, line.nav_lon.value)
