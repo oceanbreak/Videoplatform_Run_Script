@@ -11,6 +11,7 @@ from lib.camera.CamController import CameraContoller
 from tkinter.filedialog import askdirectory
 from lib.folder_struct.SrtFromLog import SrtFromLog
 from threading import Thread
+from lib.data.Graphs import Graphs
 
 #TODO Cancel button for downloading
 
@@ -73,6 +74,7 @@ class MainApplication:
         self.mainUI.start_rec_button['command'] = self.start_button_command
         self.mainUI.reset_track_button['command'] = self.reset_track_command
         self.mainUI.srt_from_log_button['command'] = self.srt_from_log_command
+        self.mainUI.plot_graphs_button['command'] = self.plot_graphs_command
         # self.mainUI.choose_dir_button['text'] = textShorten(self.global_settings.default_folder)
 
 
@@ -100,6 +102,10 @@ class MainApplication:
             text = 'Successfully created SRT for videos:\n' + \
                     '\n'.join(video_list)
             self.mainUI.popInfo(text)
+
+    def plot_graphs_command(self):
+        self.grapher = Graphs(self.data_collection, self.global_settings)
+        self.grapher.run()
         
 
     def connect_button_command(self):

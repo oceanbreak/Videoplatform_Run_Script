@@ -81,6 +81,12 @@ class MainWindow(Tk.Frame):
         self.srt_from_log_button["fg"]   = "black"
         self.srt_from_log_button['font'] = buttonfont
 
+        # SRT FROM LOG BUTTON
+        self.plot_graphs_button = Tk.Button(self.buttons_field)
+        self.plot_graphs_button['text'] = 'Graphs'
+        self.plot_graphs_button["fg"]   = "black"
+        self.plot_graphs_button['font'] = buttonfont
+
         # CAM BUTTON
         self.cam_dialog_button = Tk.Button(self.buttons_field)
         self.cam_dialog_button['text'] = 'CAM'
@@ -115,6 +121,7 @@ class MainWindow(Tk.Frame):
         self.settings_button.pack(side=Tk.LEFT, expand=Tk.YES, fill=Tk.BOTH)
         # self.QUIT_button.pack({"side": "left", "expand": "YES", "fill": "both"})
         self.srt_from_log_button.pack({"side": "left", "expand": "YES", "fill": "both"})
+        self.plot_graphs_button.pack({"side": "left", "expand": "YES", "fill": "both"})
         self.cam_dialog_button.pack({"side": "left", "expand": "YES", "fill": "both"})
         self.connect_button.pack({"side": "left", "expand": "YES", "fill": "both"})
         self.start_rec_button.pack({"side": "left", "expand": "YES", "fill": "both"})

@@ -75,7 +75,7 @@ class Graphs:
         return ret
 
     def readLogFile(self):
-        reader = LogReader(log_file_path=self.log_file ,data_collection=data_collection)
+        reader = LogReader(log_file_path=self.log_file ,data_collection=self.data_collection)
         reader.readLogFile(self.log_file)
         self.log_data = reader.getLogData()
 
