@@ -220,7 +220,7 @@ class TimeUnit(BaseData):
 
     def convertToHMS(self):
         self.hh = self.secs // 3600
-        self.mm = self.secs // 60
+        self.mm = (self.secs // 60) % 60
         self.ss = self.secs % 60
 
     def toDisplayText(self):
