@@ -16,7 +16,14 @@ class NmeaParser:
         pass
         #TODO: parse NMEA strings to data structures
 
-    def parseByMessage(self, string : str, message):
+    def stripNmeaString(self, nmea_string : str):
+        try:
+            return nmea_string.split("*")[0]
+        except AttributeError: # in case of None in string
+            return None
+
+    def parseByMessage(self, input_string : str, message):
+        string = self.stripNmeaString(input_string)
         # Handle diffrenct parsers with different messages
         if 'GGA' in message:
             return self.parseGGA(string)
@@ -30,6 +37,8 @@ class NmeaParser:
             return self.parseRMC(string)
         if 'GLL' in message:
             return self.parseGLL(string)
+        if 'DPT' in message:
+            return self.parseDPT(string)
 
     def parseGGA(self, nmea_string : str):
         """
@@ -134,6 +143,15 @@ class NmeaParser:
         except (AttributeError, ValueError):
             return TemperatureData(0.0).setCorrupt()      
 
+    def parseDPT(self, nmea_string : str):
+        try:
+            items = nmea_string.split(',')
+            value = float(items[1])
+            offset = float(items[2])
+            return DepthData(value + offset)
+        # except (AttributeError, ValueError):
+        except (AttributeError):
+            return DepthData(0.0).setCorrupt()
 
 class InclinParser:
 
