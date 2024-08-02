@@ -93,6 +93,12 @@ class MainWindow(Tk.Frame):
         self.cam_dialog_button["fg"]   = "dark blue"
         self.cam_dialog_button['font'] = buttonfont
 
+        
+        # SEPARATE DISPLAY BUTTON
+        self.sep_disp_button = Tk.Button(self.buttons_field)
+        self.sep_disp_button['text'] = 'DISP'
+        self.sep_disp_button["fg"]   = "black"
+        self.sep_disp_button['font'] = buttonfont
 
         #SET DEPTH ZERO BUTTON
         self.set_depth_buton = Tk.Button(self.buttons_field)
@@ -125,6 +131,7 @@ class MainWindow(Tk.Frame):
         self.cam_dialog_button.pack({"side": "left", "expand": "YES", "fill": "both"})
         self.connect_button.pack({"side": "left", "expand": "YES", "fill": "both"})
         self.start_rec_button.pack({"side": "left", "expand": "YES", "fill": "both"})
+        self.sep_disp_button.pack({"side": "left", "expand": "YES", "fill": "both"})
 
         self.set_depth_buton.pack({"side": "top", "expand": "YES", "fill": "both"})
         self.reset_track_button.pack({"side": "bottom", "expand": "YES", "fill": "both"})
@@ -158,6 +165,10 @@ class MainWindow(Tk.Frame):
     def camControlWindow(self):
         self.cam_control_window = CameraControlWindow(self.win)
         return self.cam_control_window
+    
+    def sepDispWindow(self):
+        self.sep_disp_window = SeparateDisplay(self.win)
+        return self.sep_disp_window
     
 
     def setButtonsActive(self):
@@ -466,6 +477,38 @@ class CameraControlWindow(Tk.Toplevel):
         self.download_button.config(state=Tk.NORMAL, text = 'Download')
         self.protocol("WM_DELETE_WINDOW", self.close_window)
 
+
+class SeparateDisplay(Tk.Toplevel):
+    
+    def __init__(self, master):
+        super().__init__(master=master)
+        self.buttonfont = ('arial', 12, 'bold')
+        self.data_text = "Display for winch"
+        self.createWidgets()
+        self.protocol("WM_DELETE_WINDOW", self.close_window)
+
+    
+    def close_window(self):
+        self.destroy()
+
+
+    def createWidgets(self):
+        #Configuration var
+        labelfont = ('arial', 20)
+        label_bg = 'white'
+        label_fg = 'black'
+        self.geometry('620x400')
+
+        #Buttons and text set
+        self.win = Tk.Frame(self)
+        self.win.pack(side=Tk.BOTTOM, expand=Tk.YES, fill=Tk.BOTH)
+
+         #DATA LABEL
+        self.data_label = Tk.Label(self.win)
+        self.data_label["text"] = self.data_text
+
+        self.data_label.config(font=labelfont, bg = label_bg, fg = label_fg)
+        self.data_label.pack({"side": "left", "expand":"YES", "fill":"both"})
 
 
 if  __name__ == '__main__':

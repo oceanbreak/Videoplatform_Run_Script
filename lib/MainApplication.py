@@ -12,6 +12,7 @@ from tkinter.filedialog import askdirectory
 from lib.folder_struct.SrtFromLog import SrtFromLog
 from threading import Thread
 from lib.data.Graphs import Graphs
+import tkinter
 
 #TODO Cancel button for downloading
 
@@ -32,7 +33,7 @@ class MainApplication:
         self.root = UI_Interface.Tk.Tk()
         self.mainUI = UI_Interface.MainWindow(self.root)
         self.mainUI.master.title('Ocean Record')
-        self.root.geometry('530x400')
+        self.root.geometry('630x400')
         self.root.wm_iconbitmap('resources/OceanRecIcon.ico')
 
         # Paramteres
@@ -43,6 +44,7 @@ class MainApplication:
         self.__is_running = False
         self.__is_recording = False
         self.__is_downloading = False
+        self.__separate_display_opened = False
 
         # Read settings
         try:
@@ -75,6 +77,7 @@ class MainApplication:
         self.mainUI.reset_track_button['command'] = self.reset_track_command
         self.mainUI.srt_from_log_button['command'] = self.srt_from_log_command
         self.mainUI.plot_graphs_button['command'] = self.plot_graphs_command
+        self.mainUI.sep_disp_button['command'] = self.open_separate_win_command
         # self.mainUI.choose_dir_button['text'] = textShorten(self.global_settings.default_folder)
 
 
@@ -106,7 +109,7 @@ class MainApplication:
     def plot_graphs_command(self):
         self.grapher = Graphs(self.data_collection, self.global_settings)
         self.grapher.run()
-        
+
 
     def connect_button_command(self):
         self.mainUI.cearImageOnLabel()
@@ -161,6 +164,12 @@ class MainApplication:
     def cam_button_command(self):
         self.cam_control_window = self.mainUI.camControlWindow()
         self.setupCameraButtons()
+
+
+    def open_separate_win_command(self):
+        if not self.__separate_display_opened:
+            self.separate_display = self.mainUI.sepDispWindow()
+            self.__separate_display_opened = True
 
 
     def set_depth_button_command(self):
@@ -438,6 +447,11 @@ class MainApplication:
         # Main display of a program
         if self.__is_running:
             self.mainUI.data_label['text'] = self.data_collection.toDisplayText()
+            if self.__separate_display_opened:
+                try:
+                    self.separate_display.data_label['text'] = self.data_collection.toDisplayText()
+                except tkinter.TclError:
+                    self.__separate_display_opened = False
             self.mainUI.after(self.update_text_frequency, self.updateDisplay)
 
 
