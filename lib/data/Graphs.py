@@ -51,6 +51,7 @@ class Graphs:
     ALTIMETER_RANGE_NAME = 'altimeter_range'
     VEHICLE_DEPTH_BY_ALTINETER = 'vehicle_depth'
 
+
     def __init__(self, data_collection : DataCollection, settings : Settings):
         self.data_collection = data_collection
         self.settings = settings
@@ -117,7 +118,7 @@ class Graphs:
             self.temp_arr.append(self.floatVal(line.temp.value))
 
         fig, ax = plt.subplots(figsize=(12,5))
-        temp_filtered = moving_average(self.temp_arr, 13)
+        temp_filtered = moving_average(self.temp_arr, 33)
         # temp_filtered = self.temp_arr
         ax.plot(self.tr_length_arr, temp_filtered)
 
@@ -207,11 +208,34 @@ class Graphs:
         plt.show()
 
 
+    def plotAltimeterRange(self):
+        self.alt_arr = []
+        self.tr_length_arr = []
+
+        for line in self.log_data.values():
+            self.tr_length_arr.append(self.floatVal(line.track_length.value))
+            self.alt_arr.append(self.floatVal(line.altimeter.value))
+
+        alt_filtered = moving_average(self.alt_arr, 13)
+
+        fig, ax = plt.subplots(figsize=(12,5))
+        ax.plot(self.tr_length_arr, alt_filtered)
+        ax.legend()
+
+        ax.grid()
+        ax.set_xlabel('Длина трека, м')
+        ax.set_ylabel('Отстояние от дна, м')
+        ax.invert_yaxis()
+
+        out_file_name = f'{self.log_name}_{self.ALTIMETER_RANGE_NAME}.png'
+        plt.savefig(os.path.join(self.log_path, self.GRAPHS_SUBFOLDER, out_file_name), dpi=300)
+        plt.show()
+
+
     def plotVehicleDepth(self):
         self.sonar_arr = []
         self.alt_arr = []
         self.tr_length_arr = []
-
 
         for line in self.log_data.values():
             self.tr_length_arr.append(self.floatVal(line.track_length.value))
@@ -274,7 +298,16 @@ class Graphs:
             except AttributeError:
                 print('Cannot plot sonar-depth-range')
 
-            self.plotVehicleDepth()
+            try:
+                self.plotVehicleDepth()
+            except AttributeError:
+                print('Cannot plot vehicle depth')
+
+            try:
+                self.plotAltimeterRange()
+            except AttributeError:
+                print('Cannot plot altimeter')
+
       
     
     # Def format of coord
