@@ -47,7 +47,9 @@ class Graphs:
     TEMP_DEPTH_BASE_NAME = 'temp_depth'
     TEMP_RANGE_NAME = 'temp_range'
     DEPTH_RANGE_NAME = 'depth_range'
+    SONAR_DEPTH_RANGE_NAME = 'sonar_depth_range'
     ALTIMETER_RANGE_NAME = 'altimeter_range'
+    VEHICLE_DEPTH_BY_ALTINETER = 'vehicle_depth'
 
     def __init__(self, data_collection : DataCollection, settings : Settings):
         self.data_collection = data_collection
@@ -79,28 +81,18 @@ class Graphs:
         reader.readLogFile(self.log_file)
         self.log_data = reader.getLogData()
 
-    def formAxes(self):
-        # Form coordinates in DD.DDDDD format
+
+    def plotCoordinates(self):
         self.lat_arr = []
         self.lon_arr = []
-        self.depth_arr = []
-        self.temp_arr = []
-        self.tr_length_arr = []
-        self.tr_time_arr = []
-        self.altimeter_arr = []
 
         for line in self.log_data.values():
             coords = (CoordinatesData(line.nav_lat.value, line.nav_lon.value))
             y, x = coords.degrees()
             self.lat_arr.append(y)
             self.lon_arr.append(x)
-            
-            self.depth_arr.append(self.floatVal(line.depth.value))
-            self.tr_length_arr.append(self.floatVal(line.track_length.value))
-            # self.tr_time_arr.append(float(line.track_time.value))
-            self.temp_arr.append(self.floatVal(line.temp.value))
 
-    def plotCoordinates(self):
+
         fig, ax = plt.subplots(figsize=(5,10))
         ax.plot(self.lon_arr,self.lat_arr)
         ax.set_xticklabels(ax.get_xticks(), rotation = 45)
@@ -116,6 +108,14 @@ class Graphs:
         plt.show()
 
     def plotTemperatureRange(self):
+
+        self.temp_arr = []
+        self.tr_length_arr = []
+
+        for line in self.log_data.values():
+            self.tr_length_arr.append(self.floatVal(line.track_length.value))
+            self.temp_arr.append(self.floatVal(line.temp.value))
+
         fig, ax = plt.subplots(figsize=(12,5))
         temp_filtered = moving_average(self.temp_arr, 13)
         # temp_filtered = self.temp_arr
@@ -132,6 +132,16 @@ class Graphs:
 
 
     def plotDepthRange(self):
+
+        self.depth_arr = []
+        self.tr_length_arr = []
+
+
+        for line in self.log_data.values():
+            self.depth_arr.append(self.floatVal(line.depth.value))
+            self.tr_length_arr.append(self.floatVal(line.track_length.value))
+
+
         fig, ax = plt.subplots(figsize=(12,5))
         depth_filtered = savgol_filter(self.depth_arr, 23, 2)
         # temp_filtered = self.temp_arr
@@ -147,6 +157,13 @@ class Graphs:
         plt.show()
 
     def plotTempDepth(self):
+        self.depth_arr = []
+        self.temp_arr = []
+
+        for line in self.log_data.values():       
+            self.depth_arr.append(self.floatVal(line.depth.value))
+            self.temp_arr.append(self.floatVal(line.temp.value))
+
         fig, ax = plt.subplots(figsize=(4,12))
         temp_filtered = moving_average(self.temp_arr, 13)
         # temp_filtered = self.temp_arr
@@ -161,15 +178,103 @@ class Graphs:
         plt.savefig(os.path.join(self.log_path, self.GRAPHS_SUBFOLDER, out_file_name), dpi=300)
         plt.show()      
 
+
+    def plotDepthSonarRange(self):
+        self.sonar_arr = []
+        self.depth_arr = []
+        self.tr_length_arr = []
+
+
+        for line in self.log_data.values():
+            self.sonar_arr.append(self.floatVal(line.sonar.value))
+            self.depth_arr.append(self.floatVal(line.depth.value))
+            self.tr_length_arr.append(self.floatVal(line.track_length.value))
+
+        fig, ax = plt.subplots(figsize=(12,5))
+        # depth_filtered = savgol_filter(self.depth_arr, 23, 2)
+        # temp_filtered = self.temp_arr
+        ax.plot(self.tr_length_arr, self.depth_arr, label='Датчик давления')
+        ax.plot(self.tr_length_arr, self.sonar_arr, label='Эхолот')
+        ax.legend()
+
+        ax.grid()
+        ax.set_xlabel('Длина трека, м')
+        ax.set_ylabel('Глубина, м')
+        ax.invert_yaxis()
+
+        out_file_name = f'{self.log_name}_{self.SONAR_DEPTH_RANGE_NAME}.png'
+        plt.savefig(os.path.join(self.log_path, self.GRAPHS_SUBFOLDER, out_file_name), dpi=300)
+        plt.show()
+
+
+    def plotVehicleDepth(self):
+        self.sonar_arr = []
+        self.alt_arr = []
+        self.tr_length_arr = []
+
+
+        for line in self.log_data.values():
+            self.tr_length_arr.append(self.floatVal(line.track_length.value))
+            self.sonar_arr.append(self.floatVal(line.sonar.value))
+            self.alt_arr.append(self.floatVal(line.altimeter.value))
+
+        # Count vehicle depth
+        vehicle_depth = []
+        for sonar_value, alt_value in zip(self.sonar_arr, self.alt_arr):
+            try:
+                vehicle_depth.append(sonar_value - alt_value)
+            except TypeError:
+                vehicle_depth.append(None)
+
+        fig, ax = plt.subplots(figsize=(12,5))
+        # depth_filtered = savgol_filter(self.depth_arr, 23, 2)
+        # temp_filtered = self.temp_arr
+        ax.plot(self.tr_length_arr, vehicle_depth, label='Заглубление по альтиметру')
+        ax.plot(self.tr_length_arr, self.sonar_arr, label='Эхолот')
+        ax.legend()
+
+        ax.grid()
+        ax.set_xlabel('Длина трека, м')
+        ax.set_ylabel('Глубина, м')
+        ax.invert_yaxis()
+
+        out_file_name = f'{self.log_name}_{self.VEHICLE_DEPTH_BY_ALTINETER}.png'
+        plt.savefig(os.path.join(self.log_path, self.GRAPHS_SUBFOLDER, out_file_name), dpi=300)
+        plt.show()
+
+
     def run(self):
         ret = self.askFiles()
         if ret:
             self.readLogFile()
-            self.formAxes()
-            self.plotCoordinates()
-            self.plotTemperatureRange()
-            self.plotDepthRange()
-            self.plotTempDepth()
+            # self.formAxes()
+
+            try:
+                self.plotCoordinates()
+            except AttributeError:
+                print('Cannot plot coordinates')
+
+            try:
+                self.plotTemperatureRange()
+            except AttributeError:
+                print('Cannot plot temp-range')
+            
+            try:
+                self.plotDepthRange()
+            except AttributeError:
+                print('Cannot plot depth-range')
+
+            try:
+                self.plotTempDepth()
+            except AttributeError:
+                print('Cannot plot temp-depth')
+
+            try:
+                self.plotDepthSonarRange()
+            except AttributeError:
+                print('Cannot plot sonar-depth-range')
+
+            self.plotVehicleDepth()
       
     
     # Def format of coord
