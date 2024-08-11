@@ -95,9 +95,12 @@ class ComPortData:
         ret = []
 
         # Check if data has changed
-        for index in range(len(self._input_data)):
-            if time.time() - self.same_data_timestamp[index] > self._port_timeout:
-                self._input_data[index] = None
+
+        # Try not to use it
+        # for index in range(len(self._input_data)):
+        #     if time.time() - self.same_data_timestamp[index] > self._port_timeout:
+        #         self._input_data[index] = None
+
             # print(f'Data [{index} timer difference: {time.time() - self.same_data_timestamp[index]}]')
 
         for kw, string in zip(self.__keywords, self._input_data):
