@@ -50,6 +50,8 @@ class Graphs:
     SONAR_DEPTH_RANGE_NAME = 'sonar_depth_range'
     ALTIMETER_RANGE_NAME = 'altimeter_range'
     VEHICLE_DEPTH_BY_ALTINETER = 'vehicle_depth'
+    INCLINOMETER_NAME = 'inclin'
+    ALTIMETER_PLUS_DEPTH = 'alt_plus_depth'
 
 
     def __init__(self, data_collection : DataCollection, settings : Settings):
@@ -166,12 +168,12 @@ class Graphs:
             self.temp_arr.append(self.floatVal(line.temp.value))
 
         fig, ax = plt.subplots(figsize=(4,12))
-        temp_filtered = moving_average(self.temp_arr, 13)
+        # temp_filtered = moving_average(self.temp_arr, 13)
         # temp_filtered = self.temp_arr
         ax.invert_yaxis()
         ax.set_xlabel('Температура, С')
         ax.set_ylabel('Глубина, м')
-        ax.plot(temp_filtered, self.depth_arr)
+        ax.scatter(self.temp_arr, self.depth_arr)
 
         ax.grid()
 
@@ -232,6 +234,44 @@ class Graphs:
         plt.show()
 
 
+    def plotAltPlusDepth(self):
+        self.alt_arr = []
+        self.depth_arr = []
+        self.tr_length_arr = []
+        self.sonar_arr = []
+
+
+        for line in self.log_data.values():
+            self.tr_length_arr.append(self.floatVal(line.track_length.value))
+            self.alt_arr.append(self.floatVal(line.altimeter.value))
+            self.depth_arr.append(self.floatVal(line.depth.value))
+            self.sonar_arr.append(self.floatVal(line.sonar.value))
+
+        # Count alt + depth
+        alt_plus_depth = []
+        for depth_value, alt_value in zip(self.sonar_arr, self.alt_arr):
+            try:
+                alt_plus_depth.append(depth_value + alt_value)
+            except TypeError:
+                alt_plus_depth.append(None)
+
+        # alt_depth_arr = moving_average(self.alt_depth_arr, 3)
+
+        fig, ax = plt.subplots(figsize=(12,5))
+        ax.plot(self.tr_length_arr, alt_plus_depth, label='ДД + альтиметр')
+        ax.plot(self.tr_length_arr, self.sonar_arr, label= 'Эхолот')
+        ax.legend()
+
+        ax.grid()
+        ax.set_xlabel('Длина трека, м')
+        ax.set_ylabel('Глубина, м')
+        ax.invert_yaxis()
+
+        out_file_name = f'{self.log_name}_{self.ALTIMETER_PLUS_DEPTH}.png'
+        plt.savefig(os.path.join(self.log_path, self.GRAPHS_SUBFOLDER, out_file_name), dpi=300)
+        plt.show()
+
+
     def plotVehicleDepth(self):
         self.sonar_arr = []
         self.alt_arr = []
@@ -266,6 +306,29 @@ class Graphs:
         plt.savefig(os.path.join(self.log_path, self.GRAPHS_SUBFOLDER, out_file_name), dpi=300)
         plt.show()
 
+    def plotInclinometer(self):
+        self.pitch_arr = []
+        self.roll_arr = []
+        self.tr_length_arr = []
+
+        for line in self.log_data.values():
+            self.tr_length_arr.append(self.floatVal(line.track_length.value))
+            self.pitch_arr.append(self.floatVal(line.inc_pitch.value))
+            self.roll_arr.append(self.floatVal(line.inc_roll.value))
+
+        fig, ax = plt.subplots(figsize=(12,5))
+        ax.plot(self.tr_length_arr, self.pitch_arr, label = 'Дифферент')
+        ax.plot(self.tr_length_arr, self.roll_arr, label = 'Крен')
+        ax.legend()
+
+        ax.grid()
+        ax.set_xlabel('Длина трека, м')
+        ax.set_ylabel('Угол отклонения, градусы')
+        # ax.invert_yaxis()
+
+        out_file_name = f'{self.log_name}_{self.INCLINOMETER_NAME}.png'
+        plt.savefig(os.path.join(self.log_path, self.GRAPHS_SUBFOLDER, out_file_name), dpi=300)
+        plt.show()
 
     def run(self):
         ret = self.askFiles()
@@ -298,16 +361,25 @@ class Graphs:
             except AttributeError:
                 print('Cannot plot sonar-depth-range')
 
-            try:
-                self.plotVehicleDepth()
-            except AttributeError:
-                print('Cannot plot vehicle depth')
+            # try:
+            #     self.plotVehicleDepth()
+            # except AttributeError:
+            #     print('Cannot plot vehicle depth')
 
             try:
                 self.plotAltimeterRange()
             except AttributeError:
                 print('Cannot plot altimeter')
 
+            try:
+                self.plotAltPlusDepth()
+            except AttributeError:
+                print('Cannot plot alt + depth')
+
+            try:
+                self.plotInclinometer()
+            except AttributeError:
+                print('Cannot plot inclinometer')
       
     
     # Def format of coord
