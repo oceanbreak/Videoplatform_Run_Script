@@ -115,16 +115,16 @@ class TemperatureData(BaseData):
         return self.temp
     
     def __str__(self):
-        return f'Temp: {self.temp:.1f}'
+        return f'Temp: {self.temp:.2f}'
     
     def log_header(self):
         return 'C'
     
     def toDisplayText(self):
-        return f'{self.temp:.1f} C'
+        return f'{self.temp:.2f} C'
     
     def toLogItem(self):
-        return f'{self.temp:.1f}'
+        return f'{self.temp:.2f}'
     
 
 class InclinometerData(BaseData):
