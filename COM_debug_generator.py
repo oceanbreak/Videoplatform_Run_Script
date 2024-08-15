@@ -6,6 +6,7 @@ for debugging purposes
 from lib.data.ComPortData import ComPortData
 import time
 import random
+import numpy as np
 
 
 class NmeaComSim:
@@ -28,11 +29,26 @@ class NmeaComSim:
     def closePort(self):
         self.__com_port_object.closePort()
 
-    def generateRandFactor(self):
-        factor = random.randint(-20, 20)
-        self.cur_val = self.init_val + factor/10
+    def generateRandFactor(self, low=-20, high=20, divider=10):
+        factor = random.randint(low, high)
+        cur_val = self.init_val + factor/divider
+        self.cur_val = cur_val
+        return cur_val
 
+class TempShitSim(NmeaComSim):
 
+    def __init__(self):
+        super().__init__()
+
+    def generateMessage(self):
+        dec1 = int(self.generateRandFactor(-10, 10, 1))
+        dec2 = int(self.generateRandFactor(0,9, 1))
+
+        if np.sign(dec1) != np.sign(dec2):
+            dec2 = -dec2
+
+        message = f'$--MTW,{dec1}.{dec2},C,F*hh\n\r'
+        self.cur_message = bytes(message, 'utf-8')
 
 class DepthSim(NmeaComSim):
 
@@ -73,23 +89,23 @@ class AltSim(NmeaComSim):
 if __name__ == '__main__':
 
     try:
-        sim1 = DepthSim()
-        sim1.setPort('COM4', 9600, 5)
-        sim1.setInitValue(128)
+        sim1 = TempShitSim()
+        sim1.setPort('COM12', 115200, 5)
+        sim1.setInitValue(-1.5)
 
-        sim2 = AltSim()
-        sim2.setPort('COM10', 57600, 5)
-        sim2.setInitValue(5)
-        sim2.initTempVal(24)
+        # sim2 = AltSim()
+        # sim2.setPort('COM10', 57600, 5)
+        # sim2.setInitValue(5)
+        # sim2.initTempVal(24)
 
         while True:
             print(time.asctime(), 'sending message')
             sim1.generateMessage()
             sim1.sendDataToPort()
-            sim2.generateMessageDepth()
-            sim2.sendDataToPort()
-            sim2.generateMessageTemp()
-            sim2.sendDataToPort()
+            # sim2.generateMessageDepth()
+            # sim2.sendDataToPort()
+            # sim2.generateMessageTemp()
+            # sim2.sendDataToPort()
             # message = bytes('$--DBT,,10,M,,,,*1C\n\r', 'utf-8')
             # sample_depth_data.sendMessage()
             time.sleep(1)
