@@ -138,7 +138,14 @@ class NmeaParser:
         
         try:
             items = nmea_string.split(',')
-            value = float(items[1])
+
+            # Temprorary fix to manage minus after dot
+            items_digits = items[1].split('.')
+            integer_part = int(items_digits[0])
+            float_part = np.abs(int(items_digits[1]))
+            value = float(f'{integer_part}.{float_part}')
+
+            # value = float(items[1])
             return TemperatureData(value)
         except (AttributeError, ValueError):
             return TemperatureData(0.0).setCorrupt()      
