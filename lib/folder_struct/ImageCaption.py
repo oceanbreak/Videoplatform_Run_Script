@@ -27,12 +27,15 @@ class ImageCaption:
         img_file = self.img_file
         text_to_draw = self.data_text
 
-        img = Image.open(img_file)
-        draw = ImageDraw.Draw(img)
-        draw.text((10,10), text_to_draw, (255, 255, 255), font = self.font)
-        draw = ImageDraw.Draw(img)
+        try:
+            img = Image.open(img_file)
+            draw = ImageDraw.Draw(img)
+            draw.text((10,10), text_to_draw, (255, 255, 255), font = self.font)
+            draw = ImageDraw.Draw(img)
 
-        img.save(img_file)
+            img.save(img_file)
+        except PIL.UnidentifiedImageError:
+            print('Cannot identify image, skip adding caption')
 
 
     def addSnapLogLine(self):
