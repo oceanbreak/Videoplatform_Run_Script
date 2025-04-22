@@ -130,7 +130,7 @@ class NmeaParser:
             items = nmea_string.split(',')
             value = float(items[3])
             return DepthData(value)
-        except (AttributeError, ValueError):
+        except (AttributeError, ValueError, IndexError):
             return DepthData(0.0).setCorrupt()
 
     
@@ -157,7 +157,7 @@ class NmeaParser:
             offset = float(items[2])
             return DepthData(value + offset)
         # except (AttributeError, ValueError):
-        except (AttributeError):
+        except (AttributeError, IndexError):
             return DepthData(0.0).setCorrupt()
 
 class InclinParser:
