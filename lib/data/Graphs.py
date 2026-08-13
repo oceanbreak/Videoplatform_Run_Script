@@ -309,21 +309,29 @@ class Graphs:
     def plotInclinometer(self):
         self.pitch_arr = []
         self.roll_arr = []
+        self.head_arr = []
         self.tr_length_arr = []
 
         for line in self.log_data.values():
             self.tr_length_arr.append(self.floatVal(line.track_length.value))
             self.pitch_arr.append(self.floatVal(line.inc_pitch.value))
             self.roll_arr.append(self.floatVal(line.inc_roll.value))
+            self.head_arr.append(self.floatVal(line.inc_head.value))
 
         fig, ax = plt.subplots(figsize=(12,5))
-        ax.plot(self.tr_length_arr, self.pitch_arr, label = 'Дифферент')
-        ax.plot(self.tr_length_arr, self.roll_arr, label = 'Крен')
-        ax.legend()
+        plt_pitch = ax.plot(self.tr_length_arr, self.pitch_arr, label = 'Дифферент')
+        plt_roll = ax.plot(self.tr_length_arr, self.roll_arr, label = 'Крен')
+
 
         ax.grid()
         ax.set_xlabel('Длина трека, м')
         ax.set_ylabel('Угол отклонения, градусы')
+
+        ax1 = ax.twinx()
+        plt_head = ax1.plot(self.tr_length_arr, self.head_arr, color='green', label = 'Курс')
+
+        # ax.legend(handles = [plt_pitch, plt_roll, plt_head])
+        fig.legend()
         # ax.invert_yaxis()
 
         out_file_name = f'{self.log_name}_{self.INCLINOMETER_NAME}.png'
